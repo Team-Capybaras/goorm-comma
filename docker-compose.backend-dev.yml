@@ -25,7 +25,7 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
 #    environment:
@@ -45,16 +45,6 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    networks:
-      - goorm
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     networks:
       - goorm
 
