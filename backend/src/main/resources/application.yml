@@ -1,7 +1,8 @@
 spring:
   profiles:
     active: dev
-  security:
-    user:
-      name: admin
-      password: admin123
+    include: secret
+#  security:
+#    user:
+#      name: admin
+#      password: admin123

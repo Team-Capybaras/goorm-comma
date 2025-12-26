@@ -1,4 +1,4 @@
-# 🛍️ Groom Third - 개발 환경 가이드
+# 개발 환경 가이드
 
 > Docker + Spring Boot + Next.js 기반 통합 개발환경  
 > 백엔드는 로컬 실행, DB/Redis/Nginx/Next.js는 Docker로 구성
