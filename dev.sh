@@ -3,10 +3,30 @@
 # 에러 발생 시 즉시 종료
 set -e
 
-COMPOSE_FILE="docker-compose.dev.yml"
 ENV_FILE=".env.dev"
 
+if [[ $# -lt 2 ]]; then
+  echo "Usage: ./dev.sh {front|back} {build|up|detach|down}"
+  exit 1
+fi
+
 case "$1" in
+  front)
+    echo "development profile front starting..."
+    COMPOSE_FILE="docker-compose.frontend-dev.yml"
+    ;;
+  back)
+    echo "development profile backend starting..."
+    COMPOSE_FILE="docker-compose.backend-dev.yml"
+    ;;
+  *)
+    echo "Invalid profile: $1"
+    echo "Usage: ./dev.sh {front|back} {build|up|detach|down}"
+    exit 1
+    ;;
+esac
+
+case "$2" in
   up)
     echo "Starting DEV containers..."
     docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up
@@ -27,11 +47,12 @@ case "$1" in
     docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" stop || true
 
     echo "Removing DEV containers..."
-    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down || true
     ;;
 
   *)
-    echo "Usage: ./dev.sh {build|up|detach|down}"
+    echo "Invalid command: $2"
+    echo "Usage: ./dev.sh {front|back} {build|up|detach|down}"
     exit 1
     ;;
 esac
