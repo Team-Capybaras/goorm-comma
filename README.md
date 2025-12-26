@@ -60,9 +60,8 @@
 
 ## 6️⃣ 개발용 Security 설정
 
-- 개발 환경에서는 모든 요청 허용
-- CSRF, 로그인, HTTP Basic 인증 등을 비활성화
-- 실제 배포 환경에서는 별도의 인증/인가 설정 필요
+> 현재 Security 환경 설정은 보류된 상황
+> 기획에 따라 개발 스택이 변동될 예정
 
 ---
 
@@ -91,7 +90,30 @@
 
 ## 🔧 개발용 실행 순서
 
-1. Docker 컨테이너 실행
-   -> docker compose --env-file .env.dev up --build : 처음 빌드시만 실행
-   -> docker compose --env-file .env.dev up -d : 이후 다시키는 경우 이렇게 하면 더 빠름
-2. Spring Boot 백엔드 서버 로컬 실행
+1. manually start
+```shell
+# build : 처음 빌드 시, PR 후 변동사항 적용 시 실행
+docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up --build
+# detach : 빌드 이후 컨테이너가 종료 된 상태에서 다시 키는 경우 재빌드 없이 백그라운드 실행. (더 빠름)
+# 백그라운드 실행 옵션 없이 실행하려면 -d 제거
+docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d
+# stop : 컨테이너 멈춤 (현재 동작중인 컨테이너 일시정지)
+docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" stop
+# down : 컨테이너 삭제 (현재 빌드된 내용 제거, 이후 컨테이너 실행 시 빌드 적용)
+docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down
+```
+
+2. shell script (auto)
+
+개발 환경
+windows에서는 `/` 대신 `\` 사용이 필요할 수 있음.
+```shell
+# front-end 환경, back-end 환경 별 실행
+./dev.sh {front|back} {build|up|detach|down}
+```
+
+배포 환경
+--no-cache 옵션을 통해 변동사항 등 캐시 제거 및 재빌드
+```shell
+./prod.sh {build|restart|deploy|down} [--no-cache]
+```
