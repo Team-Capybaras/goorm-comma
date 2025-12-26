@@ -47,16 +47,6 @@ services:
     networks:
       - goorm
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - goorm
-
   nginx:
     container_name: nginx
     image: nginx:latest
