@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/
-    username:
-    password:
+    url: jdbc:postgresql://localhost:5432/groom_third
+    username: dev
+    password: dev123
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,7 +22,7 @@ spring:
       tags-sorter: alpha
     api-docs:
       path: /v3/api-doc
-    enabled: false
+    enabled: true
 
 server:
   port: 8080
@@ -42,3 +42,5 @@ redis:
       max-idle: 10
       min-idle: 2
       max-wait: -1ms
+
+# API 키는 application-secret.yml에 정의되어 있음
