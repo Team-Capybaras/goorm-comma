@@ -33,6 +33,9 @@ dependencies {
     // Apache HttpClient5 (외부 API 호출용)
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.5.1'
 
+    // Jackson XML (XML을 JSON으로 변환용)
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
 
