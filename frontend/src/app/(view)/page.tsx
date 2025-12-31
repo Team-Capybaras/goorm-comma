@@ -4,7 +4,6 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/C
 export default function page() {
   return (
     <>
-      main입니다.
       <Card>
         <CardHeader
           left={<div>좌측설정</div>}
@@ -22,7 +21,7 @@ export default function page() {
         </CardFooter>
         <CardFooter center={<div>카드 푸터 중앙 설정</div>} />
       </Card>
-      <div className="h-[500px] w-[400px]">
+      <div className="h-[500px] w-[800px]">
         <KakaoMap />
       </div>
     </>
