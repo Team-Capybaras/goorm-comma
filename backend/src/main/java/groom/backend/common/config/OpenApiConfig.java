@@ -34,9 +34,9 @@ public class OpenApiConfig {
                         .description("Groom WheelFinder API 문서")
                 )
 
-                // 접근 주소
+                // 접근 주소 (context-path: /api 포함)
                 .addServersItem(new Server()
-                        .url("http://localhost:8080")
+                        .url("http://localhost:8080/api")
                         .description("Development Server")
                 );
     }
