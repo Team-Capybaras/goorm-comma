@@ -37,3 +37,5 @@ build/
 backend/RESPONSE_HANDLING_GUIDE.md
 
 CLAUDE.md
+
+backend/src/main/resources/application-secret.yml
