@@ -44,3 +44,5 @@ out/
 .DS_Store
 Thumbs.db
 *.log
+
+**/application-secret.yml
