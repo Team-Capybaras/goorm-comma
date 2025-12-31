@@ -1,5 +1,7 @@
 package groom.backend.interfaces.seoul;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import groom.backend.interfaces.seoul.dto.request.SeoulCityDataRequest;
 import groom.backend.interfaces.seoul.dto.response.SeoulCityDataResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * 서울시 공공 API 클라이언트
@@ -26,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 public class SeoulApiClient {
     private final String seoulApiKey;
     private final RestClient restClient;
+    private final XmlMapper xmlMapper;
 
     public SeoulApiClient(RestClient.Builder builder,
                          @Value("${api.seoul.url}") String seoulUrl,
@@ -59,13 +63,17 @@ public class SeoulApiClient {
                 .build();
 
         this.seoulApiKey = seoulApiKey;
+        
+        // 5. XML 매퍼 초기화
+        this.xmlMapper = new XmlMapper();
     }
 
     /**
      * 서울시 공공 API를 호출하여 핫스팟 장소 정보를 조회합니다.
+     * XML 응답을 JSON으로 변환하여 반환합니다.
      * 
      * @param request 핫스팟 장소 조회 요청 정보
-     * @return 서울시 공공 API 응답 (XML 형식)
+     * @return 서울시 공공 API 응답 (JSON 형식)
      */
     public SeoulCityDataResponse getCityData(SeoulCityDataRequest request) {
         // URL 형식: http://openapi.seoul.go.kr:8088/{API_KEY}/xml/citydata/{START_INDEX}/{END_INDEX}/{AREA_NM}
@@ -92,9 +100,32 @@ public class SeoulApiClient {
         log.info("Seoul API 호출 성공 - AREA_NM: {}, 응답 길이: {}", request.getAreaNm(), 
                 xmlResponse != null ? xmlResponse.length() : 0);
 
+        // XML을 JSON으로 변환
+        Map<String, Object> jsonData = convertXmlToJson(xmlResponse);
+        
         SeoulCityDataResponse response = new SeoulCityDataResponse();
-        response.setXmlData(xmlResponse);
+        response.setData(jsonData);
         return response;
+    }
+
+    /**
+     * XML 문자열을 JSON Map으로 변환합니다.
+     * 
+     * @param xmlString XML 형식의 문자열
+     * @return JSON으로 변환된 Map 객체
+     */
+    private Map<String, Object> convertXmlToJson(String xmlString) {
+        try {
+            // XML을 Map으로 읽기
+            Map<String, Object> xmlMap = xmlMapper.readValue(xmlString, new TypeReference<Map<String, Object>>() {});
+            
+            log.debug("XML을 JSON으로 변환 완료");
+            return xmlMap;
+        } catch (Exception e) {
+            log.error("XML을 JSON으로 변환 중 오류 발생: {}", e.getMessage(), e);
+            // 변환 실패 시 빈 Map 반환
+            return Map.of("error", "XML 파싱 실패", "message", e.getMessage());
+        }
     }
 }
 
