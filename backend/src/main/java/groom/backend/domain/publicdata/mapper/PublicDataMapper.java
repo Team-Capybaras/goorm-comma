@@ -209,15 +209,16 @@ public class PublicDataMapper {
 
     /**
      * SubwayStation 엔티티로 변환
-     * subId는 subStnNm과 subStnLine의 해시코드로 생성
+     * subId는 areaCode, subStnNm, subStnLine의 해시코드로 생성
+     * 같은 지하철역명과 노선이라도 areaCode가 다르면 다른 것으로 판단
      */
     public SubwayStation toSubwayStationEntity(String areaCode, SubwayStatusDetailDto detail) {
         if (detail == null || detail.getSubStnNm() == null || detail.getSubStnNm().trim().isEmpty()) {
             return null;
         }
 
-        // subId 생성: subStnNm과 subStnLine의 조합으로 해시코드 생성
-        String key = (detail.getSubStnNm() + "_" + (detail.getSubStnLine() != null ? detail.getSubStnLine() : "")).trim();
+        // subId 생성: areaCode, subStnNm, subStnLine의 조합으로 해시코드 생성
+        String key = (areaCode + "_" + detail.getSubStnNm() + "_" + (detail.getSubStnLine() != null ? detail.getSubStnLine() : "")).trim();
         Integer subId = Math.abs(key.hashCode());
 
         return SubwayStation.builder()
@@ -234,6 +235,8 @@ public class PublicDataMapper {
 
     /**
      * SubwayFacility 엔티티 리스트로 변환
+     * subFacilityInfo는 subId, elvtrNm, oprSec, instlPstn의 조합으로 생성
+     * 같은 승강기명이라도 areaCode가 다르면 다른 것으로 판단 (subId에 areaCode가 포함됨)
      */
     public List<SubwayFacility> toSubwayFacilityEntityList(Integer subId, SubwayFacilityInfoListDto facilityList) {
         List<SubwayFacility> result = new ArrayList<>();
@@ -242,10 +245,17 @@ public class PublicDataMapper {
             return result;
         }
 
-        int facilityInfoId = 1;
         for (SubwayFacilityInfoItemDto item : facilityList.getSubFaciinfo()) {
+            // subFacilityInfo 생성: subId(이미 areaCode 포함), elvtrNm, oprSec, instlPstn의 조합으로 고유 ID 생성
+            // 같은 승강기명(ELVTR_NM)이라도 areaCode가 다르면 다른 것으로 판단 (subId에 areaCode 포함)
+            String facilityKey = subId + "_" + 
+                    (item.getElvtrNm() != null ? item.getElvtrNm() : "") + "_" +
+                    (item.getOprSec() != null ? item.getOprSec() : "") + "_" +
+                    (item.getInstlPstn() != null ? item.getInstlPstn() : "");
+            Integer subFacilityInfo = Math.abs(facilityKey.hashCode());
+            
             SubwayFacility facility = SubwayFacility.builder()
-                    .subFacilityInfo(subId * 1000 + facilityInfoId++) // subId 기반으로 고유 ID 생성
+                    .subFacilityInfo(subFacilityInfo)
                     .elvtrName(item.getElvtrNm())
                     .operateSector(item.getOprSec())
                     .installPosition(item.getInstlPstn())
