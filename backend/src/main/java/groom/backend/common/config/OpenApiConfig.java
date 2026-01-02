@@ -29,9 +29,9 @@ public class OpenApiConfig {
 
                 // 문서 정보
                 .info(new Info()
-                        .title("WheelFinder API")
+                        .title("Comma API")
                         .version("1.0.0")
-                        .description("Groom WheelFinder API 문서")
+                        .description("Groom Comma API 문서")
                 )
 
                 // 접근 주소 (context-path: /api 포함)
