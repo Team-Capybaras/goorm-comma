@@ -23,9 +23,7 @@ services:
       - goorm
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: goorm-comma-be
     container_name: backend
     ports:
       - "8080:8080"
@@ -40,10 +38,8 @@ services:
       - ./backend/src:/app/src
 
   frontend:
+    image: goorm-comma-fe
     container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
