@@ -1,4 +1,4 @@
-package groom.backend.domain.publicdata.service;
+package groom.backend.domain.publicdata.mapper;
 
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.population.entity.LivePopStatus;

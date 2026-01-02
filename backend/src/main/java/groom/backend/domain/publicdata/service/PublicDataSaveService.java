@@ -15,6 +15,8 @@ import groom.backend.domain.parking.entity.*;
 import groom.backend.domain.parking.repository.*;
 import groom.backend.domain.transit.entity.*;
 import groom.backend.domain.transit.repository.*;
+import groom.backend.domain.publicdata.mapper.PublicDataMapper;
+import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
 import groom.backend.interfaces.seoul.dto.response.CityDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

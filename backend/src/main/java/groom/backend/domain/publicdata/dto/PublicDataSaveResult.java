@@ -1,4 +1,4 @@
-package groom.backend.domain.publicdata.service;
+package groom.backend.domain.publicdata.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

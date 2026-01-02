@@ -1,5 +1,6 @@
 package groom.backend.domain.publicdata.service;
 
+import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
 import groom.backend.domain.seoul.service.SeoulService;
 import groom.backend.interfaces.seoul.dto.response.SeoulCityDataResponse;
 import lombok.RequiredArgsConstructor;

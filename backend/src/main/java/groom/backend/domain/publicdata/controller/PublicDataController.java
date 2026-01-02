@@ -1,8 +1,8 @@
 package groom.backend.domain.publicdata.controller;
 
 import groom.backend.common.response.ApiResponse;
+import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
 import groom.backend.domain.publicdata.service.PublicDataService;
-import groom.backend.domain.publicdata.service.PublicDataSaveResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
