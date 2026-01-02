@@ -71,16 +71,21 @@ seoul/
 ### 4. Parking 도메인
 **경로**: `domain/seoul/parking/`
 
-주차장 정보 및 현황을 관리합니다.
+주차장 정보 및 현황, 전기차 충전소 정보를 관리합니다.
 
 **엔티티:**
 - `ParkingLot`: 주차장 정보
 - `ParkingLotStatus`: 주차장 현황
+- `ChargerStation`: 충전소 정보
+- `ChargerDetail`: 충전기 상세 정보
+- `ChargerStatus`: 충전기 상태
 
 **역할:**
 - 주차장 정보 관리
 - 실시간 주차 현황 추적
 - 주차장 검색
+- 충전소 정보 관리
+- 충전기 상태 추적
 
 **상세**: [parking/README.md](./parking/README.md)
 
@@ -106,16 +111,19 @@ seoul/
 ### 6. Transit 도메인
 **경로**: `domain/seoul/transit/`
 
-대중교통 정보를 관리합니다.
+대중교통 정보 및 공유 자전거 정보를 관리합니다.
 
 **엔티티:**
 - `SubwayStation`: 지하철역 정보
 - `SubwayFacility`: 지하철 시설 정보
 - `BusStation`: 버스 정류장 정보
+- `Sbike`: 공유 자전거 정보
+- `SbikeStatus`: 공유 자전거 현황
 
 **역할:**
 - 대중교통 정보 관리
 - 접근성 정보 제공
+- 공유 자전거 정보 관리
 - 위치 기반 검색
 
 **상세**: [transit/README.md](./transit/README.md)
@@ -149,9 +157,9 @@ park (최상위)
 | `park` | 정적 | 낮음 | `area_code` |
 | `population` | 동적 | 높음 | `data_get_time`, `area_code` |
 | `weather` | 동적 | 높음 | `data_get_time`, `area_code` |
-| `parking` | 정적/동적 | 낮음/높음 | `prk_code` / `data_get_time`, `prk_code` |
+| `parking` | 정적/동적 | 낮음/높음 | `prk_code` / `data_get_time`, `prk_code` / `station_id` / `charger_id`, `station_id` |
 | `tag` | 정적 | 낮음 | `tag_id` |
-| `transit` | 정적 | 낮음 | `sub_id`, `bus_stn_id` |
+| `transit` | 정적/동적 | 낮음/높음 | `sub_id`, `bus_stn_id` / `sbike_spot_id` / `data_get_time`, `sbike_spot_id` |
 
 ## 사용 가이드
 
