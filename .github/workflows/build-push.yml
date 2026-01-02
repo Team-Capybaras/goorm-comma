@@ -28,7 +28,7 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/project-be:latest
+            ${{ secrets.DOCKER_USERNAME }}/goorm-comma-be:latest
 
       # =====================
       # Frontend Image
@@ -39,4 +39,4 @@ jobs:
           context: ./frontend
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/project-fe:latest
+            ${{ secrets.DOCKER_USERNAME }}/goorm-comma-fe:latest
