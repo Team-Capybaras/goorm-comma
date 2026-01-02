@@ -28,7 +28,7 @@ public class PublicDataMapper {
     /**
      * Park 엔티티로 변환
      */
-    public Park toPark(String areaCode, String areaName) {
+    public Park toParkEntity(String areaCode, String areaName) {
         return Park.builder()
                 .areaCode(areaCode)
                 .areaName(areaName)
@@ -38,7 +38,7 @@ public class PublicDataMapper {
     /**
      * LivePopStatus 엔티티로 변환
      */
-    public LivePopStatus toLivePopStatus(String areaCode, LivePopulationStatusDetailDto detail, LocalDateTime dataGetTime) {
+    public LivePopStatus toLivePopStatusEntity(String areaCode, LivePopulationStatusDetailDto detail, LocalDateTime dataGetTime) {
         if (detail == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public class PublicDataMapper {
     /**
      * PredPopStatus 엔티티 리스트로 변환
      */
-    public List<PredPopStatus> toPredPopStatusList(String areaCode, PopulationForecastDto forecast, LocalDateTime dataGetTime) {
+    public List<PredPopStatus> toPredPopStatusEntityList(String areaCode, PopulationForecastDto forecast, LocalDateTime dataGetTime) {
         List<PredPopStatus> result = new ArrayList<>();
         
         if (forecast == null || forecast.getFcstPpltn() == null) {
@@ -83,7 +83,7 @@ public class PublicDataMapper {
     /**
      * WeatherStatus 엔티티로 변환
      */
-    public WeatherStatus toWeatherStatus(String areaCode, WeatherStatusDetailDto detail, LocalDateTime dataGetTime) {
+    public WeatherStatus toWeatherStatusEntity(String areaCode, WeatherStatusDetailDto detail, LocalDateTime dataGetTime) {
         if (detail == null) {
             return null;
         }
@@ -167,7 +167,7 @@ public class PublicDataMapper {
     /**
      * ParkingLot 엔티티로 변환
      */
-    public ParkingLot toParkingLot(String areaCode, ParkingStatusItemDto item) {
+    public ParkingLot toParkingLotEntity(String areaCode, ParkingStatusItemDto item) {
         if (item == null || item.getPrkCd() == null || item.getPrkCd().trim().isEmpty()) {
             return null;
         }
@@ -194,7 +194,7 @@ public class PublicDataMapper {
     /**
      * ParkingLotStatus 엔티티로 변환
      */
-    public ParkingLotStatus toParkingLotStatus(Long prkCode, ParkingStatusItemDto item, LocalDateTime dataGetTime) {
+    public ParkingLotStatus toParkingLotStatusEntity(Long prkCode, ParkingStatusItemDto item, LocalDateTime dataGetTime) {
         if (item == null || item.getCurPrkYn() == null || !"Y".equalsIgnoreCase(item.getCurPrkYn().trim())) {
             return null;
         }
@@ -211,7 +211,7 @@ public class PublicDataMapper {
      * SubwayStation 엔티티로 변환
      * subId는 subStnNm과 subStnLine의 해시코드로 생성
      */
-    public SubwayStation toSubwayStation(String areaCode, SubwayStatusDetailDto detail) {
+    public SubwayStation toSubwayStationEntity(String areaCode, SubwayStatusDetailDto detail) {
         if (detail == null || detail.getSubStnNm() == null || detail.getSubStnNm().trim().isEmpty()) {
             return null;
         }
@@ -235,7 +235,7 @@ public class PublicDataMapper {
     /**
      * SubwayFacility 엔티티 리스트로 변환
      */
-    public List<SubwayFacility> toSubwayFacilityList(Integer subId, SubwayFacilityInfoListDto facilityList) {
+    public List<SubwayFacility> toSubwayFacilityEntityList(Integer subId, SubwayFacilityInfoListDto facilityList) {
         List<SubwayFacility> result = new ArrayList<>();
         
         if (facilityList == null || facilityList.getSubFaciinfo() == null) {
@@ -262,7 +262,7 @@ public class PublicDataMapper {
     /**
      * BusStation 엔티티로 변환
      */
-    public BusStation toBusStation(String areaCode, BusStationStatusItemDto item) {
+    public BusStation toBusStationEntity(String areaCode, BusStationStatusItemDto item) {
         if (item == null || item.getBusStnId() == null || item.getBusStnId().trim().isEmpty()) {
             return null;
         }
@@ -280,7 +280,7 @@ public class PublicDataMapper {
     /**
      * Sbike 엔티티로 변환
      */
-    public Sbike toSbike(String areaCode, SharedBikeStatusDetailDto detail) {
+    public Sbike toSbikeEntity(String areaCode, SharedBikeStatusDetailDto detail) {
         if (detail == null || detail.getSbikeSpotId() == null || detail.getSbikeSpotId().trim().isEmpty()) {
             return null;
         }
@@ -298,7 +298,7 @@ public class PublicDataMapper {
     /**
      * SbikeStatus 엔티티로 변환
      */
-    public SbikeStatus toSbikeStatus(String sbikeSpotId, SharedBikeStatusDetailDto detail, LocalDateTime dataGetTime) {
+    public SbikeStatus toSbikeStatusEntity(String sbikeSpotId, SharedBikeStatusDetailDto detail, LocalDateTime dataGetTime) {
         if (detail == null || sbikeSpotId == null) {
             return null;
         }
@@ -322,7 +322,7 @@ public class PublicDataMapper {
     /**
      * ChargerStation 엔티티로 변환
      */
-    public ChargerStation toChargerStation(String areaCode, ChargerStatusDetailDto detail) {
+    public ChargerStation toChargerStationEntity(String areaCode, ChargerStatusDetailDto detail) {
         if (detail == null || detail.getStatId() == null || detail.getStatId().trim().isEmpty()) {
             return null;
         }
@@ -344,7 +344,7 @@ public class PublicDataMapper {
     /**
      * ChargerDetail 엔티티로 변환
      */
-    public ChargerDetail toChargerDetail(String stationId, ChargerDetailItemDto item) {
+    public ChargerDetail toChargerDetailEntity(String stationId, ChargerDetailItemDto item) {
         if (item == null || item.getChargerId() == null || item.getChargerId().trim().isEmpty()) {
             return null;
         }
@@ -363,7 +363,7 @@ public class PublicDataMapper {
     /**
      * ChargerStatus 엔티티로 변환
      */
-    public ChargerStatus toChargerStatus(Integer chargerId, String stationId, ChargerDetailItemDto item, LocalDateTime dataGetTime) {
+    public ChargerStatus toChargerStatusEntity(Integer chargerId, String stationId, ChargerDetailItemDto item, LocalDateTime dataGetTime) {
         if (item == null || chargerId == null || stationId == null) {
             return null;
         }

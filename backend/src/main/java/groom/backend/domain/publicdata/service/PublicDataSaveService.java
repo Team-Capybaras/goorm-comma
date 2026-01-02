@@ -16,7 +16,7 @@ import groom.backend.domain.parking.repository.*;
 import groom.backend.domain.transit.entity.*;
 import groom.backend.domain.transit.repository.*;
 import groom.backend.domain.publicdata.mapper.PublicDataMapper;
-import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
+import groom.backend.domain.publicdata.dto.SavePublicDataResponse;
 import groom.backend.interfaces.seoul.dto.response.CityDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public class PublicDataSaveService {
      * CityDataDto의 모든 데이터를 DB에 저장합니다.
      */
     @Transactional
-    public PublicDataSaveResult saveAll(CityDataDto cityData) {
+    public SavePublicDataResponse saveAll(CityDataDto cityData) {
         // 분 단위로 정규화 (초, 나노초를 0으로 설정)
         LocalDateTime dataGetTime = normalizeToMinute(LocalDateTime.now());
         String areaCode = cityData.getAreaCd();
@@ -63,7 +63,7 @@ public class PublicDataSaveService {
 
         log.info("공공 데이터 저장 시작 - AREA_CODE: {}, AREA_NAME: {}, DATA_GET_TIME: {}", areaCode, areaName, dataGetTime);
 
-        PublicDataSaveResult result = new PublicDataSaveResult();
+        SavePublicDataResponse result = new SavePublicDataResponse();
 
         // 1. Park 저장 (없으면 생성, 있으면 업데이트)
         savePark(areaCode, areaName);
@@ -71,7 +71,7 @@ public class PublicDataSaveService {
 
         // 2. LivePopStatus 저장 (없으면 생성, 있으면 업데이트)
         if (cityData.getLivePpltnStts() != null && cityData.getLivePpltnStts().getLivePpltnStts() != null) {
-            LivePopStatus newLivePopStatus = publicDataMapper.toLivePopStatus(
+            LivePopStatus newLivePopStatus = publicDataMapper.toLivePopStatusEntity(
                     areaCode, 
                     cityData.getLivePpltnStts().getLivePpltnStts(), 
                     dataGetTime
@@ -87,7 +87,7 @@ public class PublicDataSaveService {
         if (cityData.getLivePpltnStts() != null && 
             cityData.getLivePpltnStts().getLivePpltnStts() != null &&
             cityData.getLivePpltnStts().getLivePpltnStts().getFcstPpltn() != null) {
-            List<PredPopStatus> predPopStatusList = publicDataMapper.toPredPopStatusList(
+            List<PredPopStatus> predPopStatusList = publicDataMapper.toPredPopStatusEntityList(
                     areaCode,
                     cityData.getLivePpltnStts().getLivePpltnStts().getFcstPpltn(),
                     dataGetTime
@@ -102,7 +102,7 @@ public class PublicDataSaveService {
 
         // 4. WeatherStatus 저장 (없으면 생성, 있으면 업데이트)
         if (cityData.getWeatherStts() != null && cityData.getWeatherStts().getWeatherStts() != null) {
-            WeatherStatus newWeatherStatus = publicDataMapper.toWeatherStatus(
+            WeatherStatus newWeatherStatus = publicDataMapper.toWeatherStatusEntity(
                     areaCode,
                     cityData.getWeatherStts().getWeatherStts(),
                     dataGetTime
@@ -164,7 +164,7 @@ public class PublicDataSaveService {
      */
     private Park savePark(String areaCode, String areaName) {
         Park park = parkRepository.findByAreaCode(areaCode)
-                .orElse(publicDataMapper.toPark(areaCode, areaName));
+                .orElse(publicDataMapper.toParkEntity(areaCode, areaName));
         
         // 이름이 변경되었을 수 있으므로 업데이트
         if (areaName != null && !areaName.equals(park.getAreaName())) {
@@ -294,7 +294,7 @@ public class PublicDataSaveService {
         int savedCount = 0;
         
         for (groom.backend.interfaces.seoul.dto.response.ParkingStatusItemDto item : items) {
-            ParkingLot parkingLot = publicDataMapper.toParkingLot(areaCode, item);
+            ParkingLot parkingLot = publicDataMapper.toParkingLotEntity(areaCode, item);
             if (parkingLot == null) {
                 continue;
             }
@@ -322,7 +322,7 @@ public class PublicDataSaveService {
             }
 
             // 주차장 현황 저장 (curPrkYn이 Y인 경우만)
-            ParkingLotStatus status = publicDataMapper.toParkingLotStatus(parkingLot.getPrkCode(), item, dataGetTime);
+            ParkingLotStatus status = publicDataMapper.toParkingLotStatusEntity(parkingLot.getPrkCode(), item, dataGetTime);
             if (status != null) {
                 saveParkingLotStatus(status);
             }
@@ -359,7 +359,7 @@ public class PublicDataSaveService {
      * 지하철역 정보 및 시설 저장
      */
     private void saveSubwayStations(String areaCode, groom.backend.interfaces.seoul.dto.response.SubwayStatusDetailDto detail) {
-        SubwayStation subwayStation = publicDataMapper.toSubwayStation(areaCode, detail);
+        SubwayStation subwayStation = publicDataMapper.toSubwayStationEntity(areaCode, detail);
         if (subwayStation == null) {
             return;
         }
@@ -381,7 +381,7 @@ public class PublicDataSaveService {
 
         // 지하철 시설 정보 저장
         if (detail.getSubFaciinfo() != null) {
-            List<SubwayFacility> facilities = publicDataMapper.toSubwayFacilityList(subwayStation.getSubId(), detail.getSubFaciinfo());
+            List<SubwayFacility> facilities = publicDataMapper.toSubwayFacilityEntityList(subwayStation.getSubId(), detail.getSubFaciinfo());
             for (SubwayFacility facility : facilities) {
                 Optional<SubwayFacility> existingFacility = subwayFacilityRepository.findById(facility.getSubFacilityInfo());
                 if (existingFacility.isPresent()) {
@@ -406,7 +406,7 @@ public class PublicDataSaveService {
         int savedCount = 0;
         
         for (groom.backend.interfaces.seoul.dto.response.BusStationStatusItemDto item : items) {
-            BusStation busStation = publicDataMapper.toBusStation(areaCode, item);
+            BusStation busStation = publicDataMapper.toBusStationEntity(areaCode, item);
             if (busStation == null) {
                 continue;
             }
@@ -432,7 +432,7 @@ public class PublicDataSaveService {
      * 공유 자전거 정보 및 현황 저장
      */
     private void saveSbikes(String areaCode, groom.backend.interfaces.seoul.dto.response.SharedBikeStatusDetailDto detail, LocalDateTime dataGetTime) {
-        Sbike sbike = publicDataMapper.toSbike(areaCode, detail);
+        Sbike sbike = publicDataMapper.toSbikeEntity(areaCode, detail);
         if (sbike == null) {
             return;
         }
@@ -451,7 +451,7 @@ public class PublicDataSaveService {
         }
 
         // 공유 자전거 현황 저장
-        SbikeStatus status = publicDataMapper.toSbikeStatus(sbike.getSbikeSpotId(), detail, dataGetTime);
+        SbikeStatus status = publicDataMapper.toSbikeStatusEntity(sbike.getSbikeSpotId(), detail, dataGetTime);
         if (status != null) {
             saveSbikeStatus(status);
         }
@@ -483,7 +483,7 @@ public class PublicDataSaveService {
      * 충전소 정보 및 상태 저장
      */
     private void saveChargerStations(String areaCode, groom.backend.interfaces.seoul.dto.response.ChargerStatusDetailDto detail, LocalDateTime dataGetTime) {
-        ChargerStation chargerStation = publicDataMapper.toChargerStation(areaCode, detail);
+        ChargerStation chargerStation = publicDataMapper.toChargerStationEntity(areaCode, detail);
         if (chargerStation == null) {
             return;
         }
@@ -509,12 +509,12 @@ public class PublicDataSaveService {
         if (detail.getChargerDetails() != null && detail.getChargerDetails().getChargerDetails() != null) {
             groom.backend.interfaces.seoul.dto.response.ChargerDetailItemDto chargerDetailItem = detail.getChargerDetails().getChargerDetails();
             
-            ChargerDetail chargerDetail = publicDataMapper.toChargerDetail(chargerStation.getStationId(), chargerDetailItem);
+            ChargerDetail chargerDetail = publicDataMapper.toChargerDetailEntity(chargerStation.getStationId(), chargerDetailItem);
             if (chargerDetail != null) {
                 saveChargerDetail(chargerDetail);
                 
                 // 충전기 상태 저장
-                ChargerStatus chargerStatus = publicDataMapper.toChargerStatus(
+                ChargerStatus chargerStatus = publicDataMapper.toChargerStatusEntity(
                         chargerDetail.getChargerId(),
                         chargerStation.getStationId(),
                         chargerDetailItem,

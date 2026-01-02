@@ -1,6 +1,6 @@
 package groom.backend.domain.publicdata.service;
 
-import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
+import groom.backend.domain.publicdata.dto.SavePublicDataResponse;
 import groom.backend.domain.seoul.service.SeoulService;
 import groom.backend.interfaces.seoul.dto.response.SeoulCityDataResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class PublicDataService {
      * @return 저장된 데이터 개수 정보
      */
     @Transactional
-    public PublicDataSaveResult saveCityData(String areaNm, Integer startIndex, Integer endIndex) {
+    public SavePublicDataResponse saveCityData(String areaNm, Integer startIndex, Integer endIndex) {
         log.info("공공 데이터 저장 시작 - AREA_NM: {}, START: {}, END: {}", areaNm, startIndex, endIndex);
 
         // 1. API 호출
@@ -37,7 +37,7 @@ public class PublicDataService {
         // 2. API 결과 검증
         if (response == null || response.getCityData() == null) {
             log.warn("API 응답이 비어있습니다. - AREA_NM: {}", areaNm);
-            return PublicDataSaveResult.empty();
+            return SavePublicDataResponse.empty();
         }
 
         // 3. DTO를 엔티티로 변환하여 저장

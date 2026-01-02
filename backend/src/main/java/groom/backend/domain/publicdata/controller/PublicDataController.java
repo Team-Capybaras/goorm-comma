@@ -1,7 +1,7 @@
 package groom.backend.domain.publicdata.controller;
 
 import groom.backend.common.response.ApiResponse;
-import groom.backend.domain.publicdata.dto.PublicDataSaveResult;
+import groom.backend.domain.publicdata.dto.SavePublicDataResponse;
 import groom.backend.domain.publicdata.service.PublicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,7 +40,7 @@ public class PublicDataController {
                     description = "서버 오류"
             )
     })
-    public ApiResponse<PublicDataSaveResult> saveCityData(
+    public ApiResponse<SavePublicDataResponse> saveCityData(
             @Parameter(description = "핫스팟 장소명 (AREA_NM)", required = true, example = "강남역")
             @RequestParam String areaNm,
             @Parameter(description = "시작 인덱스 (기본값: 1)", required = false)
@@ -48,7 +48,7 @@ public class PublicDataController {
             @Parameter(description = "종료 인덱스 (기본값: 5)", required = false)
             @RequestParam(required = false, defaultValue = "5") Integer endIndex
     ) {
-        PublicDataSaveResult result = publicDataService.saveCityData(areaNm, startIndex, endIndex);
+        SavePublicDataResponse result = publicDataService.saveCityData(areaNm, startIndex, endIndex);
         return ApiResponse.success(200, "공공 데이터 저장 성공", result);
     }
 }
