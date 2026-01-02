@@ -1,14 +1,10 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - prod
-#build-push.yml 구현 후 아래로 변경ㅌ
-#  workflow_run:
-#    workflows: ["Build and Push Image"]
-#    types:
-#      - completed
+  workflow_run:
+    workflows: ["Build and Push Image"]
+    types:
+      - completed
 
 jobs:
   deploy:
