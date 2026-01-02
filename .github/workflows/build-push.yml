@@ -1,57 +1,42 @@
-name: Image Pull and Deploy
+name: Build and Push Images
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Images"]
-    types:
-      - completed
+  push:
+    branches:
+      - prod
 
 jobs:
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout infra files
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy infra files and deploy
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          script: |
-            set -e
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-            BASE_DIR=/srv/app
-            mkdir -p $BASE_DIR
-            cd $BASE_DIR
+      # =====================
+      # Backend Image
+      # =====================
+      - name: Build & Push Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/project-be:latest
 
-            echo ">>> Sync infra files"
-
-            if [ ! -f docker-compose.prod.yml ]; then
-              echo ">>> docker-compose.prod.yml not found. copying..."
-              cat > docker-compose.prod.yml << 'EOF'
-            $(sed 's/^/            /' docker-compose.prod.yml)
-            EOF
-            fi
-
-            if [ ! -f .env.prod ]; then
-              echo ">>> .env.prod not found. copying..."
-              cat > .env.prod << 'EOF'
-            $(sed 's/^/            /' .env.prod)
-            EOF
-            fi
-
-            if [ ! -f prod.sh ]; then
-              echo ">>> prod.sh not found. copying..."
-              cat > prod.sh << 'EOF'
-            $(sed 's/^/            /' prod.sh)
-            EOF
-              chmod +x prod.sh
-            fi
-
-            echo ">>> Run prod.sh pull"
-            ./prod.sh pull
+      # =====================
+      # Frontend Image
+      # =====================
+      - name: Build & Push Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/project-fe:latest
