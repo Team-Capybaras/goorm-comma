@@ -56,11 +56,12 @@ public class PublicDataSaveService {
      */
     @Transactional
     public PublicDataSaveResult saveAll(CityDataDto cityData) {
-        LocalDateTime dataGetTime = LocalDateTime.now();
+        // 분 단위로 정규화 (초, 나노초를 0으로 설정)
+        LocalDateTime dataGetTime = normalizeToMinute(LocalDateTime.now());
         String areaCode = cityData.getAreaCd();
         String areaName = cityData.getAreaNm();
 
-        log.info("공공 데이터 저장 시작 - AREA_CODE: {}, AREA_NAME: {}", areaCode, areaName);
+        log.info("공공 데이터 저장 시작 - AREA_CODE: {}, AREA_NAME: {}, DATA_GET_TIME: {}", areaCode, areaName, dataGetTime);
 
         PublicDataSaveResult result = new PublicDataSaveResult();
 
@@ -175,9 +176,12 @@ public class PublicDataSaveService {
 
     /**
      * LivePopStatus 저장 (없으면 생성, 있으면 업데이트)
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void saveLivePopStatus(LivePopStatus newStatus) {
-        LivePopStatusId id = new LivePopStatusId(newStatus.getDataGetTime(), newStatus.getAreaCode());
+        // dataGetTime을 분 단위로 정규화하여 ID 생성
+        LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+        LivePopStatusId id = new LivePopStatusId(normalizedTime, newStatus.getAreaCode());
         Optional<LivePopStatus> existing = livePopStatusRepository.findById(id);
         
         if (existing.isPresent()) {
@@ -191,12 +195,13 @@ public class PublicDataSaveService {
             existingStatus.setPopTime(newStatus.getPopTime());
             livePopStatusRepository.save(existingStatus);
             log.debug("LivePopStatus 업데이트 - AREA_CODE: {}, DATA_GET_TIME: {}", 
-                    newStatus.getAreaCode(), newStatus.getDataGetTime());
+                    newStatus.getAreaCode(), normalizedTime);
         } else {
-            // 새 데이터 저장
+            // 새 데이터 저장 (정규화된 시간으로 설정)
+            newStatus.setDataGetTime(normalizedTime);
             livePopStatusRepository.save(newStatus);
             log.debug("LivePopStatus 생성 - AREA_CODE: {}, DATA_GET_TIME: {}", 
-                    newStatus.getAreaCode(), newStatus.getDataGetTime());
+                    newStatus.getAreaCode(), normalizedTime);
         }
     }
 
@@ -204,6 +209,7 @@ public class PublicDataSaveService {
      * PredPopStatus 리스트 저장 (없으면 생성, 있으면 업데이트)
      * 주의: 현재 엔티티 구조상 같은 dataGetTime과 areaCode 조합은 하나만 저장됩니다.
      * 여러 예보가 있는 경우 마지막 것만 저장됩니다.
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void savePredPopStatusList(List<PredPopStatus> newStatusList) {
         if (newStatusList.isEmpty()) {
@@ -213,7 +219,9 @@ public class PublicDataSaveService {
         // 같은 dataGetTime과 areaCode 조합이므로 마지막 예보만 저장
         // (엔티티 구조상 복합키가 dataGetTime과 areaCode만 사용)
         PredPopStatus lastStatus = newStatusList.get(newStatusList.size() - 1);
-        PredPopStatusId id = new PredPopStatusId(lastStatus.getDataGetTime(), lastStatus.getAreaCode());
+        // dataGetTime을 분 단위로 정규화하여 ID 생성
+        LocalDateTime normalizedTime = normalizeToMinute(lastStatus.getDataGetTime());
+        PredPopStatusId id = new PredPopStatusId(normalizedTime, lastStatus.getAreaCode());
         Optional<PredPopStatus> existing = predPopStatusRepository.findById(id);
         
         if (existing.isPresent()) {
@@ -225,7 +233,8 @@ public class PublicDataSaveService {
             existingStatus.setForecastPopMax(lastStatus.getForecastPopMax());
             predPopStatusRepository.save(existingStatus);
         } else {
-            // 새 데이터 저장 (마지막 예보만)
+            // 새 데이터 저장 (정규화된 시간으로 설정)
+            lastStatus.setDataGetTime(normalizedTime);
             predPopStatusRepository.save(lastStatus);
         }
         
@@ -235,9 +244,12 @@ public class PublicDataSaveService {
 
     /**
      * WeatherStatus 저장 (없으면 생성, 있으면 업데이트)
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void saveWeatherStatus(WeatherStatus newStatus) {
-        WeatherStatusId id = new WeatherStatusId(newStatus.getDataGetTime(), newStatus.getAreaCode());
+        // dataGetTime을 분 단위로 정규화하여 ID 생성
+        LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+        WeatherStatusId id = new WeatherStatusId(normalizedTime, newStatus.getAreaCode());
         Optional<WeatherStatus> existing = weatherStatusRepository.findById(id);
         
         if (existing.isPresent()) {
@@ -265,12 +277,13 @@ public class PublicDataSaveService {
             existingStatus.setDataSource(newStatus.getDataSource());
             weatherStatusRepository.save(existingStatus);
             log.debug("WeatherStatus 업데이트 - AREA_CODE: {}, DATA_GET_TIME: {}", 
-                    newStatus.getAreaCode(), newStatus.getDataGetTime());
+                    newStatus.getAreaCode(), normalizedTime);
         } else {
-            // 새 데이터 저장
+            // 새 데이터 저장 (정규화된 시간으로 설정)
+            newStatus.setDataGetTime(normalizedTime);
             weatherStatusRepository.save(newStatus);
             log.debug("WeatherStatus 생성 - AREA_CODE: {}, DATA_GET_TIME: {}", 
-                    newStatus.getAreaCode(), newStatus.getDataGetTime());
+                    newStatus.getAreaCode(), normalizedTime);
         }
     }
 
@@ -322,9 +335,12 @@ public class PublicDataSaveService {
 
     /**
      * ParkingLotStatus 저장 (없으면 생성, 있으면 업데이트)
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void saveParkingLotStatus(ParkingLotStatus newStatus) {
-        ParkingLotStatusId id = new ParkingLotStatusId(newStatus.getDataGetTime(), newStatus.getPrkCode());
+        // dataGetTime을 분 단위로 정규화하여 ID 생성
+        LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+        ParkingLotStatusId id = new ParkingLotStatusId(normalizedTime, newStatus.getPrkCode());
         Optional<ParkingLotStatus> existing = parkingLotStatusRepository.findById(id);
         
         if (existing.isPresent()) {
@@ -333,6 +349,8 @@ public class PublicDataSaveService {
             existingStatus.setCurrentPrkTime(newStatus.getCurrentPrkTime());
             parkingLotStatusRepository.save(existingStatus);
         } else {
+            // 새 데이터 저장 (정규화된 시간으로 설정)
+            newStatus.setDataGetTime(normalizedTime);
             parkingLotStatusRepository.save(newStatus);
         }
     }
@@ -441,9 +459,12 @@ public class PublicDataSaveService {
 
     /**
      * SbikeStatus 저장 (없으면 생성, 있으면 업데이트)
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void saveSbikeStatus(SbikeStatus newStatus) {
-        SbikeStatusId id = new SbikeStatusId(newStatus.getDataGetTime(), newStatus.getSbikeSpotId());
+        // dataGetTime을 분 단위로 정규화하여 ID 생성
+        LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+        SbikeStatusId id = new SbikeStatusId(normalizedTime, newStatus.getSbikeSpotId());
         Optional<SbikeStatus> existing = sbikeStatusRepository.findById(id);
         
         if (existing.isPresent()) {
@@ -452,6 +473,8 @@ public class PublicDataSaveService {
             existingStatus.setSbikeParkingCnt(newStatus.getSbikeParkingCnt());
             sbikeStatusRepository.save(existingStatus);
         } else {
+            // 새 데이터 저장 (정규화된 시간으로 설정)
+            newStatus.setDataGetTime(normalizedTime);
             sbikeStatusRepository.save(newStatus);
         }
     }
@@ -526,8 +549,16 @@ public class PublicDataSaveService {
 
     /**
      * ChargerStatus 저장 (없으면 생성, 있으면 업데이트)
+     * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void saveChargerStatus(ChargerStatus newStatus) {
+        // ChargerStatus는 chargerStatKey를 PK로 사용하므로, dataGetTime 정규화는 선택적
+        // 하지만 일관성을 위해 정규화
+        if (newStatus.getDataGetTime() != null) {
+            LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+            newStatus.setDataGetTime(normalizedTime);
+        }
+        
         Optional<ChargerStatus> existing = chargerStatusRepository.findById(newStatus.getChargerStatKey());
         
         if (existing.isPresent()) {
@@ -540,6 +571,20 @@ public class PublicDataSaveService {
         } else {
             chargerStatusRepository.save(newStatus);
         }
+    }
+
+    /**
+     * LocalDateTime을 분 단위로 정규화합니다.
+     * 초와 나노초를 0으로 설정하여 같은 분 내의 모든 시간을 동일하게 처리합니다.
+     * 
+     * @param dateTime 정규화할 시간
+     * @return 분 단위로 정규화된 시간 (초, 나노초가 0)
+     */
+    private LocalDateTime normalizeToMinute(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        return dateTime.withSecond(0).withNano(0);
     }
 }
 
