@@ -1,4 +1,4 @@
-package groom.backend.domain.publicdata.service;
+package groom.backend.domain.publicdata.service.impl;
 
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
@@ -17,6 +17,9 @@ import groom.backend.domain.transit.entity.*;
 import groom.backend.domain.transit.repository.*;
 import groom.backend.domain.publicdata.mapper.PublicDataMapper;
 import groom.backend.domain.publicdata.dto.SavePublicDataResponse;
+import groom.backend.domain.publicdata.service.PublicDataService;
+import groom.backend.domain.seoul.service.SeoulService;
+import groom.backend.interfaces.seoul.dto.response.SeoulCityDataResponse;
 import groom.backend.interfaces.seoul.dto.response.CityDataDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +31,14 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 공공 데이터 저장 서비스
- * 엔티티를 DB에 저장합니다.
+ * 공공 데이터 저장 서비스 구현체
+ * 서울시 공공 API 결과를 DB에 저장합니다.
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PublicDataSaveService {
+public class PublicDataServiceImpl implements PublicDataService {
+    private final SeoulService seoulService;
     private final PublicDataMapper publicDataMapper;
     private final ParkRepository parkRepository;
     private final LivePopStatusRepository livePopStatusRepository;
@@ -52,10 +56,35 @@ public class PublicDataSaveService {
     private final ChargerStatusRepository chargerStatusRepository;
 
     /**
+     * 서울시 공공 API를 호출하여 결과를 DB에 저장합니다.
+     *
+     * @param areaNm 핫스팟 장소명
+     * @param startIndex 시작 인덱스
+     * @param endIndex 종료 인덱스
+     * @return 저장된 데이터 개수 정보
+     */
+    @Override
+    @Transactional
+    public SavePublicDataResponse saveCityData(String areaNm, Integer startIndex, Integer endIndex) {
+        log.info("공공 데이터 저장 시작 - AREA_NM: {}, START: {}, END: {}", areaNm, startIndex, endIndex);
+
+        // 1. API 호출
+        SeoulCityDataResponse response = seoulService.getCityDataByAreaNm(areaNm, startIndex, endIndex);
+
+        // 2. API 결과 검증
+        if (response == null || response.getCityData() == null) {
+            log.warn("API 응답이 비어있습니다. - AREA_NM: {}", areaNm);
+            return SavePublicDataResponse.empty();
+        }
+
+        // 3. DTO를 엔티티로 변환하여 저장
+        return saveAll(response.getCityData());
+    }
+
+    /**
      * CityDataDto의 모든 데이터를 DB에 저장합니다.
      */
-    @Transactional
-    public SavePublicDataResponse saveAll(CityDataDto cityData) {
+    private SavePublicDataResponse saveAll(CityDataDto cityData) {
         // 분 단위로 정규화 (초, 나노초를 0으로 설정)
         LocalDateTime dataGetTime = normalizeToMinute(LocalDateTime.now());
         String areaCode = cityData.getAreaCd();
@@ -576,7 +605,7 @@ public class PublicDataSaveService {
     /**
      * LocalDateTime을 분 단위로 정규화합니다.
      * 초와 나노초를 0으로 설정하여 같은 분 내의 모든 시간을 동일하게 처리합니다.
-     * 
+     *
      * @param dateTime 정규화할 시간
      * @return 분 단위로 정규화된 시간 (초, 나노초가 0)
      */
