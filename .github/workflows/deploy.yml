@@ -44,6 +44,6 @@ jobs:
           port: ${{ secrets.EC2_SSH_PORT }}
           script: |
             set -e
-            cd /srv/app
+            cd /home/${{ secrets.EC2_USER }}/app
             chmod +x prod.sh
             ./prod.sh pull
