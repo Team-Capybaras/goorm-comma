@@ -23,7 +23,7 @@ services:
       - goorm
 
   backend:
-    image: goorm-comma-be
+    image: kmgyu/goorm-comma-be:latest
     container_name: backend
     ports:
       - "8080:8080"
@@ -38,7 +38,7 @@ services:
       - ./backend/src:/app/src
 
   frontend:
-    image: goorm-comma-fe
+    image: kmgyu/goorm-comma-fe:latest
     container_name: frontend
     ports:
       - "3000:3000"
