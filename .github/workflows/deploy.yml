@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           port: ${{ secrets.EC2_SSH_PORT }}
-          source: "docker-compose.prod.yml,.env.prod,prod.sh"
+          source: "docker-compose.prod.yml,.env.prod,prod.sh,/nginx/nginx.prod.conf"
           target: /home/${{ secrets.EC2_USER }}/app
           overwrite: true
 
