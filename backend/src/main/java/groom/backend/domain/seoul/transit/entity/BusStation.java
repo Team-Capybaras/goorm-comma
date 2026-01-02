@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.transit.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,9 @@ import java.math.BigDecimal;
 /**
  * 버스 정류장 정보 엔티티
  * 테이블: bus_station
+ * 
+ * 지역 주변 버스 정류장 정보를 저장합니다.
+ * 버스 정류장의 정적 정보(위치, ARS ID 등)를 관리합니다.
  */
 @Entity
 @Table(name = "bus_station")

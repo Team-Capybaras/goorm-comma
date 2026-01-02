@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.weather.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -8,13 +8,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * ParkingLotStatus 복합 키 클래스
+ * WeatherStatus 복합 키 클래스
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ParkingLotStatusId implements Serializable {
+public class WeatherStatusId implements Serializable {
     private LocalDateTime dataGetTime;
-    private Long prkCode;
+    private String areaCode;
 }
 

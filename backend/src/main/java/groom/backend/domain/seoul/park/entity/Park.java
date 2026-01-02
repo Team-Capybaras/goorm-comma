@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.park.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -7,6 +7,9 @@ import lombok.*;
 /**
  * 공원 기본 정보 엔티티
  * 테이블: park
+ * 
+ * 공원(지역)의 기본 정보를 저장하는 최상위 테이블입니다.
+ * 모든 다른 도메인의 테이블들이 참조하는 루트 테이블입니다.
  */
 @Entity
 @Table(name = "park")

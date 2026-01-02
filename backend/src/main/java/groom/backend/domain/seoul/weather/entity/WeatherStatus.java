@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.weather.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,6 +11,10 @@ import java.time.LocalDateTime;
 /**
  * 날씨 현황 엔티티
  * 테이블: weather_status
+ * 
+ * 지역의 날씨 정보를 저장합니다.
+ * 복합키(data_get_time, area_code)를 사용하여 시간별 날씨 정보를 추적합니다.
+ * 온도, 습도, 대기질 등 종합적인 날씨 정보를 포함합니다.
  */
 @Entity
 @Table(name = "weather_status")
