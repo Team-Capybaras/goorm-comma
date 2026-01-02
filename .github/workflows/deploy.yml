@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   workflow_run:
-    workflows: ["Build and Push Image"]
+    workflows: ["Build and Push Images"]
     types:
       - completed
 
@@ -12,7 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Checkout infra files
+        uses: actions/checkout@v4
+
+      - name: Copy infra files and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -22,12 +25,33 @@ jobs:
           script: |
             set -e
 
-            docker pull username/goorm_comma:latest
+            BASE_DIR=/srv/app
+            mkdir -p $BASE_DIR
+            cd $BASE_DIR
 
-            docker stop goorm_comma || true
-            docker rm goorm_comma || true
+            echo ">>> Sync infra files"
 
-            docker run -d \
-              --name goorm_comma \
-              -p 8080:8080 \
-              username/goorm_comma:latest
+            if [ ! -f docker-compose.prod.yml ]; then
+              echo ">>> docker-compose.prod.yml not found. copying..."
+              cat > docker-compose.prod.yml << 'EOF'
+            $(sed 's/^/            /' docker-compose.prod.yml)
+            EOF
+            fi
+
+            if [ ! -f .env.prod ]; then
+              echo ">>> .env.prod not found. copying..."
+              cat > .env.prod << 'EOF'
+            $(sed 's/^/            /' .env.prod)
+            EOF
+            fi
+
+            if [ ! -f prod.sh ]; then
+              echo ">>> prod.sh not found. copying..."
+              cat > prod.sh << 'EOF'
+            $(sed 's/^/            /' prod.sh)
+            EOF
+              chmod +x prod.sh
+            fi
+
+            echo ">>> Run prod.sh pull"
+            ./prod.sh pull
