@@ -50,6 +50,13 @@ case "${1:-}" in
     echo ">>> FULL DEPLOY SUCCESS $(timestamp)"
     ;;
 
+  pull)
+    echo ">>> Pulling latest images $(timestamp)"
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
+    echo ">>> Applying containers $(timestamp)"
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d
+    ;;
+
   *)
     echo "Usage: ./prod.sh {build|restart|deploy|down} [--no-cache]"
     exit 1
