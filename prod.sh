@@ -51,6 +51,8 @@ case "${1:-}" in
     ;;
 
   pull)
+    echo ">>> Stopping and removing existing containers $(timestamp)"
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" down
     echo ">>> Pulling latest images $(timestamp)"
     docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
     echo ">>> Applying containers $(timestamp)"
