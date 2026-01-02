@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.tag.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -7,6 +7,9 @@ import lombok.*;
 /**
  * 태그 정보 엔티티
  * 테이블: tag
+ * 
+ * 공원을 분류하기 위한 태그 정보를 저장합니다.
+ * 공원 분류를 위한 태그 마스터 데이터입니다.
  */
 @Entity
 @Table(name = "tag")

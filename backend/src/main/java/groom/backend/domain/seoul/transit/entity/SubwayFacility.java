@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.transit.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -7,6 +7,9 @@ import lombok.*;
 /**
  * 지하철 시설 정보 엔티티
  * 테이블: subway_facility
+ * 
+ * 지하철역의 엘리베이터, 에스컬레이터 등 시설 정보를 저장합니다.
+ * 지하철역별 여러 시설 정보를 저장할 수 있습니다.
  */
 @Entity
 @Table(name = "subway_facility")
@@ -49,7 +52,7 @@ public class SubwayFacility extends BaseEntity {
     private String useYn;
 
     /**
-     * 승강기 구분
+     * 승강기 구분 (EV: 엘리베이터, ES: 에스컬레이터)
      */
     @Column(name = "elvtr_section", length = 20)
     private String elvtrSection;

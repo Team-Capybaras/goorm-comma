@@ -1,12 +1,15 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.park.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.tag.entity.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
 /**
  * 공원 태그 연결 엔티티
  * 테이블: park_tag
+ * 
+ * 공원과 태그의 다대다 관계를 저장합니다.
  */
 @Entity
 @Table(name = "park_tag")

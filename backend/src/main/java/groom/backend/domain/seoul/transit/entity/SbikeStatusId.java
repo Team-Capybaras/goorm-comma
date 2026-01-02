@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.transit.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -8,13 +8,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * PredPopStatus 복합 키 클래스
+ * SbikeStatus 복합 키 클래스
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class PredPopStatusId implements Serializable {
+public class SbikeStatusId implements Serializable {
     private LocalDateTime dataGetTime;
-    private String areaCode;
+    private String sbikeSpotId;
 }
 

@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.transit.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,9 @@ import java.math.BigDecimal;
 /**
  * 공유 자전거 정보 엔티티
  * 테이블: sbike
+ * 
+ * 지역 주변 공유 자전거의 기본 정보를 저장합니다.
+ * 공유 자전거의 정적 정보(위치, 수용 대수)를 관리합니다.
  */
 @Entity
 @Table(name = "sbike")

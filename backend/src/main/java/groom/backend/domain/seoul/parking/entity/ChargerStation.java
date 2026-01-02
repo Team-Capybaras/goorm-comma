@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.parking.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,9 @@ import java.math.BigDecimal;
 /**
  * 충전소 정보 엔티티
  * 테이블: charger_station
+ * 
+ * 지역 주변 전기차 충전소의 기본 정보를 저장합니다.
+ * 충전소의 정적 정보(위치, 사용 시간 등)를 관리합니다.
  */
 @Entity
 @Table(name = "charger_station")

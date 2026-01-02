@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.parking.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 /**
  * 주차장 현황 엔티티
  * 테이블: parking_lot_status
+ * 
+ * 주차장의 실시간 현황 정보를 저장합니다.
+ * 복합키(data_get_time, prk_code)를 사용하여 시간별 주차장 현황을 추적합니다.
  */
 @Entity
 @Table(name = "parking_lot_status")

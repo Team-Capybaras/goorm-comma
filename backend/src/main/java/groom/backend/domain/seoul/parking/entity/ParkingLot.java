@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.parking.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,9 @@ import java.math.BigDecimal;
 /**
  * 주차장 정보 엔티티
  * 테이블: parking_lot
+ * 
+ * 지역 주변 주차장의 기본 정보를 저장합니다.
+ * 주차장의 정적 정보(위치, 요금, 수용 대수 등)를 관리합니다.
  */
 @Entity
 @Table(name = "parking_lot")
@@ -33,7 +37,7 @@ public class ParkingLot extends BaseEntity {
     private String prkName;
 
     /**
-     * 주차장 유형
+     * 주차장 유형 (BP: 건물부설, NW: 노상)
      */
     @Column(name = "prk_type", length = 20)
     private String prkType;

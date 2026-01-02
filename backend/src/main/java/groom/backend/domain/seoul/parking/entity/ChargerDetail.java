@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.parking.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 /**
  * 충전기 상세 정보 엔티티
  * 테이블: charger_detail
+ * 
+ * 충전소의 충전기 상세 정보를 저장합니다.
+ * 복합키(charger_id, station_id)를 사용하여 충전소별 여러 충전기 정보를 저장합니다.
  */
 @Entity
 @Table(name = "charger_detail")
@@ -35,7 +38,7 @@ public class ChargerDetail extends BaseEntity {
     private String stationId;
 
     /**
-     * 충전기 유형
+     * 충전기 유형 (AC완속, DC급속 등)
      */
     @Column(name = "charger_type", length = 20)
     private String chargerType;
@@ -59,7 +62,7 @@ public class ChargerDetail extends BaseEntity {
     private Integer output;
 
     /**
-     * 충전 방식
+     * 충전 방식 (단독, 동시 등)
      */
     @Column(name = "method", length = 20)
     private String method;

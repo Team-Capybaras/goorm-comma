@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.weather.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,7 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.population.entity;
 
 import groom.backend.common.entity.BaseEntity;
+import groom.backend.domain.seoul.park.entity.Park;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,9 @@ import java.time.LocalDateTime;
 /**
  * 인구 예보 엔티티
  * 테이블: pred_pop_status
+ * 
+ * 실시간 인구 현황의 미래 예보 데이터를 저장합니다.
+ * 복합키(data_get_time, area_code)를 사용하여 시간별 예보 데이터를 추적합니다.
  */
 @Entity
 @Table(name = "pred_pop_status")

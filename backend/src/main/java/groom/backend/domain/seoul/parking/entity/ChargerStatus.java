@@ -1,4 +1,4 @@
-package groom.backend.domain.seoul.entity;
+package groom.backend.domain.seoul.parking.entity;
 
 import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 /**
  * 충전기 상태 엔티티
  * 테이블: charger_status
+ * 
+ * 충전기의 실시간 상태 정보를 저장합니다.
+ * 충전기의 사용 가능 여부 및 상태를 추적합니다.
  */
 @Entity
 @Table(name = "charger_status")
@@ -27,7 +30,7 @@ public class ChargerStatus extends BaseEntity {
     private Integer chargerStatKey;
 
     /**
-     * 충전기 상태
+     * 충전기 상태 (사용가능, 사용중 등)
      */
     @Column(name = "charger_status", length = 20)
     private String chargerStatus;
