@@ -1,11 +1,11 @@
 package groom.backend.domain.publicdata.service;
 
-import groom.backend.domain.seoul.park.entity.Park;
-import groom.backend.domain.seoul.population.entity.LivePopStatus;
-import groom.backend.domain.seoul.population.entity.PredPopStatus;
-import groom.backend.domain.seoul.weather.entity.WeatherStatus;
-import groom.backend.domain.seoul.parking.entity.*;
-import groom.backend.domain.seoul.transit.entity.*;
+import groom.backend.domain.park.entity.Park;
+import groom.backend.domain.population.entity.LivePopStatus;
+import groom.backend.domain.population.entity.PredPopStatus;
+import groom.backend.domain.weather.entity.WeatherStatus;
+import groom.backend.domain.parking.entity.*;
+import groom.backend.domain.transit.entity.*;
 import groom.backend.interfaces.seoul.dto.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
