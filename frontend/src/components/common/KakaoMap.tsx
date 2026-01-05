@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ParkData, CongestionLevel } from '@/shared/types/congestion'
 import { Card, CardHeader, CardContent } from '@/components/common/Card'
+import { Locate } from 'lucide-react'
 
 const MOCK_DATA: ParkData[] = [
   { name: '여의도 한강공원', lat: 37.5284, lng: 126.933, congestion: '붐빔' },
@@ -18,6 +19,8 @@ export default function KakaoMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
+  const [mapInstance, setMapInstance] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [parks, setParks] = useState<ParkData[]>([])
   const [selectedPark, setSelectedPark] = useState<ParkData | null>(null)
 
@@ -28,8 +31,33 @@ export default function KakaoMap() {
   }, [])
 
   const handleCardClick = (parkName: string) => {
-    // URL에 한글이 들어가므로 encodeURIComponent 사용 권장 (선택사항)
-    router.push(`/parks/${parkName}`)
+    router.push('')
+  }
+
+  //현위치 이동 핸들러 함수
+  const handleCurrentLocation = () => {
+    if (!mapInstance) return // 지도가 아직 로드 안됐으면 중단
+
+    setIsLoading(true) // 로딩 시작 (아이콘 뺑글뺑글)
+
+    // 브라우저 내장 API로 현재 좌표 가져오기
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+
+        // 카카오맵 좌표 객체 생성
+        const locPosition = new window.kakao.maps.LatLng(lat, lng)
+
+        // 지도 중심 부드럽게 이동
+        mapInstance.panTo(locPosition)
+        setIsLoading(false) // 로딩 끝
+      },
+      (err) => {
+        console.error(err)
+        setIsLoading(false)
+      }
+    )
   }
 
   // 혼잡도별 마커 이미지 주소 반환 함수 - 추후 디자인 변경 가능
@@ -78,6 +106,8 @@ export default function KakaoMap() {
         mapContainer.current.innerHTML = '' // 지도 초기화
         // 지도 생성
         const map = new window.kakao.maps.Map(mapContainer.current, options)
+
+        setMapInstance(map)
         // 지도 빈 공간 클릭 시 카드 닫기
         window.kakao.maps.event.addListener(map, 'click', function () {
           setSelectedPark(null)
@@ -102,6 +132,7 @@ export default function KakaoMap() {
           window.kakao.maps.event.addListener(marker, 'click', function () {
             setSelectedPark(park)
             const moveLatLon = new window.kakao.maps.LatLng(park.lat, park.lng)
+            map.setLevel(7, { animate: true })
             map.panTo(moveLatLon)
           })
 
@@ -117,6 +148,18 @@ export default function KakaoMap() {
     <div className="relative w-full h-full overflow-hidden">
       {/* 지도 영역 */}
       <div ref={mapContainer} className="w-full h-full" />
+
+      <button
+        onClick={handleCurrentLocation}
+        className={`absolute left-4 z-30 bg-white p-2 rounded-lg shadow-md hover:bg-gray-100 transition-all duration-300 ease-in-out ${
+          selectedPark ? 'bottom-42' : 'bottom-6'
+        }`}
+        aria-label="내 위치로 이동"
+      >
+        <Locate
+          className={`size-6 ${isLoading ? 'animate-spin text-blue-500' : 'text-gray-700'}`}
+        />
+      </button>
 
       {/* 카드 영역 (selectedPark가 있을 때만 표시) */}
       {selectedPark && (
