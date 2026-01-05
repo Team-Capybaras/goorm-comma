@@ -14,9 +14,9 @@ import lombok.*;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ResultDto {
     
     /**
@@ -33,3 +33,4 @@ public class ResultDto {
     @JacksonXmlProperty(localName = "RESULT.MESSAGE")
     private String message;
 }
+

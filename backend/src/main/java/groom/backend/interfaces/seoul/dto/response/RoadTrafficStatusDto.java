@@ -17,15 +17,24 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class RoadTrafficStatusDto {
     
+    /**
+     * 평균 도로 데이터
+     * XML: <AVG_ROAD_DATA>
+     */
     @JacksonXmlProperty(localName = "AVG_ROAD_DATA")
     private AvgRoadDataDto avgRoadData;
 
+    /**
+     * 도로 교통 현황 링크 리스트
+     * XML: <ROAD_TRAFFIC_STTS><ROAD_TRAFFIC_STTS>...</ROAD_TRAFFIC_STTS></ROAD_TRAFFIC_STTS>
+     */
     @JacksonXmlProperty(localName = "ROAD_TRAFFIC_STTS")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<RoadTrafficLinkDto> roadTrafficStts;
 }
+
