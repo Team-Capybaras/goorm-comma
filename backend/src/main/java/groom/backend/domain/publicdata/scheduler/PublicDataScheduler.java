@@ -9,6 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -120,6 +121,8 @@ public class PublicDataScheduler {
             
             int successCount = 0;
             int failCount = 0;
+            List<String> failedAreaNames = new ArrayList<>();
+            List<String> failedReasons = new ArrayList<>();
             
             // 각 공원에 대해 공공 API 호출 및 저장
             for (String areaName : TARGET_AREA_NAMES) {
@@ -134,11 +137,15 @@ public class PublicDataScheduler {
                         log.debug("공원 데이터 업데이트 완료 - AREA_NAME: {}, RESULT: {}", areaName, response);
                     } else {
                         failCount++;
+                        failedAreaNames.add(areaName);
+                        failedReasons.add("API 응답이 null입니다");
                         log.warn("공원 데이터 업데이트 실패 - AREA_NAME: {}", areaName);
                     }
                     
                 } catch (Exception e) {
                     failCount++;
+                    failedAreaNames.add(areaName);
+                    failedReasons.add(e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName());
                     log.error("공원 데이터 업데이트 중 오류 발생 - AREA_NAME: {}, ERROR: {}", 
                             areaName, e.getMessage(), e);
                 }
@@ -146,6 +153,14 @@ public class PublicDataScheduler {
             
             log.info("=== 공공 데이터 자동 업데이트 완료 ===");
             log.info("성공: {}개, 실패: {}개, 전체: {}개", successCount, failCount, TARGET_AREA_NAMES.size());
+            
+            // 실패한 공원 정보 상세 로깅
+            if (failCount > 0) {
+                log.warn("=== 실패한 공원 목록 ({}개) ===", failCount);
+                for (int i = 0; i < failedAreaNames.size(); i++) {
+                    log.warn("  - {}: {}", failedAreaNames.get(i), failedReasons.get(i));
+                }
+            }
             
         } catch (Exception e) {
             log.error("공공 데이터 자동 업데이트 작업 중 예상치 못한 오류 발생", e);
