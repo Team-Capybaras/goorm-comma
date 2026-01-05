@@ -14,13 +14,9 @@ export default function page() {
         >
           카드헤더 내용 설정
         </CardHeader>
-        <CardContent>
-          카드 내용 설정
-        </CardContent>
+        <CardContent>카드 내용 설정</CardContent>
         <CardContent center={<div>카드 내용 중앙 설정</div>} />
-        <CardFooter>
-          카드 푸터 내용 설정
-        </CardFooter>
+        <CardFooter>카드 푸터 내용 설정</CardFooter>
         <CardFooter center={<div>카드 푸터 중앙 설정</div>} />
       </Card>
       <ModalForm />
