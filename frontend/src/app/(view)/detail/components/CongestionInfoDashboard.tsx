@@ -1,4 +1,8 @@
-export default function CongestionInfoDashboard ({data}:any) {
+interface CongestionInfoDashboardProps {
+  data?: {}
+}
+
+export default function CongestionInfoDashboard({data}: CongestionInfoDashboardProps) {
   return (
     <></>
   )
