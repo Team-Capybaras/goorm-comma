@@ -1,9 +1,11 @@
-export default function EnvironmentDashboard ({data}:any) {
+interface EnvironmentDashboardProps {
+  data?: { precipitation: string; temp: string; weather_time: string; air_ms: string; humidity: string }
+}
+
+export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) {
 
   return (
     <>
-      {data[0].PCP_MSG}
-      {data[0].UV_MSG}
     </>
   )
 }
