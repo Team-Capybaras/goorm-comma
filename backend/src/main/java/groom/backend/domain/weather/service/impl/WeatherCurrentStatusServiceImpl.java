@@ -1,5 +1,6 @@
 package groom.backend.domain.weather.service.impl;
 
+import groom.backend.domain.weather.dto.response.WeatherStatusResponse;
 import groom.backend.domain.weather.repository.WeatherStatusRepository;
 import groom.backend.domain.weather.service.spec.WeatherCurrentStatusService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,8 @@ public class WeatherCurrentStatusServiceImpl implements WeatherCurrentStatusServ
   private final WeatherStatusRepository weatherStatusRepository;
 
   @Override
-  public void getWeatherCurrentStatus() {
-    // 가장 최근 수집한 데이터 반환
+  public WeatherStatusResponse getWeatherCurrentStatus() {
+    // 특정 areaCode에 대해, dataGetTime이 가장 최신인 데이터 반환
+    return null;
   }
 }
