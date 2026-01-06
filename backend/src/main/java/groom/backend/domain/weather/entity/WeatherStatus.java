@@ -49,14 +49,14 @@ public class WeatherStatus extends BaseEntity {
     /**
      * 온도
      */
-    @Column(name = "temp", precision = 5, scale = 2)
-    private BigDecimal temp;
+    @Column(name = "temp")
+    private Float temp;
 
     /**
      * 체감 온도
      */
-    @Column(name = "sensible_temp", precision = 5, scale = 2)
-    private BigDecimal sensibleTemp;
+    @Column(name = "sensible_temp")
+    private Float sensibleTemp;
 
     /**
      * 습도
@@ -73,8 +73,8 @@ public class WeatherStatus extends BaseEntity {
     /**
      * 풍속
      */
-    @Column(name = "wind_spd", precision = 5, scale = 2)
-    private BigDecimal windSpd;
+    @Column(name = "wind_spd")
+    private Float windSpd;
 
     /**
      * 강수량
@@ -139,8 +139,8 @@ public class WeatherStatus extends BaseEntity {
     /**
      * 대기질 지수 수치
      */
-    @Column(name = "air_index_level", precision = 5, scale = 2)
-    private BigDecimal airIndexLevel;
+    @Column(name = "air_index_level")
+    private Float airIndexLevel;
 
     /**
      * 대기질 지수 주요 원인
