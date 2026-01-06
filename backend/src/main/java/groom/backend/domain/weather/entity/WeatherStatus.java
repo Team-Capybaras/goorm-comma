@@ -131,31 +131,31 @@ public class WeatherStatus extends BaseEntity {
     private Integer pm10;
 
     /**
-     * 대기질 지수
+     * 통합 대기 환경 등급
      */
     @Column(name = "air_index", length = 50)
     private String airIndex;
 
     /**
-     * 대기질 지수 수치
+     * 통합 대기 환경 지수
      */
     @Column(name = "air_index_level")
     private Float airIndexLevel;
 
     /**
-     * 대기질 지수 주요 원인
+     * 대기질 지수 결정 물질
      */
     @Column(name = "air_index_main", length = 50)
     private String airIndexMain;
 
     /**
-     * 대기질 메시지
+     * 통합 대기환경 등급별 메시지
      */
     @Column(name = "air_msg", columnDefinition = "TEXT")
     private String airMsg;
 
     /**
-     * 데이터 소스
+     * 데이터 출처
      */
     @Column(name = "data_source", length = 50)
     private String dataSource;
