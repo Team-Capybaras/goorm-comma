@@ -175,7 +175,7 @@ public class PublicDataMapper {
         return ParkingLot.builder()
                 .prkCode(parseLong(item.getPrkCd()))
                 .prkName(item.getPrkNm())
-                .prkType(truncateString(item.getPrkType(), 20))
+                .prkType(item.getPrkType())
                 .capacity(parseInteger(item.getCpcty()))
                 .currentInfoYn(parseBoolean(item.getCurPrkYn()))
                 .payYn(parseBoolean(item.getPayYn()))
@@ -223,8 +223,8 @@ public class PublicDataMapper {
 
         return SubwayStation.builder()
                 .subId(subId)
-                .subStnName(truncateString(detail.getSubStnNm(), 20))
-                .subStnLine(truncateString(detail.getSubStnLine(), 20))
+                .subStnName(detail.getSubStnNm())
+                .subStnLine(detail.getSubStnLine())
                 .addr(detail.getSubStnJibun())
                 .roadAddr(detail.getSubStnRaddr())
                 .subStnX(parseBigDecimal(detail.getSubStnX()))
@@ -257,10 +257,10 @@ public class PublicDataMapper {
             SubwayFacility facility = SubwayFacility.builder()
                     .subFacilityInfo(subFacilityInfo)
                     .elvtrName(item.getElvtrNm())
-                    .operateSector(truncateString(item.getOprSec(), 20))
-                    .installPosition(truncateString(item.getInstlPstn(), 20))
-                    .useYn(truncateString(item.getUseYn(), 20))
-                    .elvtrSection(truncateString(item.getElvtrSe(), 20))
+                    .operateSector(item.getOprSec())
+                    .installPosition(item.getInstlPstn())
+                    .useYn(item.getUseYn())
+                    .elvtrSection(item.getElvtrSe())
                     .subId(subId)
                     .build();
             result.add(facility);
@@ -338,15 +338,15 @@ public class PublicDataMapper {
         }
 
         return ChargerStation.builder()
-                .stationId(truncateString(detail.getStatId(), 20))
+                .stationId(detail.getStatId())
                 .stationName(detail.getStatNm())
                 .stationAddr(detail.getStatAddr())
                 .stationX(parseBigDecimal(detail.getStatX()))
                 .stationY(parseBigDecimal(detail.getStatY()))
-                .stationUsetime(truncateString(detail.getStatUsetime(), 20))
+                .stationUsetime(detail.getStatUsetime())
                 .stationParkpay(parseBoolean(detail.getStatParkpay()))
                 .stationLimitDetail(detail.getStatLimitdetail())
-                .stationKindDetail(truncateString(detail.getStatKinddetail(), 20))
+                .stationKindDetail(detail.getStatKinddetail())
                 .areaCode(areaCode)
                 .build();
     }
@@ -361,12 +361,12 @@ public class PublicDataMapper {
 
         return ChargerDetail.builder()
                 .chargerId(parseInteger(item.getChargerId()))
-                .stationId(truncateString(stationId, 20))
-                .chargerType(truncateString(item.getChargerType(), 20))
+                .stationId(stationId)
+                .chargerType(item.getChargerType())
                 .chargerUpdated(parseDateTime(item.getStatuupddt()))
                 .chargerTimestamp(parseDateTime(item.getNowtsdt()))
                 .output(parseInteger(item.getOutput()))
-                .method(truncateString(item.getMethod(), 20))
+                .method(item.getMethod())
                 .build();
     }
 
@@ -384,12 +384,12 @@ public class PublicDataMapper {
 
         return ChargerStatus.builder()
                 .chargerStatKey(chargerStatKey)
-                .chargerStatus(truncateString(item.getChargerStat(), 20))
+                .chargerStatus(item.getChargerStat())
                 .statusUpdated(parseDateTime(item.getStatuupddt()))
                 .statusTimestamp(parseDateTime(item.getNowtsdt()))
                 .dataGetTime(dataGetTime)
                 .chargerId(chargerId)
-                .stationId(truncateString(stationId, 20))
+                .stationId(stationId)
                 .build();
     }
 
@@ -405,25 +405,5 @@ public class PublicDataMapper {
         }
     }
 
-    /**
-     * 문자열을 지정된 길이로 자릅니다.
-     * DB 컬럼 길이 제한을 초과하지 않도록 합니다.
-     *
-     * @param value 원본 문자열
-     * @param maxLength 최대 길이
-     * @return 잘린 문자열 (null이면 null 반환)
-     */
-    private String truncateString(String value, int maxLength) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        if (trimmed.length() <= maxLength) {
-            return trimmed;
-        }
-        log.warn("문자열이 최대 길이를 초과하여 잘렸습니다. 원본: '{}' (길이: {}), 최대 길이: {}", 
-                trimmed, trimmed.length(), maxLength);
-        return trimmed.substring(0, maxLength);
-    }
 }
 
