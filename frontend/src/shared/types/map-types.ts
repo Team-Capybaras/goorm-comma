@@ -10,7 +10,7 @@ export interface BaseMapItem {
 export interface ParkItem extends BaseMapItem {
   category: 'PARK'
   areaCode: string
-  congestion: CongestionLevel // 👈 string 대신 이걸 쓰세요!
+  congestion: CongestionLevel
 }
 
 export interface FacilityItem extends BaseMapItem {
