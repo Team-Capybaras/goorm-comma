@@ -18,6 +18,9 @@ export interface ParkItem extends BaseMapItem {
   category: 'PARK'
   areaCode: string
   congestion: CongestionLevel
+  distance?: string
+  weatherInfo?: string
+  tags?: string[]
 }
 
 export interface FacilityItem extends BaseMapItem {
