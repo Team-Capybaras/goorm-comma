@@ -8,11 +8,8 @@ interface KakaoMapProps<T extends BaseMapItem> {
   data: T[] // 지도에 뿌릴 데이터 목록
   center: { lat: number; lng: number } // 지도 중심 좌표
   level?: number // 확대 레벨 (기본값 7)
-
   getMarkerImage: (item: T) => string
-
   renderCard: (item: T) => React.ReactNode
-
   onCardClick?: (item: T) => void
 }
 
@@ -26,6 +23,7 @@ export default function KakaoMap<T extends BaseMapItem>({
 }: KakaoMapProps<T>) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const [mapInstance, setMapInstance] = useState<any>(null)
+  const markersRef = useRef<any[]>([]) // 마커들을 담아둘 배열
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   //현위치 이동 핸들러 함수
@@ -55,55 +53,64 @@ export default function KakaoMap<T extends BaseMapItem>({
   }
   //지도 그리기 및 마커 표시
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.kakao || !window.kakao.maps) return
+    if (typeof window === 'undefined') return
 
-    // autoload=false 옵션을 썼으므로 load 함수로 감싸서 실행
     window.kakao.maps.load(() => {
+      if (!mapContainer.current) return
+
       const options = {
-        center: new window.kakao.maps.LatLng(center.lat, center.lng), // 지도의 중심좌표
-        level: level, // 확대 레벨
+        center: new window.kakao.maps.LatLng(center.lat, center.lng),
+        level: level,
       }
+      const map = new window.kakao.maps.Map(mapContainer.current, options)
+      setMapInstance(map)
 
-      // 지도 생성
-      if (mapContainer.current) {
-        mapContainer.current.innerHTML = '' // 지도 초기화
-        // 지도 생성
-        const map = new window.kakao.maps.Map(mapContainer.current, options)
-
-        setMapInstance(map)
-        // 지도 빈 공간 클릭 시 카드 닫기
-        window.kakao.maps.event.addListener(map, 'click', function () {
-          setSelectedItem(null)
-        })
-        // 저장된 parks 데이터를 반복하며 마커 생성
-        data.forEach((item) => {
-          // 이미지 옵션 설정
-          const imageSrc = getMarkerImage(item)
-          const imageSize = new window.kakao.maps.Size(24, 35)
-          const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
-          // 마커 위치 설정
-          const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng)
-
-          // 마커 생성
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition,
-            title: item.name,
-            image: markerImage, // 커스텀 이미지
-          })
-
-          // 클릭 이벤트 리스너
-          window.kakao.maps.event.addListener(marker, 'click', function () {
-            setSelectedItem(item)
-            const moveLatLon = new window.kakao.maps.LatLng(item.lat, item.lng)
-            map.panTo(moveLatLon)
-          })
-
-          // 지도에 마커 올리기
-          marker.setMap(map)
-        })
-      }
+      // 지도 빈 곳 클릭 시 선택 해제
+      window.kakao.maps.event.addListener(map, 'click', () => {
+        setSelectedItem(null)
+      })
     })
-  }, [data, center, level])
+  }, []) // 의존성 배열 비움
+  // 2. 데이터가 바뀌면 마커만 새로 그리기
+  useEffect(() => {
+    if (!mapInstance || !window.kakao) return
+
+    // 기존 마커 싹 지우기
+    markersRef.current.forEach((marker) => marker.setMap(null))
+    markersRef.current = []
+
+    // 새 마커 생성
+    data.forEach((item) => {
+      const imageSrc = getMarkerImage(item)
+      const imageSize = new window.kakao.maps.Size(24, 35)
+      const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
+      const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng)
+
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+        title: item.name,
+        image: markerImage,
+      })
+
+      // 마커 클릭 이벤트
+      window.kakao.maps.event.addListener(marker, 'click', () => {
+        setSelectedItem(item)
+        mapInstance.panTo(markerPosition) // 클릭한 곳으로 이동
+      })
+
+      marker.setMap(mapInstance)
+      markersRef.current.push(marker) // 배열에 저장
+    })
+  }, [data, mapInstance, getMarkerImage])
+
+  // 중심 좌표 이동 (페이지 진입 시 등)
+  useEffect(() => {
+    if (mapInstance && center) {
+      const moveLatLon = new window.kakao.maps.LatLng(center.lat, center.lng)
+      mapInstance.setCenter(moveLatLon)
+      mapInstance.setLevel(level)
+    }
+  }, [center, level, mapInstance])
 
   return (
     //테마 색상 적용 및 부모 크기(h-full) 따르기
@@ -133,7 +140,6 @@ export default function KakaoMap<T extends BaseMapItem>({
         <div className="absolute bottom-6 left-4 right-4 z-20 animate-slide-up">
           <Card
             onClick={() => onCardClick?.(selectedItem)}
-            // 카드 배경색 및 블러 처리
             className="shadow-xl border-none bg-bright cursor-pointer hover:bg-normal-pale transition-colors rounded-2xl"
           >
             <CardHeader
