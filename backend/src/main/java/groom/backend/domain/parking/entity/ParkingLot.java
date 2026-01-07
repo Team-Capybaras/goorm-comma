@@ -87,13 +87,13 @@ public class ParkingLot extends BaseEntity {
     /**
      * 주소
      */
-    @Column(name = "addr", length = 50)
+    @Column(name = "addr", length = 255)
     private String addr;
 
     /**
      * 도로명 주소
      */
-    @Column(name = "road_addr", length = 50)
+    @Column(name = "road_addr", length = 255)
     private String roadAddr;
 
     /**

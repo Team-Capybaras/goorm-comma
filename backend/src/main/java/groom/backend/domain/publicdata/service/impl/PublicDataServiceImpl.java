@@ -236,8 +236,7 @@ public class PublicDataServiceImpl implements PublicDataService {
 
     /**
      * PredPopStatus 리스트 저장 (없으면 생성, 있으면 업데이트)
-     * 주의: 현재 엔티티 구조상 같은 dataGetTime과 areaCode 조합은 하나만 저장됩니다.
-     * 여러 예보가 있는 경우 마지막 것만 저장됩니다.
+     * 모든 예보 시간대를 저장합니다.
      * dataGetTime은 분 단위로 정규화되어 있어야 합니다.
      */
     private void savePredPopStatusList(List<PredPopStatus> newStatusList) {
@@ -245,30 +244,43 @@ public class PublicDataServiceImpl implements PublicDataService {
             return;
         }
         
-        // 같은 dataGetTime과 areaCode 조합이므로 마지막 예보만 저장
-        // (엔티티 구조상 복합키가 dataGetTime과 areaCode만 사용)
-        PredPopStatus lastStatus = newStatusList.get(newStatusList.size() - 1);
-        // dataGetTime을 분 단위로 정규화하여 ID 생성
-        LocalDateTime normalizedTime = normalizeToMinute(lastStatus.getDataGetTime());
-        PredPopStatusId id = new PredPopStatusId(normalizedTime, lastStatus.getAreaCode());
-        Optional<PredPopStatus> existing = predPopStatusRepository.findById(id);
-        
-        if (existing.isPresent()) {
-            // 기존 데이터 업데이트 (마지막 예보로)
-            PredPopStatus existingStatus = existing.get();
-            existingStatus.setForecastTime(lastStatus.getForecastTime());
-            existingStatus.setForecastCongestLevel(lastStatus.getForecastCongestLevel());
-            existingStatus.setForecastPopMin(lastStatus.getForecastPopMin());
-            existingStatus.setForecastPopMax(lastStatus.getForecastPopMax());
-            predPopStatusRepository.save(existingStatus);
-        } else {
-            // 새 데이터 저장 (정규화된 시간으로 설정)
-            lastStatus.setDataGetTime(normalizedTime);
-            predPopStatusRepository.save(lastStatus);
+        int savedCount = 0;
+        for (PredPopStatus newStatus : newStatusList) {
+            // dataGetTime을 분 단위로 정규화하여 ID 생성
+            LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
+            newStatus.setDataGetTime(normalizedTime);
+            
+            // forecastTime도 분 단위로 정규화
+            LocalDateTime normalizedForecastTime = normalizeToMinute(newStatus.getForecastTime());
+            newStatus.setForecastTime(normalizedForecastTime);
+            
+            PredPopStatusId id = new PredPopStatusId(
+                    normalizedTime, 
+                    newStatus.getAreaCode(), 
+                    normalizedForecastTime
+            );
+            Optional<PredPopStatus> existing = predPopStatusRepository.findById(id);
+            
+            if (existing.isPresent()) {
+                // 기존 데이터 업데이트
+                PredPopStatus existingStatus = existing.get();
+                existingStatus.setForecastCongestLevel(newStatus.getForecastCongestLevel());
+                existingStatus.setForecastPopMin(newStatus.getForecastPopMin());
+                existingStatus.setForecastPopMax(newStatus.getForecastPopMax());
+                predPopStatusRepository.save(existingStatus);
+                log.debug("PredPopStatus 업데이트 - AREA_CODE: {}, FORECAST_TIME: {}", 
+                        newStatus.getAreaCode(), normalizedForecastTime);
+            } else {
+                // 새 데이터 저장
+                predPopStatusRepository.save(newStatus);
+                savedCount++;
+                log.debug("PredPopStatus 생성 - AREA_CODE: {}, FORECAST_TIME: {}", 
+                        newStatus.getAreaCode(), normalizedForecastTime);
+            }
         }
         
-        log.warn("PredPopStatus: 엔티티 구조상 같은 dataGetTime과 areaCode 조합은 하나만 저장됩니다. " +
-                "총 {}개의 예보 중 마지막 것만 저장되었습니다.", newStatusList.size());
+        log.info("PredPopStatus 저장 완료 - 총 {}개 중 {}개 신규 저장, {}개 업데이트", 
+                newStatusList.size(), savedCount, newStatusList.size() - savedCount);
     }
 
     /**
@@ -278,7 +290,7 @@ public class PublicDataServiceImpl implements PublicDataService {
     private void saveWeatherStatus(WeatherStatus newStatus) {
         // dataGetTime을 분 단위로 정규화하여 ID 생성
         LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
-        WeatherStatusId id = new WeatherStatusId(normalizedTime, newStatus.getAreaCode());
+        WeatherStatusId id = new WeatherStatusId(newStatus.getAreaCode(), normalizedTime);
         Optional<WeatherStatus> existing = weatherStatusRepository.findById(id);
         
         if (existing.isPresent()) {
