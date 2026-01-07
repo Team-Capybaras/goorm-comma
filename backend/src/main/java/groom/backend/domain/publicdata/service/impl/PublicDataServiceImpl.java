@@ -278,7 +278,7 @@ public class PublicDataServiceImpl implements PublicDataService {
     private void saveWeatherStatus(WeatherStatus newStatus) {
         // dataGetTime을 분 단위로 정규화하여 ID 생성
         LocalDateTime normalizedTime = normalizeToMinute(newStatus.getDataGetTime());
-        WeatherStatusId id = new WeatherStatusId(normalizedTime, newStatus.getAreaCode());
+        WeatherStatusId id = new WeatherStatusId(newStatus.getAreaCode(), normalizedTime);
         Optional<WeatherStatus> existing = weatherStatusRepository.findById(id);
         
         if (existing.isPresent()) {
