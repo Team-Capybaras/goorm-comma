@@ -15,5 +15,7 @@ export interface ParkItem extends BaseMapItem {
 
 export interface FacilityItem extends BaseMapItem {
   category: 'PARKING' | 'SUBWAY' | 'BIKE'
-  detailInfo: React.ReactNode
+  detailInfo: string
 }
+// 실제 사용 통합 타입
+export type MapDataType = ParkItem | FacilityItem
