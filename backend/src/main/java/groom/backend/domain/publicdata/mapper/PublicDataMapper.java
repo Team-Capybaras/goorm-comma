@@ -92,11 +92,11 @@ public class PublicDataMapper {
                 .dataGetTime(dataGetTime)
                 .areaCode(areaCode)
                 .weatherTime(parseDateTime(detail.getWeatherTime()))
-                .temp(parseBigDecimal(detail.getTemp()))
-                .sensibleTemp(parseBigDecimal(detail.getSensibleTemp()))
+                .temp(parseFloat(detail.getTemp()))
+                .sensibleTemp(parseFloat(detail.getSensibleTemp()))
                 .humidity(parseInteger(detail.getHumidity()))
                 .windDirct(detail.getWindDirct())
-                .windSpd(parseBigDecimal(detail.getWindSpd()))
+                .windSpd(parseFloat(detail.getWindSpd()))
                 .precipitation(detail.getPrecipitation())
                 .precptType(detail.getPrecptType())
                 .precptMsg(detail.getPcpMsg())  // DTO는 pcpMsg, 엔티티는 precptMsg
@@ -107,7 +107,7 @@ public class PublicDataMapper {
                 .pm10Index(detail.getPm10Index())
                 .pm10(parseInteger(detail.getPm10()))
                 .airIndex(detail.getAirIdx())  // DTO는 airIdx, 엔티티는 airIndex
-                .airIndexLevel(parseBigDecimal(detail.getAirIdxMvl()))  // DTO는 airIdxMvl, 엔티티는 airIndexLevel
+                .airIndexLevel(parseFloat(detail.getAirIdxMvl()))  // DTO는 airIdxMvl, 엔티티는 airIndexLevel
                 .airIndexMain(detail.getAirIdxMain())
                 .airMsg(detail.getAirMsg())
                 .dataSource(detail.getNewsList())  // DTO는 newsList, 엔티티는 dataSource
@@ -135,6 +135,18 @@ public class PublicDataMapper {
             return new BigDecimal(value.trim());
         } catch (NumberFormatException e) {
             log.warn("BigDecimal 파싱 실패: {}", value);
+            return null;
+        }
+    }
+
+    private Float parseFloat(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return Float.parseFloat(value.trim());
+        } catch (NumberFormatException e) {
+            log.warn("Float 파싱 실패: {}", value);
             return null;
         }
     }
