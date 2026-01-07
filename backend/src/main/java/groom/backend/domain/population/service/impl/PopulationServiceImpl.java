@@ -7,7 +7,7 @@ import groom.backend.domain.population.entity.LivePopStatus;
 import groom.backend.domain.population.entity.PredPopStatus;
 import groom.backend.domain.population.repository.LivePopStatusRepository;
 import groom.backend.domain.population.repository.PredPopStatusRepository;
-import groom.backend.domain.population.service.PopulationService;
+import groom.backend.domain.population.service.spec.PopulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
