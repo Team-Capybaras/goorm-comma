@@ -42,7 +42,7 @@ public class SubwayFacility extends BaseEntity {
     /**
      * 설치 위치
      */
-    @Column(name = "install_position", length = 20)
+    @Column(name = "install_position", length = 50)
     private String installPosition;
 
     /**

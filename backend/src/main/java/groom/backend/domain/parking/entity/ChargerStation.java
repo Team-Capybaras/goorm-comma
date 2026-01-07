@@ -39,7 +39,7 @@ public class ChargerStation extends BaseEntity {
     /**
      * 충전소 주소
      */
-    @Column(name = "station_addr", length = 50)
+    @Column(name = "station_addr", length = 255)
     private String stationAddr;
 
     /**
@@ -57,7 +57,7 @@ public class ChargerStation extends BaseEntity {
     /**
      * 사용 시간
      */
-    @Column(name = "station_usetime", length = 20)
+    @Column(name = "station_usetime", length = 50)
     private String stationUsetime;
 
     /**
