@@ -70,6 +70,17 @@
   --color-yellow-600:  196 151 37;
   --color-yellow-800:  79 62 31;
 
+  /* gray */
+  --color-gray-0: 255 255 255;
+  --color-gray-100: 242 243 242;
+  --color-gray-200: 232 232 232;
+  --color-gray-400: 214 214 214;
+  --color-gray-500: 153 154 152;
+  --color-gray-600: 112 113 111;
+  --color-gray-700: 81 82 81;
+  --color-gray-800: 56 57 56;
+  --color-gray-900: 23 23 23;
+
   /* --------------------------------------------------
      UI Colors
      - background / foreground / sub text / overlay
@@ -160,8 +171,9 @@
   --font-md: 16px;
   --font-lg: 18px;
   --font-xl: 20px;
-  --font-2xl: 24px;
-  --font-3xl: 26px;
+  --font-2xl: 22px;
+  --font-3xl: 24px;
+  --font-4xl: 26px;
 
   /* line height */
   --leading-md: 1.5;
@@ -272,53 +284,96 @@
     TYPOGRAPHY — HEADING
     Size: 26px / LH 150% / LS -1%
  ================================================== */
-  --text-heading-b: var(--font-bold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md));
-  --text-heading-sb: var(--font-semibold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md));
+  --text-heading-b: var(--font-bold) var(--font-4xl) /
+  calc(var(--font-4xl) * var(--leading-md)) var(--font-sans);
+
+  --text-heading-sb: var(--font-semibold) var(--font-4xl) /
+  calc(var(--font-4xl) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — TITLE
-     Size: 24px
+     Size: 24px / 22px
   ================================================== */
-  --text-title-b: var(--font-bold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md));
-  --text-title-sb: var(--font-semibold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md));
+  --text-title-1-b: var(--font-bold) var(--font-3xl) /
+  calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
+
+  --text-title-1-sb: var(--font-semibold) var(--font-3xl) /
+  calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
+
+  --text-title-2-b: var(--font-bold) var(--font-2xl) /
+  calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
+
+  --text-title-2-sb: var(--font-semibold) var(--font-2xl) /
+  calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — SUBTITLE
      Size: 20px / 18px
   ================================================== */
-  --text-subtitle-1-sb: var(--font-semibold) var(--font-xl) / calc(var(--font-xl) * var(--leading-md));
-  --text-subtitle-1-m: var(--font-medium) var(--font-xl) / calc(var(--font-xl) * var(--leading-md));
+  --text-subtitle-1-sb: var(--font-semibold) var(--font-xl) /
+  calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
 
-  --text-subtitle-2-sb: var(--font-semibold) var(--font-lg) / calc(var(--font-lg) * var(--leading-md));
-  --text-subtitle-2-m: var(--font-medium) var(--font-lg) / calc(var(--font-lg) * var(--leading-md));
+  --text-subtitle-1-m: var(--font-medium) var(--font-xl) /
+  calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
+
+  --text-subtitle-2-sb: var(--font-semibold) var(--font-lg) /
+  calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
+
+  --text-subtitle-2-m: var(--font-medium) var(--font-lg) /
+  calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — BODY
      Size: 16px / 14px
   ================================================== */
-  --text-body-1-sb: var(--font-semibold) var(--font-md) / calc(var(--font-md) * var(--leading-md));
-  --text-body-1-m: var(--font-medium) var(--font-md) / calc(var(--font-md) * var(--leading-md));
-  --text-body-1-r: var(--font-regular) var(--font-md) / calc(var(--font-md) * var(--leading-md));
+  --text-body-1-sb: var(--font-semibold) var(--font-md) /
+  calc(var(--font-md) * var(--leading-md)) var(--font-sans);
 
-  --text-body-2-sb: var(--font-semibold) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
-  --text-body-2-m: var(--font-medium) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
-  --text-body-2-r: var(--font-regular) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
+  --text-body-1-m: var(--font-medium) var(--font-md) /
+  calc(var(--font-md) * var(--leading-md)) var(--font-sans);
+
+  --text-body-1-r: var(--font-regular) var(--font-md) /
+  calc(var(--font-md) * var(--leading-md)) var(--font-sans);
+
+  --text-body-2-sb: var(--font-semibold) var(--font-sm) /
+  calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
+
+  --text-body-2-m: var(--font-medium) var(--font-sm) /
+  calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
+
+  --text-body-2-r: var(--font-regular) var(--font-sm) /
+  calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — CAPTION
      Size: 13px / 12px / 11px
   ================================================== */
-  --text-caption-1-sb: var(--font-semibold) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
-  --text-caption-1-m: var(--font-medium) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
-  --text-caption-1-r: var(--font-regular) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
+  --text-caption-1-sb: var(--font-semibold) var(--font-xs) /
+  calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
 
-  --text-caption-2-sb: var(--font-semibold) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
-  --text-caption-2-m: var(--font-medium) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
-  --text-caption-2-r: var(--font-regular) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
+  --text-caption-1-m: var(--font-medium) var(--font-xs) /
+  calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
 
-  --text-caption-3-sb: var(--font-semibold) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
-  --text-caption-3-m: var(--font-medium) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
-  --text-caption-3-r: var(--font-regular) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
+  --text-caption-1-r: var(--font-regular) var(--font-xs) /
+  calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-2-sb: var(--font-semibold) var(--font-2xs) /
+  calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-2-m: var(--font-medium) var(--font-2xs) /
+  calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-2-r: var(--font-regular) var(--font-2xs) /
+  calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-3-sb: var(--font-semibold) var(--font-3xs) /
+  calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-3-m: var(--font-medium) var(--font-3xs) /
+  calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
+
+  --text-caption-3-r: var(--font-regular) var(--font-3xs) /
+  calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      FONT WEIGHT
@@ -380,13 +435,23 @@
   }
 
   /* ===== Title ===== */
-  .text-title-b {
-    font: var(--text-title-b);
+  .text-title-1-b {
+    font: var(--text-title-1-b);
     letter-spacing: var(--tracking-default);
   }
 
-  .text-title-sb {
-    font: var(--text-title-sb);
+  .text-title-1-sb {
+    font: var(--text-title-1-sb);
+    letter-spacing: var(--tracking-default);
+  }
+
+  .text-title-2-b {
+    font: var(--text-title-2-b);
+    letter-spacing: var(--tracking-default);
+  }
+
+  .text-title-2-sb {
+    font: var(--text-title-2-sb);
     letter-spacing: var(--tracking-default);
   }
 
@@ -509,6 +574,38 @@
   }
 
   /* ==================================================
+   FONT Size (단독 사용 가능)
+  ================================================== */
+
+  .font-3xs{
+    font-size: var(--font-3xs);
+  }
+  .font-2xs{
+    font-size: var(--font-2xs);
+  }
+  .font-xs{
+    font-size: var(--font-xs);
+  }
+  .font-sm{
+    font-size: var(--font-sm);
+  }
+  .font-md{
+     font-size: var(--font-md);
+  }
+  .font-lg{
+    font-size: var(--font-lg);
+  }
+  .font-2xl{
+    font-size: var(--font-3xl);
+  }
+  .font-3xl{
+    font-size: var(--font-3xl);
+  }
+  .font-4xl{
+    font-size: var(--font-4xl);
+  }
+
+  /* ==================================================
    COLOR — TEXT
 ================================================== */
 
@@ -579,6 +676,16 @@
   .text-yellow-600 { color: rgb(var(--color-yellow-600)); }
   .text-yellow-800 { color: rgb(var(--color-yellow-800)); }
 
+  .text-gray-0 { color: rgb(var(--color-gray-0)); }
+  .text-gray-100 { color: rgb(var(--color-gray-100)); }
+  .text-gray-200 { color: rgb(var(--color-gray-200)); }
+  .text-gray-400 { color: rgb(var(--color-gray-400)); }
+  .text-gray-500 { color: rgb(var(--color-gray-500)); }
+  .text-gray-600 { color: rgb(var(--color-gray-600)); }
+  .text-gray-700 { color: rgb(var(--color-gray-700)); }
+  .text-gray-800 { color: rgb(var(--color-gray-800)); }
+  .text-gray-900 { color: rgb(var(--color-gray-900)); }
+
   /* ==================================================
      COLOR — BACKGROUND
   ================================================== */
@@ -643,6 +750,16 @@
   .bg-yellow-500 { background-color: rgb(var(--color-yellow-500)); }
   .bg-yellow-600 { background-color: rgb(var(--color-yellow-600)); }
   .bg-yellow-800 { background-color: rgb(var(--color-yellow-800)); }
+
+  .bg-gray-0 { color: rgb(var(--color-gray-0)); }
+  .bg-gray-100 { color: rgb(var(--color-gray-100)); }
+  .bg-gray-200 { color: rgb(var(--color-gray-200)); }
+  .bg-gray-400 { color: rgb(var(--color-gray-400)); }
+  .bg-gray-500 { color: rgb(var(--color-gray-500)); }
+  .bg-gray-600 { color: rgb(var(--color-gray-600)); }
+  .bg-gray-700 { color: rgb(var(--color-gray-700)); }
+  .bg-gray-800 { color: rgb(var(--color-gray-800)); }
+  .bg-gray-900 { color: rgb(var(--color-gray-900)); }
 
   /* ==================================================
      BORDER / LINE
@@ -722,7 +839,7 @@
 
   body {
     background: var(--background);
-    color: var(--foreground);
-    @apply font-sans text-body-1-m font-r;
+    color: var(--color-gray-800);
+    @apply font-sans text-body-1-m font-r ;
   }
 }

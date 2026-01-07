@@ -7,11 +7,11 @@ export default function MainLayout({children}: Readonly<{
 }>) {
   return (
     <>
-      <Header />
+      {/*<Header />*/}
       <main>
         {children}
       </main>
-      <Footer />
+      {/*<Footer />*/}
     </>
   )
 }

@@ -78,13 +78,15 @@ export default async function page () {
   /*const cityData = res.data?.CITYDATA;*/
 
   return (
-    <>
+    <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
-      <ParkInfoDashboard data={data.park}/>
-      <EnvironmentDashboard data={data.weather}/>
-      <CongestionInfoDashboard data={data.congestion}/>
-      <TransportDashboard />
-      <AlternativeParkDashboard data={data.alternative}/>
-    </>
+      <div className="p-lg flex flex-col gap-xs">
+        <ParkInfoDashboard data={data.park}/>
+        <EnvironmentDashboard data={data.weather}/>
+        <CongestionInfoDashboard data={data.congestion}/>
+        <TransportDashboard/>
+        <AlternativeParkDashboard data={data.alternative}/>
+      </div>
+    </div>
   )
 }
