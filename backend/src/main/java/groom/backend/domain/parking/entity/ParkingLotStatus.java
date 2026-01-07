@@ -44,7 +44,7 @@ public class ParkingLotStatus extends BaseEntity {
     private Integer currentPrkCnt;
 
     /**
-     * 현재 주차 시간
+     * 현재 주차 차량 대수 업데이트 시간
      */
     @Column(name = "current_prk_time")
     private LocalDateTime currentPrkTime;
