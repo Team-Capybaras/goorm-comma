@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import KakaoMap from '@/components/common/KakaoMap'
 import { MapDataType } from '@/shared/types/map-types'
 import DetailMap from '@/components/map/DetailMap'
 
@@ -63,7 +62,7 @@ export default function Page() {
   const [center] = useState({ lat: 37.5665, lng: 126.978 })
 
   return (
-    <main className="w-full h-[100dvh] relative bg-default">
+    <main className="w-full h-[100dvh] relative bg-default overflow-hidden">
       {/* DetailMap 컴포넌트 사용
          - getMarkerImage, renderCard 로직이 이미 DetailMap 내부에 구현되어 있습니다.
          - 데이터만 넘겨주면 알아서 마커 아이콘과 카드를 구분해서 그려줍니다.
