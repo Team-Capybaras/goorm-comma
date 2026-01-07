@@ -2,7 +2,7 @@ package groom.backend.domain.population.controller;
 
 import groom.backend.common.response.ApiResponse;
 import groom.backend.domain.population.dto.response.GetPopulationResponse;
-import groom.backend.domain.population.service.PopulationService;
+import groom.backend.domain.population.service.spec.PopulationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

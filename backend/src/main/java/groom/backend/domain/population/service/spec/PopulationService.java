@@ -1,4 +1,4 @@
-package groom.backend.domain.population.service;
+package groom.backend.domain.population.service.spec;
 
 import groom.backend.domain.population.dto.response.GetPopulationResponse;
 
