@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class WeatherStatusId implements Serializable {
-    private LocalDateTime dataGetTime;
     private String areaCode;
+    private LocalDateTime dataGetTime;
 }
 
