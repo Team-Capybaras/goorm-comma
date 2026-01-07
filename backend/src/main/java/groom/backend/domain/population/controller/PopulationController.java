@@ -41,7 +41,7 @@ public class PopulationController {
             )
     })
     public ApiResponse<GetPopulationResponse> getPopulation(
-            @Parameter(description = "지역 코드 (AREA_CODE)", required = true, example = "1100000000")
+            @Parameter(description = "지역 코드 (AREA_CODE)", required = true, example = "POI093")
             @RequestParam String areaCode
     ) {
         GetPopulationResponse response = populationService.getPopulationByAreaCode(areaCode);

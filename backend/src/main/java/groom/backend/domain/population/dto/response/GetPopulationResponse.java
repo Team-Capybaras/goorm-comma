@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 인구 정보 조회 응답
@@ -20,7 +21,7 @@ public class GetPopulationResponse {
     private String areaCode;
     private String areaName;
     private LivePopulationInfo livePopulation;
-    private PredictedPopulationInfo predictedPopulation;
+    private List<PredictedPopulationInfo> predictedPopulations;
 
     @Getter
     @Setter

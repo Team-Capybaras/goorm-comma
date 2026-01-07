@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * 테이블: pred_pop_status
  * 
  * 실시간 인구 현황의 미래 예보 데이터를 저장합니다.
- * 복합키(data_get_time, area_code)를 사용하여 시간별 예보 데이터를 추적합니다.
+ * 복합키(data_get_time, area_code, forecast_time)를 사용하여 각 예보 시간대를 구분합니다.
  */
 @Entity
 @Table(name = "pred_pop_status")
@@ -39,8 +39,9 @@ public class PredPopStatus extends BaseEntity {
     private String areaCode;
 
     /**
-     * 예보 시간
+     * 예보 시간 (PK)
      */
+    @Id
     @Column(name = "forecast_time")
     private LocalDateTime forecastTime;
 
