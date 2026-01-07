@@ -1,5 +1,12 @@
 export type CongestionLevel = '여유' | '보통' | '약간 붐빔' | '붐빔'
 
+export type FacilityCategory =
+  | 'PARKING' // 주차장
+  | 'SUBWAY' // 지하철
+  | 'BIKE' // 따릉이
+  | 'BUS' // 버스정류장
+  | 'EV_CHARGER' // 전기차 충전소
+
 export interface BaseMapItem {
   id: string | number
   lat: number
@@ -14,7 +21,7 @@ export interface ParkItem extends BaseMapItem {
 }
 
 export interface FacilityItem extends BaseMapItem {
-  category: 'PARKING' | 'SUBWAY' | 'BIKE'
+  category: FacilityCategory
   detailInfo: string
 }
 // 실제 사용 통합 타입
