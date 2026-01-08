@@ -190,9 +190,9 @@ public class GetTransitResponse {
 
         @Schema(
                 description = "버스 정류장명",
-                example = "12345"
+                example = "뚝섬유원지"
         )
-        private Integer busStnName;
+        private String busStnName;
 
         @Schema(
                 description = "경도",

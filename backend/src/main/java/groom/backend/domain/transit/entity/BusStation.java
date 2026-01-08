@@ -39,8 +39,8 @@ public class BusStation extends BaseEntity {
     /**
      * 버스 정류장명
      */
-    @Column(name = "bus_stn_name")
-    private Integer busStnName;
+    @Column(name = "bus_stn_name", length = 50)
+    private String busStnName;
 
     /**
      * 경도

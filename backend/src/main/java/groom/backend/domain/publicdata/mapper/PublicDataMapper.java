@@ -292,7 +292,7 @@ public class PublicDataMapper {
         return BusStation.builder()
                 .busStnId(parseInteger(item.getBusStnId()))
                 .busArsId(parseInteger(item.getBusArsId()))
-                .busStnName(parseInteger(item.getBusStnNm())) // 엔티티가 Integer로 되어 있음
+                .busStnName(item.getBusStnNm()) // 버스 정류장명 (문자열)
                 .busStnX(parseBigDecimal(item.getBusStnX()))
                 .busStnY(parseBigDecimal(item.getBusStnY()))
                 .areaCode(areaCode)
