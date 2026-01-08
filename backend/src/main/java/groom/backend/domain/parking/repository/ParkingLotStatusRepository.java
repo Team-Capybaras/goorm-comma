@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ParkingLotStatusRepository extends JpaRepository<ParkingLotStatus, ParkingLotStatusId> {
+
+  ParkingLotStatus findTopByPrkCodeOrderByDataGetTimeDesc(Long prkCode);
 }
 

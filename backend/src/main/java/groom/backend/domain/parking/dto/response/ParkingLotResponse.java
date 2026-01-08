@@ -35,7 +35,7 @@ public class ParkingLotResponse {
   private Integer currentPrkCnt;
 
   //  갱신 시간 불안정함.
-  @Schema( description = "데이터 업데이트 시간, nullable", example = "2026-01-06T09:00:00")
+  @Schema(description = "데이터 업데이트 시간, nullable", example = "2026-01-06T09:00:00")
   private LocalDateTime currentPrkTime;
 
   @Schema(description = "유료 여부", example = "true")
