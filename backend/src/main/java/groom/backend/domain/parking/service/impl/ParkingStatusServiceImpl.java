@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -44,18 +45,37 @@ public class ParkingStatusServiceImpl implements ParkingStatusService {
    * @return
    */
   private List<ParkingLotResponse> getParkingLotStatus(String areaCode) {
-    // 1. areaCode의 모든 주차장 정적 정보 조회
-    List<ParkingLot> parkingLots = parkingLotRepository.findByAreaCode(areaCode);
 
-    // 2. 각 주차장의 최신 현황 조회 및 매핑
-    return parkingLots.stream()
-            .map(parkingLot -> {
-              ParkingLotStatus latestStatus = parkingLotStatusRepository
-                              .findTopByPrkCodeOrderByDataGetTimeDesc(parkingLot.getPrkCode());
+    // 1) areaCode에 해당하는 주차장만 조회
+    List<ParkingLot> lots = parkingLotRepository.findByAreaCode(areaCode);
 
-              return parkingMapper.toParkingLotDto(parkingLot, latestStatus);
-            })
+    // 주차장이 없을 경우 빈 리스트 반환
+    if (lots.isEmpty()) {
+      return List.of();
+    }
+
+    // 2) prkCode 리스트 추출
+    List<Long> prkCodes = lots.stream()
+            .map(ParkingLot::getPrkCode)
             .toList();
+
+    // 3) 각 주차장의 최신 현황 1건씩을 한 번에 조회
+    List<ParkingLotStatus> latestStatuses =
+            parkingLotStatusRepository.findLatestStatusesByPrkCodes(prkCodes);
+
+    // 4) prkCode -> latestStatus 로 매핑
+    Map<Long, ParkingLotStatus> statusMap = latestStatuses.stream()
+            .collect(java.util.stream.Collectors.toMap(
+                    ParkingLotStatus::getPrkCode,
+                    s -> s
+            ));
+
+    // 5) 정적 + 최신현황 병합하여 Response 생성
+    List<ParkingLotResponse> parkingLotResponses = lots.stream()
+            .map(lot -> parkingMapper.toParkingLotDto(lot, statusMap.get(lot.getPrkCode())))
+            .toList();
+
+    return parkingLotResponses;
   }
 
   private ChargerStationResponse getChargerStationStatus(String areaCode) {
