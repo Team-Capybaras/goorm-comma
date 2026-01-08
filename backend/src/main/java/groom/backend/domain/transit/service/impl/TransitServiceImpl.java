@@ -86,13 +86,20 @@ public class TransitServiceImpl implements TransitService {
         // 3. 버스 정류장 정보 조회
         List<BusStation> busStations = busStationRepository.findByAreaCode(areaCode);
         List<GetTransitResponse.BusStationInfo> busStationInfoList = busStations.stream()
-                .map(busStation -> GetTransitResponse.BusStationInfo.builder()
-                        .busStnId(busStation.getBusStnId())
-                        .busArsId(busStation.getBusArsId())
-                        .busStnName(busStation.getBusStnName())
-                        .busStnX(busStation.getBusStnX())
-                        .busStnY(busStation.getBusStnY())
-                        .build())
+                .map(busStation -> {
+                    String busStnName = busStation.getBusStnName();
+                    log.debug("버스 정류장 매핑 - ID: {}, Name: {} (타입: {})", 
+                            busStation.getBusStnId(), busStnName, 
+                            busStnName != null ? busStnName.getClass().getSimpleName() : "null");
+                    
+                    return GetTransitResponse.BusStationInfo.builder()
+                            .busStnId(busStation.getBusStnId())
+                            .busArsId(busStation.getBusArsId())
+                            .busStnName(busStnName)
+                            .busStnX(busStation.getBusStnX())
+                            .busStnY(busStation.getBusStnY())
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         // 4. 공유 자전거 정보 조회
