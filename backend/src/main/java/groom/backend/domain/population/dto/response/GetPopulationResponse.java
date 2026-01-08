@@ -152,4 +152,3 @@ public class GetPopulationResponse {
         private Integer forecastPopMax;
     }
 }
-

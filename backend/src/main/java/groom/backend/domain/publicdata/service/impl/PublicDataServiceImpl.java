@@ -452,6 +452,12 @@ public class PublicDataServiceImpl implements PublicDataService {
                 continue;
             }
 
+            String busStnName = busStation.getBusStnName();
+            log.debug("버스 정류장 저장 - ID: {}, Name: {} (타입: {}), 원본 DTO: {}", 
+                    busStation.getBusStnId(), busStnName,
+                    busStnName != null ? busStnName.getClass().getSimpleName() : "null",
+                    item.getBusStnNm());
+
             Optional<BusStation> existing = busStationRepository.findByBusStnId(busStation.getBusStnId());
             if (existing.isPresent()) {
                 BusStation existingStation = existing.get();
@@ -460,8 +466,12 @@ public class PublicDataServiceImpl implements PublicDataService {
                 existingStation.setBusStnX(busStation.getBusStnX());
                 existingStation.setBusStnY(busStation.getBusStnY());
                 busStationRepository.save(existingStation);
+                log.debug("버스 정류장 업데이트 완료 - ID: {}, Name: {}", 
+                        existingStation.getBusStnId(), existingStation.getBusStnName());
             } else {
                 busStationRepository.save(busStation);
+                log.debug("버스 정류장 생성 완료 - ID: {}, Name: {}", 
+                        busStation.getBusStnId(), busStation.getBusStnName());
             }
             savedCount++;
         }
