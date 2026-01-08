@@ -1,4 +1,3 @@
-import KakaoMap from '@/components/common/KakaoMap'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 import ModalForm from '@/components/form/ModalTestForm'
 
@@ -20,9 +19,7 @@ export default function page() {
         <CardFooter center={<div>카드 푸터 중앙 설정</div>} />
       </Card>
       <ModalForm />
-      <div className="h-[500px] w-[400px]">
-        <KakaoMap />
-      </div>
+      <div className="h-[500px] w-[400px]"></div>
     </>
   )
 }
