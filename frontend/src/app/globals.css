@@ -142,7 +142,7 @@
   // ============ */
 
   /* font */
-  --font-sans: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont,
+  --font-family-sans: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont,
   'Segoe UI', Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR',
   'Malgun Gothic', sans-serif;;
 
@@ -266,59 +266,59 @@
   // ============ */
 
   /* fonts */
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-family-sans);
 
   /* ==================================================
     TYPOGRAPHY — HEADING
     Size: 26px / LH 150% / LS -1%
  ================================================== */
-  --text-heading-b: var(--font-bold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md));
-  --text-heading-sb: var(--font-semibold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md));
+  --text-heading-b: var(--font-bold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
+  --text-heading-sb: var(--font-semibold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — TITLE
      Size: 24px
   ================================================== */
-  --text-title-b: var(--font-bold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md));
-  --text-title-sb: var(--font-semibold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md));
+  --text-title-b: var(--font-bold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
+  --text-title-sb: var(--font-semibold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — SUBTITLE
      Size: 20px / 18px
   ================================================== */
-  --text-subtitle-1-sb: var(--font-semibold) var(--font-xl) / calc(var(--font-xl) * var(--leading-md));
-  --text-subtitle-1-m: var(--font-medium) var(--font-xl) / calc(var(--font-xl) * var(--leading-md));
+  --text-subtitle-1-sb: var(--font-semibold) var(--font-xl) / calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
+  --text-subtitle-1-m: var(--font-medium) var(--font-xl) / calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
 
-  --text-subtitle-2-sb: var(--font-semibold) var(--font-lg) / calc(var(--font-lg) * var(--leading-md));
-  --text-subtitle-2-m: var(--font-medium) var(--font-lg) / calc(var(--font-lg) * var(--leading-md));
+  --text-subtitle-2-sb: var(--font-semibold) var(--font-lg) / calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
+  --text-subtitle-2-m: var(--font-medium) var(--font-lg) / calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — BODY
      Size: 16px / 14px
   ================================================== */
-  --text-body-1-sb: var(--font-semibold) var(--font-md) / calc(var(--font-md) * var(--leading-md));
-  --text-body-1-m: var(--font-medium) var(--font-md) / calc(var(--font-md) * var(--leading-md));
-  --text-body-1-r: var(--font-regular) var(--font-md) / calc(var(--font-md) * var(--leading-md));
+  --text-body-1-sb: var(--font-semibold) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
+  --text-body-1-m: var(--font-medium) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
+  --text-body-1-r: var(--font-regular) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
 
-  --text-body-2-sb: var(--font-semibold) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
-  --text-body-2-m: var(--font-medium) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
-  --text-body-2-r: var(--font-regular) var(--font-sm) / calc(var(--font-sm) * var(--leading-md));
+  --text-body-2-sb: var(--font-semibold) var(--font-sm) / calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
+  --text-body-2-m: var(--font-medium) var(--font-sm) / calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
+  --text-body-2-r: var(--font-regular) var(--font-sm) / calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      TYPOGRAPHY — CAPTION
      Size: 13px / 12px / 11px
   ================================================== */
-  --text-caption-1-sb: var(--font-semibold) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
-  --text-caption-1-m: var(--font-medium) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
-  --text-caption-1-r: var(--font-regular) var(--font-xs) / calc(var(--font-xs) * var(--leading-md));
+  --text-caption-1-sb: var(--font-semibold) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-1-m: var(--font-medium) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-1-r: var(--font-regular) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
 
-  --text-caption-2-sb: var(--font-semibold) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
-  --text-caption-2-m: var(--font-medium) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
-  --text-caption-2-r: var(--font-regular) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md));
+  --text-caption-2-sb: var(--font-semibold) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-2-m: var(--font-medium) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-2-r: var(--font-regular) var(--font-2xs) / calc(var(--font-2xs) * var(--leading-md)) var(--font-sans);
 
-  --text-caption-3-sb: var(--font-semibold) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
-  --text-caption-3-m: var(--font-medium) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
-  --text-caption-3-r: var(--font-regular) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md));
+  --text-caption-3-sb: var(--font-semibold) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-3-m: var(--font-medium) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
+  --text-caption-3-r: var(--font-regular) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
 
   /* ==================================================
      FONT WEIGHT
