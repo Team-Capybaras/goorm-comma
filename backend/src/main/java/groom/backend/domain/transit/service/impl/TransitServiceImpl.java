@@ -26,7 +26,6 @@ public class TransitServiceImpl implements TransitService {
     private final SubwayStationRepository subwayStationRepository;
     private final BusStationRepository busStationRepository;
     private final SbikeRepository sbikeRepository;
-    private final SbikeStatusRepository sbikeStatusRepository;
     private final ParkRepository parkRepository;
 
     /**
@@ -59,7 +58,6 @@ public class TransitServiceImpl implements TransitService {
                         .subId(subwayStation.getSubId())
                         .subStnName(subwayStation.getSubStnName())
                         .subStnLine(subwayStation.getSubStnLine())
-                        .addr(subwayStation.getAddr())
                         .roadAddr(subwayStation.getRoadAddr())
                         .subStnX(subwayStation.getSubStnX())
                         .subStnY(subwayStation.getSubStnY())
@@ -88,28 +86,13 @@ public class TransitServiceImpl implements TransitService {
         // 4. 공유 자전거 정보 조회
         List<Sbike> sbikes = sbikeRepository.findByAreaCode(areaCode);
         List<GetTransitResponse.SbikeInfo> sbikeInfoList = sbikes.stream()
-                .map(sbike -> {
-                    // 공유 자전거 최신 현황 조회
-                    Optional<SbikeStatus> statusOptional = sbikeStatusRepository.findLatestBySbikeSpotId(sbike.getSbikeSpotId());
-                    GetTransitResponse.SbikeStatusInfo statusInfo = null;
-                    if (statusOptional.isPresent()) {
-                        SbikeStatus status = statusOptional.get();
-                        statusInfo = GetTransitResponse.SbikeStatusInfo.builder()
-                                .dataGetTime(status.getDataGetTime())
-                                .sbikeParkingPer(status.getSbikeParkingPer())
-                                .sbikeParkingCnt(status.getSbikeParkingCnt())
-                                .build();
-                    }
-
-                    return GetTransitResponse.SbikeInfo.builder()
-                            .sbikeSpotId(sbike.getSbikeSpotId())
-                            .sbikeSpotName(sbike.getSbikeSpotName())
-                            .sbikeCapacity(sbike.getSbikeCapacity())
-                            .sbikeX(sbike.getSbikeX())
-                            .sbikeY(sbike.getSbikeY())
-                            .status(statusInfo)
-                            .build();
-                })
+                .map(sbike -> GetTransitResponse.SbikeInfo.builder()
+                        .sbikeSpotId(sbike.getSbikeSpotId())
+                        .sbikeSpotName(sbike.getSbikeSpotName())
+                        .sbikeCapacity(sbike.getSbikeCapacity())
+                        .sbikeX(sbike.getSbikeX())
+                        .sbikeY(sbike.getSbikeY())
+                        .build())
                 .collect(Collectors.toList());
 
         GetTransitResponse response = GetTransitResponse.builder()

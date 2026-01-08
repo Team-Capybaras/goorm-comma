@@ -233,12 +233,27 @@ public class PublicDataMapper {
         String key = (areaCode + "_" + detail.getSubStnNm() + "_" + (detail.getSubStnLine() != null ? detail.getSubStnLine() : "")).trim();
         Integer subId = Math.abs(key.hashCode());
 
+        // 지번 주소 처리: 빈 문자열이면 null로 저장
+        String addr = detail.getSubStnJibun();
+        if (addr != null && addr.trim().isEmpty()) {
+            addr = null;
+        }
+        
+        // 도로명 주소 처리: 빈 문자열이면 null로 저장
+        String roadAddr = detail.getSubStnRaddr();
+        if (roadAddr != null && roadAddr.trim().isEmpty()) {
+            roadAddr = null;
+        }
+        
+        log.debug("지하철역 매핑 - 역명: {}, 지번주소: {}, 도로명주소: {}", 
+                detail.getSubStnNm(), addr, roadAddr);
+        
         return SubwayStation.builder()
                 .subId(subId)
                 .subStnName(detail.getSubStnNm())
                 .subStnLine(detail.getSubStnLine())
-                .addr(detail.getSubStnJibun())
-                .roadAddr(detail.getSubStnRaddr())
+                .addr(addr)
+                .roadAddr(roadAddr)
                 .subStnX(parseBigDecimal(detail.getSubStnX()))
                 .subStnY(parseBigDecimal(detail.getSubStnY()))
                 .areaCode(areaCode)

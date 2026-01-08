@@ -84,12 +84,6 @@ public class GetTransitResponse {
         private String subStnLine;
 
         @Schema(
-                description = "주소",
-                example = "서울특별시 광진구 자양동"
-        )
-        private String addr;
-
-        @Schema(
                 description = "도로명 주소",
                 example = "서울특별시 광진구 강변북로 50"
         )
@@ -244,11 +238,6 @@ public class GetTransitResponse {
                 example = "37.1234567890"
         )
         private BigDecimal sbikeY;
-
-        @Schema(
-                description = "공유 자전거 현황 정보"
-        )
-        private SbikeStatusInfo status;
     }
 
     /**
