@@ -1,16 +1,17 @@
 package groom.backend.domain.parking.mapper;
 
-import groom.backend.domain.parking.dto.response.ChargerStationSummaryResponse;
-import groom.backend.domain.parking.dto.response.ParkingLotSummaryResponse;
+import groom.backend.domain.parking.dto.response.ChargerStationResponse;
+import groom.backend.domain.parking.dto.response.ParkingLotResponse;
 import groom.backend.domain.parking.entity.ChargerStation;
 import groom.backend.domain.parking.entity.ParkingLot;
+import groom.backend.domain.parking.entity.ParkingLotStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ParkingMapper {
 
-  public ChargerStationSummaryResponse toChargerStationSummary(ChargerStation station) {
-    return ChargerStationSummaryResponse.builder()
+  public ChargerStationResponse toChargerStationDto(ChargerStation station) {
+    return ChargerStationResponse.builder()
             .stationId(station.getStationId())
             .stationName(station.getStationName())
             .stationAddr(station.getStationAddr())
@@ -23,8 +24,10 @@ public class ParkingMapper {
             .build();
   }
 
-  public ParkingLotSummaryResponse toParkingLotSummary(ParkingLot lot) {
-    return ParkingLotSummaryResponse.builder()
+  public ParkingLotResponse toParkingLotDto(ParkingLot lot, ParkingLotStatus latestStatus) {
+    Boolean currentInfoYn = latestStatus != null && lot.getCurrentInfoYn();
+
+    return ParkingLotResponse.builder()
             .prkCode(lot.getPrkCode())
             .prkName(lot.getPrkName())
             .prkType(lot.getPrkType())
@@ -34,6 +37,13 @@ public class ParkingMapper {
             .roadAddr(lot.getRoadAddr())
             .prkX(lot.getPrkX())
             .prkY(lot.getPrkY())
+            // current status field
+            // if currentInfoYn is false, then null
+            .currentInfoYn(currentInfoYn)
+            .currentPrkTime(currentInfoYn ? null : latestStatus.getCurrentPrkTime())
+            .currentPrkCnt(currentInfoYn ? null : latestStatus.getCurrentPrkCnt())
+
+
             .build();
   }
 }
