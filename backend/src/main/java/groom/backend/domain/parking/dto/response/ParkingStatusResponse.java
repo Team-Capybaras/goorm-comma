@@ -13,15 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ParkingLocationResponse {
+public class ParkingStatusResponse {
 
   @Schema(
           description = "전기차 충전소 요약 정보 목록"
   )
-  private List<ChargerStationSummaryResponse> chargerStations;
+  private List<ChargerStationResponse> chargerStations;
 
   @Schema(
           description = "주차장 요약 정보 목록"
   )
-  private List<ParkingLotSummaryResponse> parkingLots;
+  private List<ParkingLotResponse> parkingLots;
 }

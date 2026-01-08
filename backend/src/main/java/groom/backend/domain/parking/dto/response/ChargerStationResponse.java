@@ -4,16 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Schema(
         name = "ChargerStationSummaryResponse",
-        description = "전기차 충전소 위치 및 정적 요약 정보 DTO"
+        description = "전기차 충전소 위치 및 현황 정보 DTO"
 )
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChargerStationSummaryResponse {
+public class ChargerStationResponse {
 
   @Schema(description = "충전소 ID", example = "PI000740")
   private String stationId;
@@ -42,4 +43,7 @@ public class ChargerStationSummaryResponse {
   // TODO : 현재 station limit detail에 대해 blank로 저장중. null 형식으로 데이터 보내기
   @Schema(description = "이용 제한 상세. 제한이 없을 경우 null 반환", example = "시설 상황에 따라 이용이 제한될 수 있음")
   private String stationLimitDetail;
+
+  @Schema(description = "충전기 상세")
+  List<ChargerDetailResponse> chargerDetails;
 }
