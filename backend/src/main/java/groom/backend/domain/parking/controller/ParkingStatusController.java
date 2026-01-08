@@ -26,8 +26,8 @@ public class ParkingStatusController {
 
   @GetMapping
   @Operation(
-          summary = "대중교통 정보 조회",
-          description = "지역 코드로 지하철역, 버스 정류장, 공유 자전거 정보를 조회합니다."
+          summary = "편의시설 정보 조회",
+          description = "지역 코드로 주차장, 전기차 충전소 정보를 조회합니다."
   )
   @ApiResponses(value = {
           @io.swagger.v3.oas.annotations.responses.ApiResponse(

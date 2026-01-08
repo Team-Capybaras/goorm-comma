@@ -31,11 +31,15 @@ public class ParkingLotResponse {
   @Schema(description = "실시간 주차 현황 제공 여부", example = "false")
   private Boolean currentInfoYn;
 
-  @Schema(description = "현재 주차 대수, 실시간 주차 현황 미제공 시 null", example = "78")
+  @Schema(description = "현재 주차 대수, 실시간 주차 현황 미제공 시 null",
+          nullable = true,
+          example = "78")
   private Integer currentPrkCnt;
 
   //  갱신 시간 불안정함.
-  @Schema(description = "데이터 업데이트 시간, nullable", example = "2026-01-06T09:00:00")
+  @Schema(description = "데이터 업데이트 시간, 실시간 주차 현황 미제공 시 null",
+          nullable = true,
+          example = "2026-01-06T09:00:00")
   private LocalDateTime currentPrkTime;
 
   @Schema(description = "유료 여부", example = "true")
