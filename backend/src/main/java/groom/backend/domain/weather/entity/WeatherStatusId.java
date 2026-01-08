@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 
 /**
  * WeatherStatus 복합 키 클래스
+ *
+ * TODO: 성능 개선을 위한 DB 인덱스 튜닝
+ * CREATE INDEX idx_weather_status_latest
+ * ON weather_status (area_code, data_get_time DESC);
  */
 @NoArgsConstructor
 @AllArgsConstructor
