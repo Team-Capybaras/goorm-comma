@@ -19,7 +19,11 @@ export interface ParkItem extends BaseMapItem {
   areaCode: string
   congestion: CongestionLevel
   distance?: string
-  weatherInfo?: string
+  weather: {
+    iconStatus: string
+    text: string
+  }
+  forecast?: string
   tags?: string[]
 }
 
