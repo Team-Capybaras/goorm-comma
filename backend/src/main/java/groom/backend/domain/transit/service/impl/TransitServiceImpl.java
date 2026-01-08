@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TransitServiceImpl implements TransitService {
     private final SubwayStationRepository subwayStationRepository;
-    private final SubwayFacilityRepository subwayFacilityRepository;
     private final BusStationRepository busStationRepository;
     private final SbikeRepository sbikeRepository;
     private final SbikeStatusRepository sbikeStatusRepository;
@@ -56,31 +55,15 @@ public class TransitServiceImpl implements TransitService {
         // 2. 지하철역 정보 조회
         List<SubwayStation> subwayStations = subwayStationRepository.findByAreaCode(areaCode);
         List<GetTransitResponse.SubwayStationInfo> subwayStationInfoList = subwayStations.stream()
-                .map(subwayStation -> {
-                    // 지하철 시설 정보 조회
-                    List<SubwayFacility> facilities = subwayFacilityRepository.findBySubId(subwayStation.getSubId());
-                    List<GetTransitResponse.SubwayFacilityInfo> facilityInfoList = facilities.stream()
-                            .map(facility -> GetTransitResponse.SubwayFacilityInfo.builder()
-                                    .subFacilityInfo(facility.getSubFacilityInfo())
-                                    .elvtrName(facility.getElvtrName())
-                                    .operateSector(facility.getOperateSector())
-                                    .installPosition(facility.getInstallPosition())
-                                    .useYn(facility.getUseYn())
-                                    .elvtrSection(facility.getElvtrSection())
-                                    .build())
-                            .collect(Collectors.toList());
-
-                    return GetTransitResponse.SubwayStationInfo.builder()
-                            .subId(subwayStation.getSubId())
-                            .subStnName(subwayStation.getSubStnName())
-                            .subStnLine(subwayStation.getSubStnLine())
-                            .addr(subwayStation.getAddr())
-                            .roadAddr(subwayStation.getRoadAddr())
-                            .subStnX(subwayStation.getSubStnX())
-                            .subStnY(subwayStation.getSubStnY())
-                            .facilities(facilityInfoList)
-                            .build();
-                })
+                .map(subwayStation -> GetTransitResponse.SubwayStationInfo.builder()
+                        .subId(subwayStation.getSubId())
+                        .subStnName(subwayStation.getSubStnName())
+                        .subStnLine(subwayStation.getSubStnLine())
+                        .addr(subwayStation.getAddr())
+                        .roadAddr(subwayStation.getRoadAddr())
+                        .subStnX(subwayStation.getSubStnX())
+                        .subStnY(subwayStation.getSubStnY())
+                        .build())
                 .collect(Collectors.toList());
 
         // 3. 버스 정류장 정보 조회

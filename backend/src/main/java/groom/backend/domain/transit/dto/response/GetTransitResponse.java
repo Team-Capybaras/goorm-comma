@@ -106,11 +106,6 @@ public class GetTransitResponse {
                 example = "37.1234567890"
         )
         private BigDecimal subStnY;
-
-        @Schema(
-                description = "지하철 시설 정보 리스트"
-        )
-        private List<SubwayFacilityInfo> facilities;
     }
 
     /**
