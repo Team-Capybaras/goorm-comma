@@ -8,7 +8,7 @@ import groom.backend.domain.parking.entity.ParkingLotStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ParkingMapper {
+public class ParkingLotMapper {
 
   public ChargerStationResponse toChargerStationDto(ChargerStation station) {
     return ChargerStationResponse.builder()
