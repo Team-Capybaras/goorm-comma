@@ -4,16 +4,13 @@ import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.population.dto.response.GetPopulationResponse;
 import groom.backend.domain.population.entity.LivePopStatus;
-import groom.backend.domain.population.entity.PredPopStatus;
 import groom.backend.domain.population.repository.LivePopStatusRepository;
-import groom.backend.domain.population.repository.PredPopStatusRepository;
 import groom.backend.domain.population.service.spec.PopulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,7 +22,6 @@ import java.util.Optional;
 @Slf4j
 public class PopulationServiceImpl implements PopulationService {
     private final LivePopStatusRepository livePopStatusRepository;
-    private final PredPopStatusRepository predPopStatusRepository;
     private final ParkRepository parkRepository;
 
     /**
@@ -70,29 +66,10 @@ public class PopulationServiceImpl implements PopulationService {
             log.debug("실시간 인구 현황 데이터 없음 - AREA_CODE: {}", areaCode);
         }
 
-        // 3. 최신 인구 예보 조회 (모든 예보 시간대)
-        List<PredPopStatus> predPopStatusList = predPopStatusRepository.findAllLatestByAreaCode(areaCode);
-        List<GetPopulationResponse.PredictedPopulationInfo> predictedPopulationInfoList = null;
-        if (!predPopStatusList.isEmpty()) {
-            predictedPopulationInfoList = predPopStatusList.stream()
-                    .map(predPopStatus -> GetPopulationResponse.PredictedPopulationInfo.builder()
-                            .dataGetTime(predPopStatus.getDataGetTime())
-                            .forecastTime(predPopStatus.getForecastTime())
-                            .forecastCongestLevel(predPopStatus.getForecastCongestLevel())
-                            .forecastPopMin(predPopStatus.getForecastPopMin())
-                            .forecastPopMax(predPopStatus.getForecastPopMax())
-                            .build())
-                    .toList();
-            log.debug("인구 예보 조회 완료 - AREA_CODE: {}, COUNT: {}", areaCode, predictedPopulationInfoList.size());
-        } else {
-            log.debug("인구 예보 데이터 없음 - AREA_CODE: {}", areaCode);
-        }
-
         GetPopulationResponse response = GetPopulationResponse.builder()
                 .areaCode(areaCode)
                 .areaName(areaName)
                 .livePopulation(livePopulationInfo)
-                .predictedPopulations(predictedPopulationInfoList)
                 .build();
 
         log.info("인구 정보 조회 완료 - AREA_CODE: {}", areaCode);
