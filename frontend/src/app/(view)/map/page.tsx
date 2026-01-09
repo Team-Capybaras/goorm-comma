@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { MapDataType } from '@/shared/types/map-types'
 import DetailMap from '@/components/map/DetailMap'
-
+import FloatingBar from '@/components/common/FloatingBar'
 const TEST_CENTER = { lat: 37.5444, lng: 127.0374 }
 
 const ALL_CATEGORY_DATA: MapDataType[] = [
@@ -62,12 +62,13 @@ export default function Page() {
   const [center] = useState({ lat: 37.5665, lng: 126.978 })
 
   return (
-    <main className="w-full h-[100dvh] relative bg-default overflow-hidden">
+    <div className="w-full h-[100dvh] relative bg-default overflow-hidden">
       {/* DetailMap 컴포넌트 사용
          - getMarkerImage, renderCard 로직이 이미 DetailMap 내부에 구현되어 있습니다.
          - 데이터만 넘겨주면 알아서 마커 아이콘과 카드를 구분해서 그려줍니다.
       */}
       <DetailMap data={ALL_CATEGORY_DATA} center={center} />
-    </main>
+      <FloatingBar />
+    </div>
   )
 }
