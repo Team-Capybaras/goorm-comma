@@ -132,7 +132,7 @@ public class ParkingStatusServiceImpl implements ParkingStatusService {
             .toList();
 
     List<ChargerStatus> statuses =
-            chargerStatusRepository.findLatestByChargerKeys(stationIds, chargerIds);
+            chargerStatusRepository.findLatestByChargerKeys(stationIds.toArray(new String[0]), chargerIds.toArray(new Integer[0]));
 
     log.debug(
             "충전기 최신 상태 조회 완료 - AREA_CODE: {}, STATUS_COUNT: {}",

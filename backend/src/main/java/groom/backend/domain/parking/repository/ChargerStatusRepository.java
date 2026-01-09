@@ -28,8 +28,8 @@ public interface ChargerStatusRepository extends JpaRepository<ChargerStatus, In
     ORDER BY cs.station_id, cs.charger_id, cs.data_get_time DESC
     """, nativeQuery = true)
   List<ChargerStatus> findLatestByChargerKeys(
-          @Param("stationIds") List<String> stationIds,
-          @Param("chargerIds") List<Integer> chargerIds
+          @Param("stationIds") String[] stationIds, // List 대신 String[] 사용
+          @Param("chargerIds") Integer[] chargerIds // List 대신 Integer[] 사용
   );
 
 
