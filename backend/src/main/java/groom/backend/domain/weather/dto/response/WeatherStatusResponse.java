@@ -60,9 +60,15 @@ public class WeatherStatusResponse {
 
   @Schema(
           description = "강수량",
-          example = "0mm"
+          example = "-"
   )
   private String precipitation;
+
+  @Schema(
+          description = "금일 강수확률(max) (%)",
+          example = "80"
+  )
+  private Integer rainChance;
 
   @Schema(
           description = "강수 유형",

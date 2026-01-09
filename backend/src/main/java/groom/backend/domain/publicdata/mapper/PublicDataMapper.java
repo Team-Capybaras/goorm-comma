@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Objects;
 public class PublicDataMapper {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME_SLICEDFORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
     /**
      * Park 엔티티로 변환
@@ -89,11 +91,26 @@ public class PublicDataMapper {
             return null;
         }
 
+        log.info("fuck fuck fuck {}", detail.getFcst24Hours()
+                .getFcst24Hours().toString());
+
+        // 추출 시간.
+        // 형식 : YYYYMMDDhhmm
+        // 따라서 localdatetime sliced로 처리 필요.
+        LocalDate baseDate = parseDateTime(detail.getFcst24Hours()
+                .getFcst24Hours().getFirst().getForecastDateTime()).toLocalDate();
+
+
         // 강수확률 추출
         int maxRainChance =
                 detail.getFcst24Hours()
                         .getFcst24Hours()
                         .stream()
+                        .filter(fcst -> {
+                                    LocalDateTime t = parseDateTime(fcst.getForecastDateTime());
+                                    return t != null && t.toLocalDate().equals(baseDate);
+                                }
+                        )
                         .map(WeatherForecast24HoursItemDto::getRainChance)
                         .filter(Objects::nonNull)
                         .mapToInt(Integer::parseInt)
@@ -181,6 +198,9 @@ public class PublicDataMapper {
             // "yyyy-MM-dd HH:mm" 형식도 처리
             if (trimmed.length() == 16) {
                 trimmed = trimmed + ":00";
+            }
+            if (trimmed.length() == 12) {
+                return LocalDateTime.parse(trimmed, DATE_TIME_SLICEDFORMATTER);
             }
             return LocalDateTime.parse(trimmed, DATE_TIME_FORMATTER);
         } catch (Exception e) {
