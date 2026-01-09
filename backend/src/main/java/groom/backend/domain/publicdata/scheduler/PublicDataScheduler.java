@@ -1,5 +1,8 @@
 package groom.backend.domain.publicdata.scheduler;
 
+import groom.backend.domain.park.entity.Park;
+import groom.backend.domain.park.repository.ParkRepository;
+import groom.backend.domain.park.util.ParkCoordinates;
 import groom.backend.domain.publicdata.dto.SavePublicDataResponse;
 import groom.backend.domain.publicdata.service.PublicDataService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ import java.util.List;
 @Slf4j
 public class PublicDataScheduler {
     private final PublicDataService publicDataService;
+    private final ParkRepository parkRepository;
 
     /**
      * 업데이트 대상 공원 리스트 (AREA_NM)
@@ -82,7 +86,47 @@ public class PublicDataScheduler {
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
         log.info("=== 애플리케이션 시작 시 공공 데이터 초기 업데이트 시작 ===");
+        
+        // 공원 경도, 위도 정보 저장
+        updateParkCoordinates();
+        
         updatePublicData();
+    }
+    
+    /**
+     * 공원별 경도, 위도 정보를 DB에 저장합니다.
+     * 서버 실행 시 한 번만 실행됩니다.
+     */
+    private void updateParkCoordinates() {
+        log.info("공원 경도, 위도 정보 저장 시작");
+        
+        int updatedCount = 0;
+        // 모든 공원 좌표 정보를 순회하며 저장
+        for (String areaCode : ParkCoordinates.getAllAreaCodes()) {
+            ParkCoordinates.ParkCoordinate coordinate = ParkCoordinates.getCoordinate(areaCode);
+            if (coordinate == null) {
+                continue;
+            }
+            
+            try {
+                Park park = parkRepository.findByAreaCode(areaCode).orElse(null);
+                if (park != null) {
+                    park.setLongitude(coordinate.getLongitude());
+                    park.setLatitude(coordinate.getLatitude());
+                    parkRepository.save(park);
+                    updatedCount++;
+                    log.debug("공원 좌표 업데이트 완료 - AREA_CODE: {}, 경도: {}, 위도: {}", 
+                            areaCode, coordinate.getLongitude(), coordinate.getLatitude());
+                } else {
+                    log.warn("공원 정보를 찾을 수 없습니다 - AREA_CODE: {}", areaCode);
+                }
+            } catch (Exception e) {
+                log.error("공원 좌표 업데이트 중 오류 발생 - AREA_CODE: {}, ERROR: {}", 
+                        areaCode, e.getMessage(), e);
+            }
+        }
+        
+        log.info("공원 경도, 위도 정보 저장 완료 - 업데이트된 공원 수: {}", updatedCount);
     }
 
     /**
