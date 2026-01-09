@@ -49,7 +49,7 @@ public class ParkingLot extends BaseEntity {
     private Integer capacity;
 
     /**
-     * 현재 정보 여부
+     * 실시간 주차 정보 현황 제공 여부
      */
     @Column(name = "current_info_yn")
     private Boolean currentInfoYn;
