@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class PublicDataScheduler {
      * 업데이트 대상 공원 리스트 (AREA_NM)
      * 공공 API 요청 시 이 이름들을 사용합니다.
      */
-    private static final List<String> TARGET_AREA_NAMES = Arrays.asList(
+    private static final List<String> TARGET_AREA_NAMES = List.of(
             "강서한강공원",
             "고척돔",
             "광나루한강공원",
@@ -116,54 +115,49 @@ public class PublicDataScheduler {
      * 하드코딩된 공원 리스트를 순회하며 각 공원의 공공 데이터를 업데이트합니다.
      */
     private void updatePublicData() {
-        try {
-            log.info("총 {}개의 공원 데이터 업데이트 시작", TARGET_AREA_NAMES.size());
-            
-            int successCount = 0;
-            int failCount = 0;
-            List<String> failedAreaNames = new ArrayList<>();
-            List<String> failedReasons = new ArrayList<>();
-            
-            // 각 공원에 대해 공공 API 호출 및 저장
-            for (String areaName : TARGET_AREA_NAMES) {
-                try {
-                    log.debug("공원 데이터 업데이트 시작 - AREA_NAME: {}", areaName);
-                    
-                    // 공공 API 호출 및 저장 (startIndex=1, endIndex=5로 고정)
-                    SavePublicDataResponse response = publicDataService.saveCityData(areaName, 1, 5);
-                    
-                    if (response != null) {
-                        successCount++;
-                        log.debug("공원 데이터 업데이트 완료 - AREA_NAME: {}, RESULT: {}", areaName, response);
-                    } else {
-                        failCount++;
-                        failedAreaNames.add(areaName);
-                        failedReasons.add("API 응답이 null입니다");
-                        log.warn("공원 데이터 업데이트 실패 - AREA_NAME: {}", areaName);
-                    }
-                    
-                } catch (Exception e) {
+        log.info("총 {}개의 공원 데이터 업데이트 시작", TARGET_AREA_NAMES.size());
+        
+        int successCount = 0;
+        int failCount = 0;
+        List<String> failedAreaNames = new ArrayList<>();
+        List<String> failedReasons = new ArrayList<>();
+        
+        // 각 공원에 대해 공공 API 호출 및 저장
+        for (String areaName : TARGET_AREA_NAMES) {
+            try {
+                log.debug("공원 데이터 업데이트 시작 - AREA_NAME: {}", areaName);
+                
+                // 공공 API 호출 및 저장 (startIndex=1, endIndex=5로 고정)
+                SavePublicDataResponse response = publicDataService.saveCityData(areaName, 1, 5);
+                
+                if (response != null) {
+                    successCount++;
+                    log.debug("공원 데이터 업데이트 완료 - AREA_NAME: {}, RESULT: {}", areaName, response);
+                } else {
                     failCount++;
                     failedAreaNames.add(areaName);
-                    failedReasons.add(e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName());
-                    log.error("공원 데이터 업데이트 중 오류 발생 - AREA_NAME: {}, ERROR: {}", 
-                            areaName, e.getMessage(), e);
+                    failedReasons.add("API 응답이 null입니다");
+                    log.warn("공원 데이터 업데이트 실패 - AREA_NAME: {}", areaName);
                 }
+                
+            } catch (Exception e) {
+                failCount++;
+                failedAreaNames.add(areaName);
+                failedReasons.add(e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName());
+                log.error("공원 데이터 업데이트 중 오류 발생 - AREA_NAME: {}, ERROR: {}", 
+                        areaName, e.getMessage(), e);
             }
-            
-            log.info("=== 공공 데이터 자동 업데이트 완료 ===");
-            log.info("성공: {}개, 실패: {}개, 전체: {}개", successCount, failCount, TARGET_AREA_NAMES.size());
-            
-            // 실패한 공원 정보 상세 로깅
-            if (failCount > 0) {
-                log.warn("=== 실패한 공원 목록 ({}개) ===", failCount);
-                for (int i = 0; i < failedAreaNames.size(); i++) {
-                    log.warn("  - {}: {}", failedAreaNames.get(i), failedReasons.get(i));
-                }
+        }
+        
+        log.info("=== 공공 데이터 자동 업데이트 완료 ===");
+        log.info("성공: {}개, 실패: {}개, 전체: {}개", successCount, failCount, TARGET_AREA_NAMES.size());
+        
+        // 실패한 공원 정보 상세 로깅
+        if (failCount > 0) {
+            log.warn("=== 실패한 공원 목록 ({}개) ===", failCount);
+            for (int i = 0; i < failedAreaNames.size(); i++) {
+                log.warn("  - {}: {}", failedAreaNames.get(i), failedReasons.get(i));
             }
-            
-        } catch (Exception e) {
-            log.error("공공 데이터 자동 업데이트 작업 중 예상치 못한 오류 발생", e);
         }
     }
 }
