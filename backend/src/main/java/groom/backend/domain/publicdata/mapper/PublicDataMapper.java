@@ -91,9 +91,6 @@ public class PublicDataMapper {
             return null;
         }
 
-        log.info("fuck fuck fuck {}", detail.getFcst24Hours()
-                .getFcst24Hours().toString());
-
         // 추출 시간.
         // 형식 : YYYYMMDDhhmm
         // 따라서 localdatetime sliced로 처리 필요.
