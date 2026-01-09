@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * DTO를 엔티티로 변환하는 매퍼
@@ -88,6 +89,17 @@ public class PublicDataMapper {
             return null;
         }
 
+        // 강수확률 추출
+        int maxRainChance =
+                detail.getFcst24Hours()
+                        .getFcst24Hours()
+                        .stream()
+                        .map(WeatherForecast24HoursItemDto::getRainChance)
+                        .filter(Objects::nonNull)
+                        .mapToInt(Integer::parseInt)
+                        .max()
+                        .orElse(0);
+
         return WeatherStatus.builder()
                 .dataGetTime(dataGetTime)
                 .areaCode(areaCode)
@@ -98,6 +110,7 @@ public class PublicDataMapper {
                 .windDirct(detail.getWindDirct())
                 .windSpd(parseFloat(detail.getWindSpd()))
                 .precipitation(detail.getPrecipitation())
+                .rainChance(maxRainChance)
                 .precptType(detail.getPrecptType())
                 .precptMsg(detail.getPcpMsg())  // DTO는 pcpMsg, 엔티티는 precptMsg
                 .uvIndexLevel(parseInteger(detail.getUvIndexLvl()))

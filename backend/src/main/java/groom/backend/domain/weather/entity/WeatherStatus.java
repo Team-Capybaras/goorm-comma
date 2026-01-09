@@ -83,6 +83,13 @@ public class WeatherStatus extends BaseEntity {
     private String precipitation;
 
     /**
+     * 당일 강수확률
+     * 24시간 예보 내에서 당일 기준 가장 강수확률이 높은 시간대를 기준으로 선정
+     */
+    @Column(name = "rain_chance")
+    private Integer rainChance;
+
+    /**
      * 강수 유형
      */
     @Column(name = "precpt_type", length = 50)
