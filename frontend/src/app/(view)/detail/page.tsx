@@ -121,11 +121,16 @@ export default async function page () {
   return (
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
-      <div className="p-lg flex flex-col gap-xs rounded-xl overflow-hidden">
-        <ParkInfoDashboard data={data.park}/>
-        <EnvironmentDashboard data={data.weather}/>
-        <CongestionInfoDashboard data={data.congestion}/>
-        <TransportDashboard/>
+      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
+        <div className="px-4 pb-3 flex flex-col gap-xs rounded-xl overflow-hidden relative">
+          <ParkInfoDashboard data={data.park}/>
+          <EnvironmentDashboard data={data.weather}/>
+          <CongestionInfoDashboard data={data.congestion}/>
+          <TransportDashboard/>
+        </div>
+      </div>
+      <div className="bg-gray-100 w-full h-[8px]"></div>
+      <div>
         <AlternativeParkDashboard data={data.alternative}/>
       </div>
     </div>

@@ -25,7 +25,7 @@ export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) 
           <div className="flex items-center">
             <Image src={"/images/icons/weather/sun.svg"} className="mr-3" width={24} height={24} alt="해"/>
             <p className="font-sm mr-2">{data?.today}</p>
-            <div className="flex itens-center"><p className="font-sm">{data?.temp}</p> <span className="font-3xs">℃</span></div>
+            <div className="flex items-center"><p className="font-sm">{data?.temp}</p> <span className="font-3xs">℃</span></div>
           </div>
           <div className="w-[1px] h-[20px] bg-gray-100"></div>
           <div className="flex items-center">
@@ -41,7 +41,7 @@ export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) 
         </div>
         <div className="w-full h-[1px] my-4 bg-gray-100"></div>
         <div className="flex justify-between">
-          <div className="flex itens-center">
+          <div className="flex items-center">
             <Image src={"/images/icons/weather/air.svg"} className="mr-3" width={24} height={24} alt="대기환경지수" />
             <p className="font-xs">대기환경지수</p>
           </div>
