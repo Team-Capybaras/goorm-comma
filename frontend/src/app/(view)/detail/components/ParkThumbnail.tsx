@@ -23,7 +23,7 @@ export default function ParkThumbnail({data}: ParkThumbnailProps) {
           <div className="flex">
             {data?.map((src, i) => (
               /* slide */
-              <div className="flex-[0_0_100%] min-w-0 h-[260px]" key={i}>
+              <div className="flex-[0_0_100%] min-w-0 h-[400px]" key={i}>
                 <div className="relative w-full h-full">
                   <Image
                     src={src}
@@ -37,7 +37,7 @@ export default function ParkThumbnail({data}: ParkThumbnailProps) {
             ))}
           </div>
           {/* dots */}
-          <div className="absolute left-1/2 bottom-2.5 -translate-x-1/2 flex flex-wrap justify-center items-center gap-1.5">
+          <div className="absolute left-1/2 bottom-7 -translate-x-1/2 flex flex-wrap justify-center items-center gap-0.5">
             {scrollSnaps.map((_, index) => (
               <DotButton
                 key={index}
