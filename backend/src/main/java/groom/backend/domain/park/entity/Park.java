@@ -32,5 +32,17 @@ public class Park extends BaseEntity {
      */
     @Column(name = "area_name", length = 20)
     private String areaName;
+
+    /**
+     * 경도
+     */
+    @Column(name = "longitude")
+    private Double longitude;
+
+    /**
+     * 위도
+     */
+    @Column(name = "latitude")
+    private Double latitude;
 }
 
