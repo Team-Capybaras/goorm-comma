@@ -1,27 +1,33 @@
 'use client'
 
 import { ComponentProps } from 'react'
-import { Card, CardContent } from '@/components/common/Card' // 기존 Card 컴포넌트 임포트
+import { Card, CardContent } from '@/components/common/Card'
 import { getCongestionColorValue } from '@/shared/utils/map-helpers'
 import { CongestionLevel } from '@/shared/types/map-types'
 import cn from '@/shared/utils/cn'
 
 interface MapCardProps extends ComponentProps<typeof Card> {
-  congestion: CongestionLevel
+  congestion?: CongestionLevel
+  borderColor?: string
   children: React.ReactNode
 }
 
-export default function MapCard({ congestion, className, children, ...props }: MapCardProps) {
-  // 혼잡도에 따른 색상 값 가져오기
-  const borderColor = getCongestionColorValue(congestion)
+export default function MapCard({
+  congestion,
+  borderColor,
+  className,
+  children,
+  ...props
+}: MapCardProps) {
+  const finalBorderColor = congestion ? getCongestionColorValue(congestion) : borderColor
 
   return (
     <Card
-      className={cn('border-[1.5px] shadow-sm transition-colors', className)}
-      style={{ borderColor }}
+      className={cn('border-[1px] rounded-[20px] shadow-sm transition-colors bg-white', className)}
+      style={{ borderColor: finalBorderColor }}
       {...props}
     >
-      <CardContent className="p-4 flex flex-col gap-2">{children}</CardContent>
+      <CardContent className="pt-4 px-4 pb-5 flex flex-col gap-2">{children}</CardContent>
     </Card>
   )
 }
