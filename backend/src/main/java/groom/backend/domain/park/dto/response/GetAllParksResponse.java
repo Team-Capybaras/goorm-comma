@@ -10,11 +10,11 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * 전체 공원 리스트 조회 응답 DTO
+ * 공원 리스트 조회 응답 DTO (커서 기반 페이지네이션)
  */
 @Schema(
         name = "GetAllParksResponse",
-        description = "전체 공원 리스트 조회 응답"
+        description = "공원 리스트 조회 응답 (커서 기반 페이지네이션)"
 )
 @Getter
 @Setter
@@ -23,16 +23,28 @@ import java.util.List;
 @Builder
 public class GetAllParksResponse {
     @Schema(
-            description = "전체 공원 정보 리스트",
+            description = "공원 정보 리스트",
             example = "[]"
     )
     private List<ParkInfo> parks;
 
     @Schema(
-            description = "전체 공원 수",
-            example = "35"
+            description = "다음 페이지 커서 (다음 페이지가 없으면 null)",
+            example = "POI100"
     )
-    private Integer totalCount;
+    private String nextCursor;
+
+    @Schema(
+            description = "다음 페이지 존재 여부",
+            example = "true"
+    )
+    private Boolean hasNext;
+
+    @Schema(
+            description = "조회된 공원 수",
+            example = "10"
+    )
+    private Integer size;
 
     /**
      * 공원 정보
@@ -94,6 +106,24 @@ public class GetAllParksResponse {
                 example = "보통"
         )
         private String areaCongestLevel;
+
+        @Schema(
+                description = "거리 (km)",
+                example = "null"
+        )
+        private Double distance;
+
+        @Schema(
+                description = "이미지 URL",
+                example = "null"
+        )
+        private String image;
+
+        @Schema(
+                description = "태그 리스트",
+                example = "null"
+        )
+        private List<String> tags;
     }
 }
 
