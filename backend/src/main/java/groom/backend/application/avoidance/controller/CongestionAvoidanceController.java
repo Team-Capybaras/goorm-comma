@@ -18,7 +18,7 @@ public class CongestionAvoidanceController {
 
   // 혼잡도 통계 제공 및 추천 시간대 텍스트
   @GetMapping("/statistics")
-  public ApiResponse<ParkStatisticsResponse> statistics(@RequestParam String areaCode) {
+  public ApiResponse<ParkStatisticsResponse> statistics(@RequestParam(name = "area_code") String areaCode) {
     ParkStatisticsResponse response = parkStatisticsService.getParkStatistics(areaCode);
     return ApiResponse.success(200, "공원 혼잡도 통계 조회 성공", response);
   }
