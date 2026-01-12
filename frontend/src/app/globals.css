@@ -796,29 +796,40 @@
   /* ==================================================
      RADIUS
   ================================================== */
-
-  .rounded-xs {
-    border-radius: var(--radius-xs);
+  .rounded-1 {
+    border-radius: var(--radius-1);
   }
 
-  .rounded-sm {
-    border-radius: var(--radius-sm);
+  .rounded-2 {
+    border-radius: var(--radius-2);
   }
 
-  .rounded-md {
-    border-radius: var(--radius-md);
+  .rounded-3 {
+    border-radius: var(--radius-3);
   }
 
-  .rounded-lg {
-    border-radius: var(--radius-lg);
+  .rounded-4 {
+    border-radius: var(--radius-4);
   }
 
-  .rounded-xl {
-    border-radius: var(--radius-xl);
+  .rounded-5 {
+    border-radius: var(--radius-5);
   }
 
-  .rounded-2xl {
-    border-radius: var(--radius-2xl);
+  .rounded-6 {
+    border-radius: var(--radius-6);
+  }
+
+  .rounded-7 {
+    border-radius: var(--radius-7);
+  }
+
+  .rounded-8 {
+    border-radius: var(--radius-8);
+  }
+
+  .rounded-9 {
+    border-radius: var(--radius-9);
   }
 
   .rounded-full {
