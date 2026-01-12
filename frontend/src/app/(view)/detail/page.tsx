@@ -122,17 +122,25 @@ export default async function page () {
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
       <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
-        <div className="px-4 pb-3 flex flex-col gap-xs rounded-xl overflow-hidden relative">
-          <ParkInfoDashboard data={data.park}/>
+        {/* 공원 종합 정보 */}
+        <ParkInfoDashboard data={data.park}/>
+
+        {/* bar */}
+        <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>
+
+        {/* 날씨/혼잡도/대중교통 및 편의시설 */}
+        <div className="px s-5 flex flex-col gap-xs rounded-xl">
           <EnvironmentDashboard data={data.weather}/>
           <CongestionInfoDashboard data={data.congestion}/>
           <TransportDashboard/>
         </div>
       </div>
+
+      {/* bar */}
       <div className="bg-gray-100 w-full h-[8px]"></div>
-      <div>
-        <AlternativeParkDashboard data={data.alternative}/>
-      </div>
+
+      {/* 대체 공원 */}
+      <AlternativeParkDashboard data={data.alternative}/>
     </div>
   )
 }

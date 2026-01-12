@@ -15,7 +15,7 @@ interface EnvironmentDashboardProps {
 export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) {
 
   return (
-    <div className="mt-8">
+    <div className="mt s-6">
       <div className="flex justify-between items-end">
         <h3 className="font-sb">날씨</h3>
         <p className="font-3xs text-gray-400">{data?.weather_time}</p>
