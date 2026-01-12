@@ -70,6 +70,30 @@ public class GetAllParksResponse {
                 example = "37.529546"
         )
         private Double latitude;
+
+        @Schema(
+                description = "기온 (℃)",
+                example = "2.5"
+        )
+        private Float temp;
+
+        @Schema(
+                description = "강수 관련 메시지",
+                example = "눈이 내리고 있습니다"
+        )
+        private String precptMsg;
+
+        @Schema(
+                description = "통합 대기환경 등급",
+                example = "보통"
+        )
+        private String airIndex;
+
+        @Schema(
+                description = "혼잡도 레벨 (여유, 보통, 붐빔, 매우붐빔)",
+                example = "보통"
+        )
+        private String areaCongestLevel;
     }
 }
 
