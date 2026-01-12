@@ -47,4 +47,25 @@ public class ParkStatisticsResponse {
       """
   )
   private List<WeekdayAggregateResponse> statistics;
+
+  /**
+   * 09시 - 22시 중 가장 혼잡도가 낮은 시간대
+   */
+  @Schema(
+          description = "9시 - 22시 중 가장 혼잡도가 낮은 시간대",
+          example = "9",
+          nullable = false
+  )
+  private int uncrowdedTime;
+
+  /**
+   * 시간대에 대한 추천 메시지
+   * ex: 오늘은 몇시가 제일 낮은 혼잡도를 가집니다.
+   */
+  @Schema(
+          description = "시간대에 대한 추천 메시지",
+          example = "오늘은 13시가 제일 낮은 혼잡도를 가집니다.",
+          nullable = false
+  )
+  private String message;
 }
