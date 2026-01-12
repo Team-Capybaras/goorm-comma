@@ -50,14 +50,14 @@ export const getCongestionColorValue = (level: CongestionLevel): string => {
 export const getCongestionMarkerIcon = (level: CongestionLevel): string => {
   switch (level) {
     case '여유':
-      return '/images/icons/maps/marker=positive.svg'
+      return '/images/icons/map/state=positive.svg'
     case '보통':
-      return '/images/icons/maps/marker=normal.svg'
+      return '/images/icons/map/state=normal.svg'
     case '약간 붐빔':
-      return '/images/icons/maps/marker=caution.svg'
+      return '/images/icons/map/state=caution.svg'
     case '붐빔':
-      return '/images/icons/maps/marker=warning.svg'
+      return '/images/icons/map/state=warning.svg'
   }
 
-  return '/images/icons/maps/marker.svg'
+  return '/images/icons/map/state=normal.svg'
 }
