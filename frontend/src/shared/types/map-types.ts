@@ -23,6 +23,8 @@ export interface ParkItem extends BaseMapItem {
     iconStatus: string
     text: string
   }
+  airQuality?: string
+  image?: string
   forecast?: string
   tags?: string[]
 }

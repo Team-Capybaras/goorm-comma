@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { BaseMapItem } from '@/shared/types/map-types'
-import { Card, CardHeader, CardContent } from '@/components/common/Card'
 import Image from 'next/image'
 interface KakaoMapProps<T extends BaseMapItem> {
   data: T[] // 지도에 뿌릴 데이터 목록
@@ -134,24 +133,9 @@ export default function KakaoMap<T extends BaseMapItem>({
           className={`size-6 ${isLoading ? 'animate-spin' : ''}`}
         />
       </button>
-
-      {/* 카드 영역 */}
       {selectedItem && (
         <div className="absolute bottom-6 left-4 right-4 z-20 animate-slide-up">
-          <Card
-            onClick={() => onCardClick?.(selectedItem)}
-            className="shadow-xl border-none bg-bright cursor-pointer hover:bg-normal-pale transition-colors rounded-2xl"
-          >
-            <CardHeader
-              closable
-              onClose={(e) => {
-                e?.stopPropagation()
-                setSelectedItem(null)
-              }}
-              className="pb-0"
-            />
-            <CardContent className="pt-0 pb-4">{renderCard(selectedItem)}</CardContent>
-          </Card>
+          <div onClick={() => onCardClick?.(selectedItem)}>{renderCard(selectedItem)}</div>
         </div>
       )}
     </div>
