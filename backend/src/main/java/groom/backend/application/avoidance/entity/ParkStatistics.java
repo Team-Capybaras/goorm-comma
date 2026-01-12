@@ -1,16 +1,14 @@
-package groom.backend.domain.recommendation.entity;
-
+package groom.backend.application.avoidance.entity;
 
 import groom.backend.domain.park.entity.Park;
-import groom.backend.domain.recommendation.enums.Weekday;
+import groom.backend.application.avoidance.enums.Weekday;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 /**
- * 인구 혼잡도 집계 로그 테이블
- * 집계 시간 기록
+ * 인구 혼잡도 집계 테이블
+ * 요일 및 시간별 집계
  */
 @Entity
 @Table(name = "park_statistics")
@@ -19,22 +17,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParkStatisticsLog {
-
-  /**
-   * 로그 키
-   * PK
-   */
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name="log_id")
-  private Long logId;
-
-
+@IdClass(ParkStatisticsId.class)
+public class ParkStatistics {
   /**
    * 요일
    * MON, TUE, WED...
    */
+  @Id
   @Enumerated(EnumType.STRING)
   @Column(name = "weekday", length = 3, nullable = false)
   private Weekday weekday;
@@ -43,8 +32,17 @@ public class ParkStatisticsLog {
    * 시간
    * 집계 데이터 중 9 - 22 만 추천 시 사용.
    */
+  @Id
   @Column(name = "hour", nullable = false)
   private int hour;
+
+  /**
+   * 지역 코드 (PK, FK -> park.area_code)
+   */
+  @Id
+  @Column(name = "area_code", length = 20, nullable = false)
+  private String areaCode;
+
 
   /**
    * 인구 지표 최소값
@@ -58,19 +56,6 @@ public class ParkStatisticsLog {
   @Column(name = "pop_mean_max")
   private int popMeanMax;
 
-
-  /**
-   * 집계 데이터 시작일
-   */
-  @Column(name = "start_time")
-  private LocalDateTime startTime;
-
-
-  /**
-   * 집계 데이터 종료일
-   */
-  @Column(name = "end_time")
-  private LocalDateTime endTime;
 
   /**
    * 공원 정보 (FK)

@@ -1,6 +1,6 @@
-package groom.backend.domain.recommendation.repository;
+package groom.backend.application.avoidance.repository;
 
-import groom.backend.domain.recommendation.entity.ParkStatisticsLog;
+import groom.backend.application.avoidance.entity.ParkStatisticsLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
