@@ -16,20 +16,37 @@ import lombok.*;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class DisasterMessageDetailDto {
     
+    /**
+     * 재난 구분명 (한파, 폭염, 태풍 등)
+     * XML: <DST_SE_NM>
+     */
     @JacksonXmlProperty(localName = "DST_SE_NM")
     private String dstSeNm;
 
+    /**
+     * 비상 단계명
+     * XML: <EMRG_STEP_NM>
+     */
     @JacksonXmlProperty(localName = "EMRG_STEP_NM")
     private String emrgStepNm;
 
+    /**
+     * 메시지 내용
+     * XML: <MSG_CN>
+     */
     @JacksonXmlProperty(localName = "MSG_CN")
     private String msgCn;
 
+    /**
+     * 생성 일시
+     * XML: <CRT_DT>
+     */
     @JacksonXmlProperty(localName = "CRT_DT")
     private String crtDt;
 }
+

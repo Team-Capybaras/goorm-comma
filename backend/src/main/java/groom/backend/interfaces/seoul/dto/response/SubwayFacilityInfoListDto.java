@@ -11,18 +11,27 @@ import java.util.List;
  * 
  * XML 구조:
  * <SUB_FACIINFO>
- *   <SUB_FACIINFO>...</SUB_FACIINFO>
+ *   <SUB_FACIINFO>
+ *     <ELVTR_NM>...</ELVTR_NM>
+ *     <OPR_SEC>...</OPR_SEC>
+ *     ...
+ *   </SUB_FACIINFO>
  *   ...
  * </SUB_FACIINFO>
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class SubwayFacilityInfoListDto {
     
+    /**
+     * 지하철 시설 정보 항목 리스트
+     * XML: <SUB_FACIINFO><SUB_FACIINFO>...</SUB_FACIINFO></SUB_FACIINFO>
+     */
     @JacksonXmlProperty(localName = "SUB_FACIINFO")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<SubwayFacilityInfoItemDto> subFaciinfo;
 }
+

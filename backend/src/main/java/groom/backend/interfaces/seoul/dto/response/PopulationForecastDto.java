@@ -11,15 +11,20 @@ import java.util.List;
  * 
  * XML 구조:
  * <FCST_PPLTN>
- *   <FCST_PPLTN>...</FCST_PPLTN>
+ *   <FCST_PPLTN>
+ *     <FCST_TIME>...</FCST_TIME>
+ *     <FCST_CONGEST_LVL>...</FCST_CONGEST_LVL>
+ *     <FCST_PPLTN_MIN>...</FCST_PPLTN_MIN>
+ *     <FCST_PPLTN_MAX>...</FCST_PPLTN_MAX>
+ *   </FCST_PPLTN>
  *   ...
  * </FCST_PPLTN>
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class PopulationForecastDto {
     
     /**
@@ -30,3 +35,4 @@ public class PopulationForecastDto {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<PopulationForecastItemDto> fcstPpltn;
 }
+

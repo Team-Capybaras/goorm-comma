@@ -1,6 +1,6 @@
-import { ComponentPropsWithRef, ReactNode } from 'react'
-import { X } from 'lucide-react'
+import { ComponentPropsWithRef, ReactNode, MouseEvent } from 'react'
 import cn from '@/shared/utils/cn'
+import { CardCloseButton } from '@/components/common/CardCloseButton'
 
 // Card 정의
 interface CardProps extends ComponentPropsWithRef<'div'> {
@@ -11,13 +11,10 @@ interface CardProps extends ComponentPropsWithRef<'div'> {
 export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
-      className={cn(
-        'relative rounded-xl border border-border bg-white text-black',
-        className
-      )}
+      className={cn('relative rounded-xl border border-border bg-white text-black', className)}
       {...props}
     >
-      {children} 
+      {children}
     </div>
   )
 }
@@ -28,7 +25,7 @@ interface CardHeaderProps extends ComponentPropsWithRef<'div'> {
   left?: ReactNode // 좌측 설정
   right?: ReactNode // 우측 설정
   closable?: boolean // 닫기 가능 여부
-  onClose?: () => void // 닫기 함수
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => void // 닫기 함수
 }
 
 export function CardHeader({
@@ -41,10 +38,7 @@ export function CardHeader({
   ...props
 }: CardHeaderProps) {
   return (
-    <div
-      className={cn('flex items-center justify-between p-6 text-black', className)}
-      {...props}
-    >
+    <div className={cn('flex items-center justify-between p-6 text-black', className)} {...props}>
       {/* 좌측 */}
       {left && <div className="mr-2">{left}</div>}
       {/* 일반 설정 */}
@@ -55,23 +49,12 @@ export function CardHeader({
       {(right || closable) && (
         <div className="ml-4 flex items-center gap-2">
           {right}
-          {closable && (
-            <button
-              type="button"
-              onClick={onClose}
-              tabIndex={-1}
-              className="absolute cursor-pointer right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-              aria-label="닫기"
-            >
-              <X className="size-4" />
-            </button>
-          )}
+          {closable && <CardCloseButton onClose={onClose} />}
         </div>
       )}
     </div>
   )
 }
-
 
 // CardContent 정의
 interface CardContentProps extends ComponentPropsWithRef<'div'> {
@@ -79,15 +62,10 @@ interface CardContentProps extends ComponentPropsWithRef<'div'> {
   center?: ReactNode // 중앙 설정
 }
 
-export function CardContent({
-  className,
-  children,
-  center,
-  ...props
-}: CardContentProps) {
+export function CardContent({ className, children, center, ...props }: CardContentProps) {
   return (
     <div className={cn('p-6 text-black', className)} {...props}>
-      {center && <div className='flex items-center justify-center text-black'>{center}</div>}
+      {center && <div className="flex items-center justify-center text-black">{center}</div>}
       {children}
     </div>
   )
@@ -99,15 +77,10 @@ interface CardFooterProps extends ComponentPropsWithRef<'div'> {
   center?: ReactNode // 중앙 설정
 }
 
-export function CardFooter({
-  className,
-  children,
-  center,
-  ...props
-}: CardFooterProps) {
+export function CardFooter({ className, children, center, ...props }: CardFooterProps) {
   return (
     <div className={cn('p-6 text-black', className)} {...props}>
-      {center && <div className='flex justify-center text-black'>{center}</div>}
+      {center && <div className="flex justify-center text-black">{center}</div>}
       {children}
     </div>
   )

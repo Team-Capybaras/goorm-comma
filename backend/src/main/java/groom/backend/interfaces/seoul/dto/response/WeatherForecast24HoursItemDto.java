@@ -65,3 +65,4 @@ public class WeatherForecast24HoursItemDto {
     @JacksonXmlProperty(localName = "SKY_STTS")
     private String skyStatus;
 }
+

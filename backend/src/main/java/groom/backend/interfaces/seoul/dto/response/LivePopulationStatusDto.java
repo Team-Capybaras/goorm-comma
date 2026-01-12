@@ -8,14 +8,20 @@ import lombok.*;
  * 
  * XML 구조:
  * <LIVE_PPLTN_STTS>
- *   <LIVE_PPLTN_STTS>...</LIVE_PPLTN_STTS>
+ *   <LIVE_PPLTN_STTS>
+ *     <AREA_NM>...</AREA_NM>
+ *     <AREA_CD>...</AREA_CD>
+ *     <AREA_CONGEST_LVL>...</AREA_CONGEST_LVL>
+ *     ...
+ *     <FCST_PPLTN>...</FCST_PPLTN>
+ *   </LIVE_PPLTN_STTS>
  * </LIVE_PPLTN_STTS>
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class LivePopulationStatusDto {
     
     /**
@@ -25,3 +31,4 @@ public class LivePopulationStatusDto {
     @JacksonXmlProperty(localName = "LIVE_PPLTN_STTS")
     private LivePopulationStatusDetailDto livePpltnStts;
 }
+

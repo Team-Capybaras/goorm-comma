@@ -3,6 +3,8 @@ package groom.backend.interfaces.seoul.dto.response;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * 도시 데이터 정보 DTO
  * 
@@ -25,9 +27,9 @@ import lombok.*;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class CityDataDto {
     
     /**
@@ -60,7 +62,7 @@ public class CityDataDto {
 
     /**
      * 주차장 현황 리스트
-     * XML: <PRK_STTS>
+     * XML: <PRK_STTS><PRK_STTS>...</PRK_STTS></PRK_STTS>
      */
     @JacksonXmlProperty(localName = "PRK_STTS")
     private ParkingStatusListDto prkStts;
@@ -81,7 +83,7 @@ public class CityDataDto {
 
     /**
      * 버스 정류장 현황 리스트
-     * XML: <BUS_STN_STTS>
+     * XML: <BUS_STN_STTS><BUS_STN_STTS>...</BUS_STN_STTS></BUS_STN_STTS>
      */
     @JacksonXmlProperty(localName = "BUS_STN_STTS")
     private BusStationStatusListDto busStnStts;
@@ -149,3 +151,4 @@ public class CityDataDto {
     @JacksonXmlProperty(localName = "LIVE_YNA_NEWS")
     private String liveYnaNews;
 }
+
