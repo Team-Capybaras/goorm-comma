@@ -5,6 +5,7 @@ import EnvironmentDashboard from "@/app/(view)/detail/components/EnvironmentDash
 import CongestionInfoDashboard from "@/app/(view)/detail/components/CongestionInfoDashboard";
 import TransportDashboard from "@/app/(view)/detail/components/TransportDashboard";
 import AlternativeParkDashboard from "@/app/(view)/detail/components/AlternativeParkDashboard";
+import {MapDataType} from "@/shared/types/map-types";
 
 const data = {
   park : {
@@ -28,14 +29,54 @@ const data = {
     ],
   },
   weather : {
+    today: "맑음",
     temp : "3.6",
-    air_ms : "대기질 지수 좋음",
+    air : "51 ~ 100",
+    air_ms : "좋음",
     precipitation : "25",
     humidity : "40",
     weather_time : "2025.12.30 18:30",
   },
-  congestion : {
-
+  congestion: {
+    refresh_time: "2025.12.30 18:30",
+    predict: "17",
+    transition: {
+      monday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      tuesday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      wednesday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      thursday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      friday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      saturday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+      sunday: {
+        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
+        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
+      },
+    }
   },
   alternative : [
     {
@@ -80,11 +121,16 @@ export default async function page () {
   return (
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
-      <div className="p-lg flex flex-col gap-xs">
-        <ParkInfoDashboard data={data.park}/>
-        <EnvironmentDashboard data={data.weather}/>
-        <CongestionInfoDashboard data={data.congestion}/>
-        <TransportDashboard/>
+      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
+        <div className="px-4 pb-3 flex flex-col gap-xs rounded-xl overflow-hidden relative">
+          <ParkInfoDashboard data={data.park}/>
+          <EnvironmentDashboard data={data.weather}/>
+          <CongestionInfoDashboard data={data.congestion}/>
+          <TransportDashboard/>
+        </div>
+      </div>
+      <div className="bg-gray-100 w-full h-[8px]"></div>
+      <div>
         <AlternativeParkDashboard data={data.alternative}/>
       </div>
     </div>

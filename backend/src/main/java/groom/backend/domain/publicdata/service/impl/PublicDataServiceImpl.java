@@ -2,6 +2,7 @@ package groom.backend.domain.publicdata.service.impl;
 
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
+import groom.backend.domain.park.util.ParkCoordinates;
 import groom.backend.domain.population.entity.LivePopStatus;
 import groom.backend.domain.population.entity.LivePopStatusId;
 import groom.backend.domain.population.entity.PredPopStatus;
@@ -190,6 +191,7 @@ public class PublicDataServiceImpl implements PublicDataService {
 
     /**
      * Park 저장 (없으면 생성, 있으면 업데이트)
+     * 경도, 위도 정보도 함께 저장합니다.
      */
     private Park savePark(String areaCode, String areaName) {
         Park park = parkRepository.findByAreaCode(areaCode)
@@ -198,6 +200,17 @@ public class PublicDataServiceImpl implements PublicDataService {
         // 이름이 변경되었을 수 있으므로 업데이트
         if (areaName != null && !areaName.equals(park.getAreaName())) {
             park.setAreaName(areaName);
+        }
+        
+        // 경도, 위도 정보 저장
+        ParkCoordinates.ParkCoordinate coordinate = ParkCoordinates.getCoordinate(areaCode);
+        if (coordinate != null) {
+            park.setLongitude(coordinate.getLongitude());
+            park.setLatitude(coordinate.getLatitude());
+            log.debug("공원 좌표 정보 저장 - AREA_CODE: {}, 경도: {}, 위도: {}", 
+                    areaCode, coordinate.getLongitude(), coordinate.getLatitude());
+        } else {
+            log.debug("공원 좌표 정보 없음 - AREA_CODE: {}", areaCode);
         }
         
         return parkRepository.save(park);
@@ -452,6 +465,12 @@ public class PublicDataServiceImpl implements PublicDataService {
                 continue;
             }
 
+            String busStnName = busStation.getBusStnName();
+            log.debug("버스 정류장 저장 - ID: {}, Name: {} (타입: {}), 원본 DTO: {}", 
+                    busStation.getBusStnId(), busStnName,
+                    busStnName != null ? busStnName.getClass().getSimpleName() : "null",
+                    item.getBusStnNm());
+
             Optional<BusStation> existing = busStationRepository.findByBusStnId(busStation.getBusStnId());
             if (existing.isPresent()) {
                 BusStation existingStation = existing.get();
@@ -460,8 +479,12 @@ public class PublicDataServiceImpl implements PublicDataService {
                 existingStation.setBusStnX(busStation.getBusStnX());
                 existingStation.setBusStnY(busStation.getBusStnY());
                 busStationRepository.save(existingStation);
+                log.debug("버스 정류장 업데이트 완료 - ID: {}, Name: {}", 
+                        existingStation.getBusStnId(), existingStation.getBusStnName());
             } else {
                 busStationRepository.save(busStation);
+                log.debug("버스 정류장 생성 완료 - ID: {}, Name: {}", 
+                        busStation.getBusStnId(), busStation.getBusStnName());
             }
             savedCount++;
         }

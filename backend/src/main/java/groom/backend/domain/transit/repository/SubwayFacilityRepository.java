@@ -6,5 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SubwayFacilityRepository extends JpaRepository<SubwayFacility, Integer> {
+    /**
+     * 지하철역 ID로 시설 목록을 조회합니다.
+     */
+    java.util.List<SubwayFacility> findBySubId(Integer subId);
 }
 

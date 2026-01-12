@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 인구 정보 조회 응답 DTO
@@ -45,11 +44,6 @@ public class GetPopulationResponse {
             description = "실시간 인구 현황 정보"
     )
     private LivePopulationInfo livePopulation;
-
-    @Schema(
-            description = "인구 예보 정보 리스트 (시간대별 예보 데이터)"
-    )
-    private List<PredictedPopulationInfo> predictedPopulations;
 
     /**
      * 실시간 인구 현황 정보
@@ -152,4 +146,3 @@ public class GetPopulationResponse {
         private Integer forecastPopMax;
     }
 }
-

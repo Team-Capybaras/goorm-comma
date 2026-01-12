@@ -22,6 +22,7 @@ public class WeatherMapper {
           .humidity(weatherStatus.getHumidity())
           .windDirct(weatherStatus.getWindDirct())
           .windSpd(weatherStatus.getWindSpd())
+          .rainChance(weatherStatus.getRainChance())
           .precipitation(weatherStatus.getPrecipitation())
           .precptType(weatherStatus.getPrecptType())
           .precptMsg(weatherStatus.getPrecptMsg())
