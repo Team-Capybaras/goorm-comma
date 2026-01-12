@@ -30,42 +30,16 @@ public class ParkStatisticsResponse {
   @Schema(
           description = "요일 및 시간(hour) 단위로 집계된 혼잡도 통계 목록",
           example = """
-      [
-        {
-          "weekday": "MON",
-          "time": 10,
-          "popMeanMin": 120,
-          "popMeanMax": 340
-        },
-        {
-          "weekday": "MON",
-          "time": 11,
-          "popMeanMin": 150,
-          "popMeanMax": 390
-        }
-      ]
-      """
+                      statistics: [
+                        {
+                          weekday,
+                          hour: [
+                            { time, popMeanMin, popMeanMax, uncrowdedTime }
+                          ],
+                          message
+                        }
+                      ]
+                  """
   )
   private List<WeekdayAggregateResponse> statistics;
-
-  /**
-   * 09시 - 22시 중 가장 혼잡도가 낮은 시간대
-   */
-  @Schema(
-          description = "9시 - 22시 중 가장 혼잡도가 낮은 시간대",
-          example = "9",
-          nullable = false
-  )
-  private int uncrowdedTime;
-
-  /**
-   * 시간대에 대한 추천 메시지
-   * ex: 오늘은 몇시가 제일 낮은 혼잡도를 가집니다.
-   */
-  @Schema(
-          description = "시간대에 대한 추천 메시지",
-          example = "오늘은 13시가 제일 낮은 혼잡도를 가집니다.",
-          nullable = false
-  )
-  private String message;
 }
