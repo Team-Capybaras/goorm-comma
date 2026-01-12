@@ -23,14 +23,15 @@ import java.util.List;
 @Builder
 public class GetAllParksResponse {
     @Schema(
-            description = "공원 정보 리스트",
+            description = "공원 정보 리스트 (빈 배열일 수 있음)",
             example = "[]"
     )
     private List<ParkInfo> parks;
 
     @Schema(
             description = "다음 페이지 커서 (다음 페이지가 없으면 null)",
-            example = "POI100"
+            example = "POI100",
+            nullable = true
     )
     private String nextCursor;
 
@@ -85,43 +86,50 @@ public class GetAllParksResponse {
 
         @Schema(
                 description = "기온 (℃)",
-                example = "2.5"
+                example = "2.5",
+                nullable = true
         )
         private Float temp;
 
         @Schema(
                 description = "강수 관련 메시지",
-                example = "눈이 내리고 있습니다"
+                example = "눈이 내리고 있습니다",
+                nullable = true
         )
         private String precptMsg;
 
         @Schema(
                 description = "통합 대기환경 등급",
-                example = "보통"
+                example = "보통",
+                nullable = true
         )
         private String airIndex;
 
         @Schema(
                 description = "혼잡도 레벨 (여유, 보통, 붐빔, 매우붐빔)",
-                example = "보통"
+                example = "보통",
+                nullable = true
         )
         private String areaCongestLevel;
 
         @Schema(
                 description = "거리 (km)",
-                example = "null"
+                example = "null",
+                nullable = true
         )
         private Double distance;
 
         @Schema(
                 description = "이미지 URL",
-                example = "null"
+                example = "null",
+                nullable = true
         )
         private String image;
 
         @Schema(
                 description = "태그 리스트",
-                example = "null"
+                example = "null",
+                nullable = true
         )
         private List<String> tags;
     }
