@@ -34,10 +34,14 @@ public class ParkStatisticsResponse {
                         {
                           weekday,
                           hour: [
-                            { time, popMeanMin, popMeanMax, uncrowdedTime }
+                            { time, popMeanMin, popMeanMax},
+                            { time, popMeanMin, popMeanMax},
+                            { time, popMeanMin, popMeanMax},
+                            ...
                           ],
+                          ,uncrowdedTime
                           message
-                        }
+                        },
                       ]
                   """
   )

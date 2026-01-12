@@ -12,15 +12,16 @@ import java.util.List;
 @Builder
 @Schema(
         name = "WeekdayAggregateResponse",
-        description = "특정 요일과 시간(hour)에 대한 혼잡도 집계 데이터. 데이터가 부족할 경우 일부 시간대가 존재하지 않을 수 있습니다.",
+        description = "특정 요일과 시간(hour)에 대한 혼잡도 집계 데이터. 데이터가 부족할 경우 부분적으로 시간대가 존재하지 않을 수 있습니다.",
         example = """
                 weekday,
                 hour: [
-                  { time, popMeanMin, popMeanMax, uncrowdedTime },
-                  { time, popMeanMin, popMeanMax, uncrowdedTime },
-                  { time, popMeanMin, popMeanMax, uncrowdedTime },
+                  { time, popMeanMin, popMeanMax},
+                  { time, popMeanMin, popMeanMax},
+                  { time, popMeanMin, popMeanMax},
                   ...
                 ],
+                ,uncrowdedTime
                 message
                 """
 )
@@ -44,6 +45,19 @@ public class WeekdayAggregateResponse {
   )
   private List<HourAggregateResponse> hour;
 
+  /**
+   * 09시 - 22시 중 가장 혼잡도가 낮은 시간대
+   */
+  @Schema(
+          description = "9시 - 22시 중 가장 혼잡도가 낮은 시간대",
+          example = "9",
+          nullable = false
+  )
+  private int uncrowdedTime;
+
+  @Getter
+  @AllArgsConstructor
+  @NoArgsConstructor
   @Schema(
           name = "hourAggregateResponse",
           description = "특정 요일의 시간대에 대한 혼잡도 집계입니다."
@@ -79,16 +93,6 @@ public class WeekdayAggregateResponse {
             example = "340"
     )
     private int popMeanMax;
-
-    /**
-     * 09시 - 22시 중 가장 혼잡도가 낮은 시간대
-     */
-    @Schema(
-            description = "9시 - 22시 중 가장 혼잡도가 낮은 시간대",
-            example = "9",
-            nullable = false
-    )
-    private int uncrowdedTime;
   }
 
   /**
