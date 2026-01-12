@@ -103,6 +103,18 @@ const data = {
       congestion: "보통",
       distance: "7.2"
     },
+    {
+      thumbnail : "/test.jpg",
+      area_name: "공공원원",
+      congestion: "보통",
+      distance: "7.2"
+    },
+    {
+      thumbnail : "/test.jpg",
+      area_name: "공공원원",
+      congestion: "보통",
+      distance: "7.2"
+    },
   ]
 }
 
