@@ -202,6 +202,7 @@
   // ============ */
   --space-1: 2px;
   --space-2: 4px;
+  --space-2-sub: 6px;
   --space-3: 8px;
   --space-4: 16px;
   --space-5: 24px;
@@ -214,24 +215,24 @@
   --space-12: 80px;
 }
 
-@theme inline {
-  /* =========================
+/*@theme inline {
+  !* =========================
     Brand
-  ========================= */
+  ========================= *!
   --color-primary: rgb(var(--primary));
   --color-primary-bright: rgb(var(--primary-bright));
   --color-primary-deep: rgb(var(--primary-deep));
 
-  /* =========================
+  !* =========================
      Background
-  ========================= */
+  ========================= *!
   --color-bg: rgb(var(--background));
   --color-bg-bright: rgb(var(--background-bright));
   --color-bg-deep: rgb(var(--background-deep));
 
-  /* =========================
+  !* =========================
      Text
-  ========================= */
+  ========================= *!
   --color-text: rgb(var(--foreground-text));
   --color-text-bright: rgb(var(--foreground-text-bright));
   --color-text-deep: rgb(var(--foreground-text-deep));
@@ -242,21 +243,21 @@
 
   --color-text-inverse: rgb(var(--foreground-inverse-text));
 
-  /* =========================
+  !* =========================
      Line / Border
-  ========================= */
+  ========================= *!
   --color-line: rgb(var(--foreground-line));
   --color-line-bright: rgb(var(--foreground-line-bright));
   --color-line-deep: rgb(var(--foreground-line-deep));
 
-  /* =========================
+  !* =========================
      Overlay
-  ========================= */
+  ========================= *!
   --color-overlay: rgb(var(--overlay));
 
-  /* =========================
+  !* =========================
      Status
-  ========================= */
+  ========================= *!
   --color-positive: rgb(var(--positive));
   --color-positive-bright: rgb(var(--positive-bright));
   --color-positive-pale: rgb(var(--positive-pale));
@@ -273,41 +274,41 @@
   --color-warning-bright: rgb(var(--warning-bright));
   --color-warning-pale: rgb(var(--warning-pale));
 
-  /* =============//
+  !* =============//
   //  Typography  //
-  // ============ */
+  // ============ *!
 
-  /* fonts */
+  !* fonts *!
   --font-sans: var(--font-family-sans);
 
-  /* ==================================================
+  !* ==================================================
     TYPOGRAPHY — HEADING
     Size: 26px / LH 150% / LS -1%
- ================================================== */
+ ================================================== *!
   --text-heading-b: var(--font-bold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
   --text-heading-sb: var(--font-semibold) var(--font-3xl) / calc(var(--font-3xl) * var(--leading-md)) var(--font-sans);
 
-  /* ==================================================
+  !* ==================================================
      TYPOGRAPHY — TITLE
      Size: 24px / 22px
-  ================================================== */
+  ================================================== *!
   --text-title-b: var(--font-bold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
   --text-title-sb: var(--font-semibold) var(--font-2xl) / calc(var(--font-2xl) * var(--leading-md)) var(--font-sans);
 
-  /* ==================================================
+  !* ==================================================
      TYPOGRAPHY — SUBTITLE
      Size: 20px / 18px
-  ================================================== */
+  ================================================== *!
   --text-subtitle-1-sb: var(--font-semibold) var(--font-xl) / calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
   --text-subtitle-1-m: var(--font-medium) var(--font-xl) / calc(var(--font-xl) * var(--leading-md)) var(--font-sans);
 
   --text-subtitle-2-sb: var(--font-semibold) var(--font-lg) / calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
   --text-subtitle-2-m: var(--font-medium) var(--font-lg) / calc(var(--font-lg) * var(--leading-md)) var(--font-sans);
 
-  /* ==================================================
+  !* ==================================================
      TYPOGRAPHY — BODY
      Size: 16px / 14px
-  ================================================== */
+  ================================================== *!
   --text-body-1-sb: var(--font-semibold) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
   --text-body-1-m: var(--font-medium) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
   --text-body-1-r: var(--font-regular) var(--font-md) / calc(var(--font-md) * var(--leading-md)) var(--font-sans);
@@ -316,10 +317,10 @@
   --text-body-2-m: var(--font-medium) var(--font-sm) / calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
   --text-body-2-r: var(--font-regular) var(--font-sm) / calc(var(--font-sm) * var(--leading-md)) var(--font-sans);
 
-  /* ==================================================
+  !* ==================================================
      TYPOGRAPHY — CAPTION
      Size: 13px / 12px / 11px
-  ================================================== */
+  ================================================== *!
   --text-caption-1-sb: var(--font-semibold) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
   --text-caption-1-m: var(--font-medium) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
   --text-caption-1-r: var(--font-regular) var(--font-xs) / calc(var(--font-xs) * var(--leading-md)) var(--font-sans);
@@ -332,22 +333,22 @@
   --text-caption-3-m: var(--font-medium) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
   --text-caption-3-r: var(--font-regular) var(--font-3xs) / calc(var(--font-3xs) * var(--leading-md)) var(--font-sans);
 
-  /* ==================================================
+  !* ==================================================
      FONT WEIGHT
-  ================================================== */
+  ================================================== *!
   --font-weight-b:  var(--font-bold);
   --font-weight-sb: var(--font-semibold);
   --font-weight-m:  var(--font-medium);
   --font-weight-r:  var(--font-regular);
 
-  /* ==================================================
+  !* ==================================================
      LETTER SPACING
-  ================================================== */
+  ================================================== *!
   --tracking-default: var(--tracking-normal);
 
-  /* =========================
+  !* =========================
      Radius
-  ========================= */
+  ========================= *!
   --radius-xs: var(--radius-1);
   --radius-sm: var(--radius-2);
   --radius-md: var(--radius-3);
@@ -356,23 +357,23 @@
   --radius-2xl: var(--radius-8);
   --radius-full: var(--radius-full);
 
-  /* =========================
+  !* =========================
     Spacing
-  ========================= */
+  ========================= *!
   --spacing-0: 0px;
-  --spacing-1: var(--space-1);   /* 2 */
-  --spacing-2: var(--space-2);   /* 4 */
-  --spacing-3: var(--space-3);   /* 8 */
-  --spacing-4: var(--space-4);   /* 16 */
-  --spacing-5: var(--space-5);   /* 24 */
-  --spacing-6: var(--space-6);   /* 32 */
-  --spacing-7: var(--space-7);   /* 40 */
-  --spacing-8: var(--space-8);   /* 48 */
-  --spacing-9: var(--space-9);   /* 56 */
-  --spacing-10: var(--space-10); /* 64 */
-  --spacing-11: var(--space-11); /* 72 */
-  --spacing-12: var(--space-12); /* 80 */
-}
+  --spacing-1: var(--space-1);   !* 2 *!
+  --spacing-2: var(--space-2);   !* 4 *!
+  --spacing-3: var(--space-3);   !* 8 *!
+  --spacing-4: var(--space-4);   !* 16 *!
+  --spacing-5: var(--space-5);   !* 24 *!
+  --spacing-6: var(--space-6);   !* 32 *!
+  --spacing-7: var(--space-7);   !* 40 *!
+  --spacing-8: var(--space-8);   !* 48 *!
+  --spacing-9: var(--space-9);   !* 56 *!
+  --spacing-10: var(--space-10); !* 64 *!
+  --spacing-11: var(--space-11); !* 72 *!
+  --spacing-12: var(--space-12); !* 80 *!
+}*/
 
 @layer utilities {
   /* ==================================================
@@ -382,132 +383,182 @@
 
   /* ===== Heading ===== */
   .text-heading-b {
-    font: var(--text-heading-b);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-4xl);
+    font-weight: var(--font-bold);
+    line-height: calc(var(--font-4xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-heading-sb {
-    font: var(--text-heading-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-4xl);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-4xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   /* ===== Title ===== */
   .text-title-1-b {
-    font: var(--text-title-1-b);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-3xl);
+    font-weight: var(--font-bold);
+    line-height: calc(var(--font-3xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-title-1-sb {
-    font: var(--text-title-1-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-3xl);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-3xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-title-2-b {
-    font: var(--text-title-2-b);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-2xl);
+    font-weight: var(--font-bold);
+    line-height: calc(var(--font-2xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-title-2-sb {
-    font: var(--text-title-2-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-2xl);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-2xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   /* ===== Subtitle ===== */
   .text-subtitle-1-sb {
-    font: var(--text-subtitle-1-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-xl);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-subtitle-1-m {
-    font: var(--text-subtitle-1-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-xl);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-xl) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-subtitle-2-sb {
-    font: var(--text-subtitle-2-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-lg);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-lg) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-subtitle-2-m {
-    font: var(--text-subtitle-2-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-lg);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-lg) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   /* ===== Body ===== */
   .text-body-1-sb {
-    font: var(--text-body-1-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-md) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-body-1-m {
-    font: var(--text-body-1-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-md);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-md) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-body-1-r {
-    font: var(--text-body-1-r);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-md);
+    font-weight: var(--font-regular);
+    line-height: calc(var(--font-md) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-body-2-sb {
-    font: var(--text-body-2-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-sm) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-body-2-m {
-    font: var(--text-body-2-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-sm);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-sm) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-body-2-r {
-    font: var(--text-body-2-r);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-sm);
+    font-weight: var(--font-regular);
+    line-height: calc(var(--font-sm) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   /* ===== Caption ===== */
   .text-caption-1-sb {
-    font: var(--text-caption-1-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-xs);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-1-m {
-    font: var(--text-caption-1-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-xs);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-1-r {
-    font: var(--text-caption-1-r);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-xs);
+    font-weight: var(--font-regular);
+    line-height: calc(var(--font-xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-2-sb {
-    font: var(--text-caption-2-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-2xs);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-2xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-2-m {
-    font: var(--text-caption-2-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-2xs);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-2xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-2-r {
-    font: var(--text-caption-2-r);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-2xs);
+    font-weight: var(--font-regular);
+    line-height: calc(var(--font-2xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-3-sb {
-    font: var(--text-caption-3-sb);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-3xs);
+    font-weight: var(--font-semibold);
+    line-height: calc(var(--font-3xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-3-m {
-    font: var(--text-caption-3-m);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-3xs);
+    font-weight: var(--font-medium);
+    line-height: calc(var(--font-3xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   .text-caption-3-r {
-    font: var(--text-caption-3-r);
-    letter-spacing: var(--tracking-default);
+    font-size: var(--font-3xs);
+    font-weight: var(--font-regular);
+    line-height: calc(var(--font-3xs) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
   }
 
   /* ==================================================
@@ -515,19 +566,19 @@
   ================================================== */
 
   .font-r {
-    font-weight: var(--font-weight-r);
+    font-weight: var(--font-regular);
   }
 
   .font-m {
-    font-weight: var(--font-weight-m);
+    font-weight: var(--font-medium);
   }
 
   .font-sb {
-    font-weight: var(--font-weight-sb);
+    font-weight: var(--font-semibold);
   }
 
   .font-b {
-    font-weight: var(--font-weight-b);
+    font-weight: var(--font-bold);
   }
 
   /* ==================================================
@@ -651,6 +702,7 @@
   .bg-default { background-color: rgb(var(--background)); }
   .bg-bright { background-color: rgb(var(--background-bright)); }
   .bg-deep { background-color: rgb(var(--background-deep)); }
+  .bg-inverse { background-color: rgba(var(--foreground-inverse-text)); }
 
   /* Brand */
   .bg-primary { background-color: rgb(var(--primary)); }
@@ -745,29 +797,40 @@
   /* ==================================================
      RADIUS
   ================================================== */
-
-  .rounded-xs {
-    border-radius: var(--radius-xs);
+  .rounded-1 {
+    border-radius: var(--radius-1);
   }
 
-  .rounded-sm {
-    border-radius: var(--radius-sm);
+  .rounded-2 {
+    border-radius: var(--radius-2);
   }
 
-  .rounded-md {
-    border-radius: var(--radius-md);
+  .rounded-3 {
+    border-radius: var(--radius-3);
   }
 
-  .rounded-lg {
-    border-radius: var(--radius-lg);
+  .rounded-4 {
+    border-radius: var(--radius-4);
   }
 
-  .rounded-xl {
-    border-radius: var(--radius-xl);
+  .rounded-5 {
+    border-radius: var(--radius-5);
   }
 
-  .rounded-2xl {
-    border-radius: var(--radius-2xl);
+  .rounded-6 {
+    border-radius: var(--radius-6);
+  }
+
+  .rounded-7 {
+    border-radius: var(--radius-7);
+  }
+
+  .rounded-8 {
+    border-radius: var(--radius-8);
+  }
+
+  .rounded-9 {
+    border-radius: var(--radius-9);
   }
 
   .rounded-full {
@@ -777,24 +840,44 @@
   /* ==================================================
      SPACING (gap / padding / margin 보조용)
   ================================================== */
+  /* gap / padding / margin 공통 처리 */
+  .gap { gap: var(--_space); }
+  .p { padding: var(--_space); }
+  .m { margin: var(--_space); }
 
-  .gap-xs { gap: var(--spacing-1); }
-  .gap-sm { gap: var(--spacing-2); }
-  .gap-md { gap: var(--spacing-3); }
-  .gap-lg { gap: var(--spacing-4); }
-  .gap-xl { gap: var(--spacing-5); }
+  /* padding direction */
+  .px { padding-inline: var(--_space); }
+  .py { padding-block: var(--_space); }
+  .pt { padding-top: var(--_space); }
+  .pr { padding-right: var(--_space); }
+  .pb { padding-bottom: var(--_space); }
+  .pl { padding-left: var(--_space); }
 
-  .p-xs { padding: var(--spacing-1); }
-  .p-sm { padding: var(--spacing-2); }
-  .p-md { padding: var(--spacing-3); }
-  .p-lg { padding: var(--spacing-4); }
-  .p-xl { padding: var(--spacing-5); }
+  /* margin direction */
+  .mx { margin-inline: var(--_space); }
+  .my { margin-block: var(--_space); }
+  .mt { margin-top: var(--_space); }
+  .mr { margin-right: var(--_space); }
+  .mb { margin-bottom: var(--_space); }
+  .ml { margin-left: var(--_space); }
 
-  .m-xs { margin: var(--spacing-1); }
-  .m-sm { margin: var(--spacing-2); }
-  .m-md { margin: var(--spacing-3); }
-  .m-lg { margin: var(--spacing-4); }
-  .m-xl { margin: var(--spacing-5); }
+  /* =====================================
+     SPACING — scale mapping
+     ===================================== */
+
+  .s-1 { --_space: var(--space-1); }
+  .s-2 { --_space: var(--space-2); }
+  .s-2-sub { --_space: var(--space-2-sub); }
+  .s-3 { --_space: var(--space-3); }
+  .s-4 { --_space: var(--space-4); }
+  .s-5 { --_space: var(--space-5); }
+  .s-6 { --_space: var(--space-6); }
+  .s-7 { --_space: var(--space-7); }
+  .s-8 { --_space: var(--space-8); }
+  .s-9 { --_space: var(--space-9); }
+  .s-10 { --_space: var(--space-10); }
+  .s-11 { --_space: var(--space-11); }
+  .s-12 { --_space: var(--space-12); }
 }
 
 @layer base {
