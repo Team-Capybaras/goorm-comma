@@ -4,13 +4,16 @@ import { useEffect, useRef, useState } from 'react'
 import type { BaseMapItem } from '@/shared/types/map-types'
 
 interface KakaoMapProps<T extends BaseMapItem> {
-  data: T[] // 지도에 뿌릴 데이터 목록
+  data: T[]
   center: { lat: number; lng: number } // 지도 중심 좌표
   level?: number // 확대 레벨 (기본값 7)
-  getMarkerImage: (item: T) => string
+  getMarkerImage: (item: T, isSelected: boolean) => string
   renderCard: (item: T) => React.ReactNode
   onCardClick?: (item: T) => void
   onMapLoad?: (map: any) => void
+
+  markerSize?: { width: number; height: number }
+  activeMarkerSize?: { width: number; height: number }
 }
 
 export default function KakaoMap<T extends BaseMapItem>({
@@ -21,6 +24,8 @@ export default function KakaoMap<T extends BaseMapItem>({
   renderCard,
   onCardClick,
   onMapLoad,
+  markerSize = { width: 32, height: 32 },
+  activeMarkerSize = { width: 48, height: 48 },
 }: KakaoMapProps<T>) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const [mapInstance, setMapInstance] = useState<any>(null)
@@ -54,6 +59,7 @@ export default function KakaoMap<T extends BaseMapItem>({
       })
     })
   }, []) // 의존성 배열 비움
+
   // 데이터가 바뀌면 마커만 새로 그리기
   useEffect(() => {
     if (!mapInstance || !window.kakao) return
@@ -66,10 +72,10 @@ export default function KakaoMap<T extends BaseMapItem>({
 
     // 새 마커 생성
     data.forEach((item) => {
-      const imageSrc = getMarkerImage(item)
+      const imageSrc = getMarkerImage(item, false)
       const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng)
 
-      const imageSize = new window.kakao.maps.Size(32, 32)
+      const imageSize = new window.kakao.maps.Size(markerSize.width, markerSize.height)
       const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
 
       const marker = new window.kakao.maps.Marker({
@@ -106,9 +112,8 @@ export default function KakaoMap<T extends BaseMapItem>({
       markersMapRef.current.set(item.id, marker)
       overlaysMapRef.current.set(item.id, customOverlay)
     })
-  }, [data, mapInstance, getMarkerImage])
+  }, [data, mapInstance, getMarkerImage, markerSize])
 
-  // 선택된 아이템 변경 시 -> 마커 크기 및 Z-Index 업데이트
   useEffect(() => {
     if (!mapInstance || !window.kakao) return
 
@@ -117,9 +122,10 @@ export default function KakaoMap<T extends BaseMapItem>({
       const item = data.find((d) => d.id === id)
       if (!item) return
 
-      const imageSrc = getMarkerImage(item)
+      const imageSrc = getMarkerImage(item, isSelected)
 
-      const targetSize = isSelected ? { width: 48, height: 48 } : { width: 32, height: 32 }
+      const targetSize = isSelected ? activeMarkerSize : markerSize
+
       const sizeObj = new window.kakao.maps.Size(targetSize.width, targetSize.height)
       const newMarkerImage = new window.kakao.maps.MarkerImage(imageSrc, sizeObj)
 
@@ -127,7 +133,7 @@ export default function KakaoMap<T extends BaseMapItem>({
 
       marker.setZIndex(isSelected ? 10 : 1)
     })
-  }, [selectedItem, data, getMarkerImage])
+  }, [selectedItem, data, getMarkerImage, markerSize, activeMarkerSize])
 
   // 중심 좌표 이동 (페이지 진입 시 등)
   useEffect(() => {
