@@ -1,11 +1,9 @@
-import {api} from "@/shared/libs/axios";
 import ParkThumbnail from "@/app/(view)/detail/_components/ParkThumbnail";
 import ParkInfoDashboard from "@/app/(view)/detail/_components/ParkInfoDashboard";
 import EnvironmentDashboard from "@/app/(view)/detail/_components/EnvironmentDashboard";
 import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionInfoDashboard";
 import TransportDashboard from "@/app/(view)/detail/_components/TransportDashboard";
 import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
-import {MapDataType} from "@/shared/types/map-types";
 
 const data = {
   park : {
@@ -118,8 +116,7 @@ const data = {
   ]
 }
 
-export default async function page () {
-
+export default async function Page ({params}: {params: Promise<{id : string}>}) {
   ////////////////////////////
   /* TODO: 추후 API 작성 필요 */
   ///////////////////////////
@@ -129,13 +126,14 @@ export default async function page () {
   );*/
 
   /*const cityData = res.data?.CITYDATA;*/
+  const {id} = await params
 
   return (
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
       <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
         {/* 공원 종합 정보 */}
-        <ParkInfoDashboard data={data.park}/>
+        <ParkInfoDashboard areaCode={id}/>
 
         {/* bar */}
         <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>

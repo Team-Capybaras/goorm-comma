@@ -10,7 +10,7 @@ interface Props {
 
 export default function DetailMap({ data, center }: Props) {
   return (
-    <section className="w-full h-full relative ">
+    <section className="w-full h-full relative">
       <KakaoMap<MapDataType>
         data={data}
         center={center}
