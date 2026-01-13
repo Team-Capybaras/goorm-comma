@@ -12,6 +12,8 @@ import groom.backend.domain.avoidance.repository.ParkStatisticsLogRepository;
 import groom.backend.domain.avoidance.repository.ParkStatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,10 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
    * 전체 인구 데이터를 기반으로 공원 혼잡도 통계를 집계한다.
    */
   @Transactional
+  @CacheEvict(
+          cacheNames = "parkStatistics",
+          allEntries = true
+  )
   public void aggregateAll() {
     log.info("공원 혼잡도 전체 집계 시작");
 
@@ -45,19 +51,20 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
       return;
     }
 
-    // areaCode + weekday + hour 기준 그룹핑
     Map<GroupKey, List<LivePopStatus>> grouped =
             allStatuses.stream()
                     .collect(Collectors.groupingBy(this::groupKey));
 
-    grouped.forEach((key, statuses) -> {
-      aggregateOne(key, statuses);
-    });
+    grouped.forEach(this::aggregateOne);
 
     log.info("공원 혼잡도 전체 집계 완료");
   }
 
   @Override
+  @Cacheable(
+          cacheNames = "parkStatistics",
+          key = "#areaCode"
+  )
   public ParkStatisticsResponse getParkStatistics(String areaCode) {
     // TODO : 집계 데이터 반환
     List<ParkStatistics> statistics = parkStatisticsRepository.findByAreaCode(areaCode);
@@ -66,6 +73,13 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
 
     return response;
   }
+
+
+//  private int uncrowdedTime(ParkStatisticsResponse data) {
+//    data.getStatistics();
+//  }
+
+
 
   private void aggregateOne(GroupKey key, List<LivePopStatus> statuses) {
     int avgMin =
@@ -134,6 +148,18 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
             .max(LocalDateTime::compareTo)
             .orElse(null);
   }
+
+  /**
+   * 방문 시간 기반 최소 혼잡도 제공 기능
+   * 현재 시간을 받는다.
+   * FE는 한꺼번에 받는 것이 좋다.
+   * 시간 입력은 UTC냐 integer냐 -> 일단 YYYY.MM.DD hh:mm 형식으로...
+   * ParkStatistics의 내부 기능이 될까 분리가 될까. FE 에 따른다.
+   */
+  private void temp() {
+
+  }
+
 
   /**
    * 집계용 내부 키
