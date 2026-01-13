@@ -1,9 +1,9 @@
-package groom.backend.domain.park.controller;
+package groom.backend.application.park.controller;
 
+import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.common.response.ApiResponse;
 import groom.backend.domain.park.dto.response.GetAllParksResponse;
 import groom.backend.domain.park.dto.response.GetParkResponse;
-import groom.backend.domain.park.service.spec.ParkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * 공원 정보 조회 컨트롤러
- * 커서 기반 페이지네이션으로 공원 리스트를 조회합니다.
+ * 여러 도메인을 조합하여 공원 정보를 제공합니다.
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/parks")
 @Tag(name = "Park", description = "공원 정보 조회 관리")
 public class ParkController {
-    private final ParkService parkService;
+    private final ParkApplicationService parkApplicationService;
 
     @GetMapping
     @Operation(
@@ -56,14 +56,14 @@ public class ParkController {
             )
             @RequestParam(required = false) Integer size
     ) {
-        GetAllParksResponse response = parkService.getParks(cursor, size);
+        GetAllParksResponse response = parkApplicationService.getParks(cursor, size);
         return ApiResponse.success(200, "공원 리스트 조회 성공", response);
     }
 
     @GetMapping("/{areaCode}")
     @Operation(
-            summary = "특정 공원 조회 (공원 상세 정보 카드)",
-            description = "areaCode로 특정 공원의 상세 정보를 조회합니다."
+            summary = "특정 공원 조회 (공원 상세 정보 카드, 상세 페이지가 아닌 지도뷰에서 사용되는 API)",
+            description = "areaCode로 특정 공원의 상세 정보를 조회합니다. 지도뷰에서 사용되는 API입니다."
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -87,7 +87,7 @@ public class ParkController {
             )
             @PathVariable String areaCode
     ) {
-        GetParkResponse response = parkService.getParkByAreaCode(areaCode);
+        GetParkResponse response = parkApplicationService.getParkByAreaCode(areaCode);
         return ApiResponse.success(200, "공원 조회 성공", response);
     }
 }

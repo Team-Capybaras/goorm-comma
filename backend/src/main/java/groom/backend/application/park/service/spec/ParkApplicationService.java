@@ -1,12 +1,13 @@
-package groom.backend.domain.park.service.spec;
+package groom.backend.application.park.service.spec;
 
 import groom.backend.domain.park.dto.response.GetAllParksResponse;
 import groom.backend.domain.park.dto.response.GetParkResponse;
 
 /**
- * 공원 정보 조회 서비스 인터페이스
+ * 공원 정보 조회 애플리케이션 서비스 인터페이스
+ * 여러 도메인(공원, 날씨, 인구)을 조합하여 공원 정보를 제공합니다.
  */
-public interface ParkService {
+public interface ParkApplicationService {
     /**
      * 커서 기반 페이지네이션으로 공원 리스트를 조회합니다.
      *

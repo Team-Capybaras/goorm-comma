@@ -1,10 +1,10 @@
-package groom.backend.domain.park.service.impl;
+package groom.backend.application.park.service.impl;
 
+import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.domain.park.dto.response.GetAllParksResponse;
 import groom.backend.domain.park.dto.response.GetParkResponse;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
-import groom.backend.domain.park.service.spec.ParkService;
 import groom.backend.domain.weather.entity.WeatherStatus;
 import groom.backend.domain.weather.repository.WeatherStatusRepository;
 import groom.backend.domain.population.entity.LivePopStatus;
@@ -21,13 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 공원 정보 조회 서비스 구현체
- * 커서 기반 페이지네이션으로 공원 리스트를 조회합니다.
+ * 공원 정보 조회 애플리케이션 서비스 구현체
+ * 여러 도메인(공원, 날씨, 인구)을 조합하여 공원 정보를 제공합니다.
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ParkServiceImpl implements ParkService {
+public class ParkApplicationServiceImpl implements ParkApplicationService {
     private final ParkRepository parkRepository;
     private final WeatherStatusRepository weatherStatusRepository;
     private final LivePopStatusRepository livePopStatusRepository;
@@ -129,7 +129,7 @@ public class ParkServiceImpl implements ParkService {
 
     /**
      * areaCode로 특정 공원을 조회합니다.
-     *
+     * 공원 상세페이지가 아닌 지도뷰 공원 상세 정보 조회입니다.
      * @param areaCode 지역 코드
      * @return 공원 정보
      */
