@@ -1,6 +1,6 @@
 import { Card } from '@/components/common/Card'
 import Image from 'next/image'
-import ParkThumbnail from '@/app/(view)/detail/_components/ParkThumbnail'
+import ParkThumbnail from '@/components/common/ParkThumbnail'
 
 export default function ParkListWithPopulation() {
   return (
@@ -47,14 +47,18 @@ export default function ParkListWithPopulation() {
         <div> {/* 공원 수 및 공원 정보 추후 map으로 생성 */}
           <p>총 공원 수</p>
           <div className="flex gap-md">
-            <Card className="w-[345px] h-[325px] border-default rounded-xl">
-              <ParkThumbnail  data={[
+            <Card className="w-[345px] h-[325px] border-default rounded-xl bg-gray-500">
+              <ParkThumbnail  
+                height={325}     // ✅ 이 페이지 전용
+                dotBottom={12}
+                data={[
                 '/images/sample/park1.jpg',
                 '/images/sample/park2.jpg',
                 '/images/sample/park3.jpg',
                 '/images/sample/park4.jpg',
                 ]} 
               />
+              
             </Card>
           </div>
           <div className="flex flex-col gap-sm">
