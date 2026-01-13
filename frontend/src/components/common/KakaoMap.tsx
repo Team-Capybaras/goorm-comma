@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { BaseMapItem } from '@/shared/types/map-types'
-import { Card, CardHeader, CardContent } from '@/components/common/Card'
-import Image from 'next/image'
+
 interface KakaoMapProps<T extends BaseMapItem> {
   data: T[] // 지도에 뿌릴 데이터 목록
   center: { lat: number; lng: number } // 지도 중심 좌표
@@ -11,6 +10,7 @@ interface KakaoMapProps<T extends BaseMapItem> {
   getMarkerImage: (item: T) => string
   renderCard: (item: T) => React.ReactNode
   onCardClick?: (item: T) => void
+  onMapLoad?: (map: any) => void
 }
 
 export default function KakaoMap<T extends BaseMapItem>({
@@ -20,37 +20,16 @@ export default function KakaoMap<T extends BaseMapItem>({
   getMarkerImage,
   renderCard,
   onCardClick,
+  onMapLoad,
 }: KakaoMapProps<T>) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const [mapInstance, setMapInstance] = useState<any>(null)
-  const markersRef = useRef<any[]>([]) // 마커들을 담아둘 배열
+
+  const markersMapRef = useRef<Map<string | number, any>>(new Map())
+  const overlaysMapRef = useRef<Map<string | number, any>>(new Map())
+
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  //현위치 이동 핸들러 함수
-  const handleCurrentLocation = () => {
-    if (!mapInstance) return // 지도가 아직 로드 안됐으면 중단
 
-    setIsLoading(true) // 로딩 시작 (아이콘 뺑글뺑글)
-
-    // 브라우저 내장 API로 현재 좌표 가져오기
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
-
-        // 카카오맵 좌표 객체 생성
-        const locPosition = new window.kakao.maps.LatLng(lat, lng)
-
-        // 지도 중심 부드럽게 이동
-        mapInstance.panTo(locPosition)
-        setIsLoading(false) // 로딩 끝
-      },
-      (err) => {
-        console.error(err)
-        setIsLoading(false)
-      }
-    )
-  }
   //지도 그리기 및 마커 표시
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -65,43 +44,90 @@ export default function KakaoMap<T extends BaseMapItem>({
       const map = new window.kakao.maps.Map(mapContainer.current, options)
       setMapInstance(map)
 
+      if (onMapLoad) {
+        onMapLoad(map)
+      }
+
       // 지도 빈 곳 클릭 시 선택 해제
       window.kakao.maps.event.addListener(map, 'click', () => {
         setSelectedItem(null)
       })
     })
   }, []) // 의존성 배열 비움
-  // 2. 데이터가 바뀌면 마커만 새로 그리기
+  // 데이터가 바뀌면 마커만 새로 그리기
   useEffect(() => {
     if (!mapInstance || !window.kakao) return
 
-    // 기존 마커 싹 지우기
-    markersRef.current.forEach((marker) => marker.setMap(null))
-    markersRef.current = []
+    // 기존 마커 및 오버레이 제거
+    markersMapRef.current.forEach((marker) => marker.setMap(null))
+    markersMapRef.current.clear()
+    overlaysMapRef.current.forEach((overlay) => overlay.setMap(null))
+    overlaysMapRef.current.clear()
 
     // 새 마커 생성
     data.forEach((item) => {
       const imageSrc = getMarkerImage(item)
-      const imageSize = new window.kakao.maps.Size(24, 35)
-      const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
       const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng)
+
+      const imageSize = new window.kakao.maps.Size(32, 32)
+      const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
 
       const marker = new window.kakao.maps.Marker({
         position: markerPosition,
         title: item.name,
         image: markerImage,
+        zIndex: 1,
       })
 
+      const content = `
+        <div style="transform: translateY(4px);"> 
+          <div class="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm ">
+             <span class="text-[14px] font-semibold text-gray-800 whitespace-nowrap leading-none block">
+               ${item.name}
+             </span>
+          </div>
+        </div>
+      `
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position: markerPosition,
+        content: content,
+        yAnchor: 0,
+        zIndex: 0,
+      })
       // 마커 클릭 이벤트
       window.kakao.maps.event.addListener(marker, 'click', () => {
         setSelectedItem(item)
-        mapInstance.panTo(markerPosition) // 클릭한 곳으로 이동
+        mapInstance.panTo(markerPosition)
       })
 
       marker.setMap(mapInstance)
-      markersRef.current.push(marker) // 배열에 저장
+      customOverlay.setMap(mapInstance)
+
+      markersMapRef.current.set(item.id, marker)
+      overlaysMapRef.current.set(item.id, customOverlay)
     })
   }, [data, mapInstance, getMarkerImage])
+
+  // 선택된 아이템 변경 시 -> 마커 크기 및 Z-Index 업데이트
+  useEffect(() => {
+    if (!mapInstance || !window.kakao) return
+
+    markersMapRef.current.forEach((marker, id) => {
+      const isSelected = selectedItem?.id === id
+      const item = data.find((d) => d.id === id)
+      if (!item) return
+
+      const imageSrc = getMarkerImage(item)
+
+      const targetSize = isSelected ? { width: 48, height: 48 } : { width: 32, height: 32 }
+      const sizeObj = new window.kakao.maps.Size(targetSize.width, targetSize.height)
+      const newMarkerImage = new window.kakao.maps.MarkerImage(imageSrc, sizeObj)
+
+      marker.setImage(newMarkerImage)
+
+      marker.setZIndex(isSelected ? 10 : 1)
+    })
+  }, [selectedItem, data, getMarkerImage])
 
   // 중심 좌표 이동 (페이지 진입 시 등)
   useEffect(() => {
@@ -117,41 +143,9 @@ export default function KakaoMap<T extends BaseMapItem>({
     <div className="relative w-full h-full overflow-hidden bg-background">
       <div ref={mapContainer} className="w-full h-full" />
 
-      {/* 현위치 버튼: 이미지 아이콘 사용 & 테마 적용 */}
-      <button
-        onClick={handleCurrentLocation}
-        className={`absolute left-4 z-30 bg-background border border-border p-2 rounded-lg shadow-md hover:bg-muted transition-all duration-300 ease-in-out ${
-          selectedItem ? 'bottom-52' : 'bottom-6'
-        }`}
-        aria-label="내 위치로 이동"
-      >
-        {/* SVG 이미지 적용 (로딩 시 회전) */}
-        <Image
-          src="/images/icons/current.svg"
-          alt="현위치"
-          width={24}
-          height={24}
-          className={`size-6 ${isLoading ? 'animate-spin' : ''}`}
-        />
-      </button>
-
-      {/* 카드 영역 */}
       {selectedItem && (
         <div className="absolute bottom-6 left-4 right-4 z-20 animate-slide-up">
-          <Card
-            onClick={() => onCardClick?.(selectedItem)}
-            className="shadow-xl border-none bg-bright cursor-pointer hover:bg-normal-pale transition-colors rounded-2xl"
-          >
-            <CardHeader
-              closable
-              onClose={(e) => {
-                e?.stopPropagation()
-                setSelectedItem(null)
-              }}
-              className="pb-0"
-            />
-            <CardContent className="pt-0 pb-4">{renderCard(selectedItem)}</CardContent>
-          </Card>
+          <div onClick={() => onCardClick?.(selectedItem)}>{renderCard(selectedItem)}</div>
         </div>
       )}
     </div>
