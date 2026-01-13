@@ -1,0 +1,129 @@
+package groom.backend.domain.park.service.impl;
+
+import groom.backend.domain.park.dto.response.GetAllParksResponse;
+import groom.backend.domain.park.entity.Park;
+import groom.backend.domain.park.repository.ParkRepository;
+import groom.backend.domain.park.service.spec.ParkService;
+import groom.backend.domain.weather.entity.WeatherStatus;
+import groom.backend.domain.weather.repository.WeatherStatusRepository;
+import groom.backend.domain.population.entity.LivePopStatus;
+import groom.backend.domain.population.repository.LivePopStatusRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * 공원 정보 조회 서비스 구현체
+ * 커서 기반 페이지네이션으로 공원 리스트를 조회합니다.
+ */
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ParkServiceImpl implements ParkService {
+    private final ParkRepository parkRepository;
+    private final WeatherStatusRepository weatherStatusRepository;
+    private final LivePopStatusRepository livePopStatusRepository;
+
+    private static final int DEFAULT_SIZE = 10;
+    private static final int MAX_SIZE = 100;
+
+    /**
+     * 커서 기반 페이지네이션으로 공원 리스트를 조회합니다.
+     *
+     * @param cursor 커서 (areaCode), 첫 페이지는 null
+     * @param size 페이지 크기 (기본값: 10, 최대값: 100)
+     * @return 공원 리스트 및 다음 페이지 정보
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public GetAllParksResponse getParks(String cursor, Integer size) {
+        // size 검증 및 기본값 설정
+        int pageSize = (size == null || size <= 0) ? DEFAULT_SIZE : Math.min(size, MAX_SIZE);
+        
+        log.info("공원 리스트 조회 시작 - cursor: {}, size: {}", cursor, pageSize);
+
+        // 커서 기반 조회 (cursor보다 큰 areaCode를 가진 공원들을 조회)
+        // size + 1개 조회하여 다음 페이지 존재 여부 확인
+        Pageable pageable = PageRequest.of(0, pageSize + 1);
+        List<Park> parks;
+        if (cursor == null || cursor.trim().isEmpty()) {
+            // 첫 페이지: 가장 작은 areaCode부터 조회
+            parks = parkRepository.findAllParksOrderByAreaCodeAsc(pageable);
+        } else {
+            // 다음 페이지: cursor보다 큰 areaCode를 가진 공원들을 조회
+            parks = parkRepository.findParksByAreaCodeGreaterThan(cursor, pageable);
+        }
+        
+        log.info("조회된 공원 수: {}, 요청한 size: {}", parks.size(), pageSize);
+
+        // 다음 페이지 존재 여부 확인 (size + 1개 조회했으므로)
+        boolean hasNext = parks.size() > pageSize;
+        if (hasNext) {
+            parks = parks.subList(0, pageSize); // 마지막 하나 제거
+        }
+
+        // 다음 커서 설정
+        String nextCursor = null;
+        if (hasNext && !parks.isEmpty()) {
+            nextCursor = parks.get(parks.size() - 1).getAreaCode();
+        }
+
+        // DTO 변환 (날씨 및 인구 정보 포함)
+        List<GetAllParksResponse.ParkInfo> parkInfoList = parks.stream()
+                .map(park -> {
+                    // 날씨 정보 조회
+                    Optional<WeatherStatus> weatherStatusOptional = 
+                            weatherStatusRepository.findTopByAreaCodeOrderByDataGetTimeDesc(park.getAreaCode());
+                    
+                    // 인구 정보 조회
+                    Optional<LivePopStatus> livePopStatusOptional = 
+                            livePopStatusRepository.findLatestByAreaCode(park.getAreaCode());
+
+                    GetAllParksResponse.ParkInfo.ParkInfoBuilder builder = GetAllParksResponse.ParkInfo.builder()
+                            .areaCode(park.getAreaCode())
+                            .areaName(park.getAreaName())
+                            .longitude(park.getLongitude())
+                            .latitude(park.getLatitude())
+                            .distance(null)
+                            .image(null)
+                            .tags(null);
+
+                    // 날씨 정보 설정
+                    if (weatherStatusOptional.isPresent()) {
+                        WeatherStatus weatherStatus = weatherStatusOptional.get();
+                        builder.temp(weatherStatus.getTemp())
+                                .precptMsg(weatherStatus.getPrecptMsg())
+                                .airIndex(weatherStatus.getAirIndex());
+                    }
+
+                    // 인구 혼잡도 정보 설정
+                    if (livePopStatusOptional.isPresent()) {
+                        LivePopStatus livePopStatus = livePopStatusOptional.get();
+                        builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
+                    }
+
+                    return builder.build();
+                })
+                .collect(Collectors.toList());
+
+        GetAllParksResponse response = GetAllParksResponse.builder()
+                .parks(parkInfoList)
+                .nextCursor(nextCursor)
+                .hasNext(hasNext)
+                .size(parkInfoList.size())
+                .build();
+
+        log.info("공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), hasNext);
+
+        return response;
+    }
+}
+
