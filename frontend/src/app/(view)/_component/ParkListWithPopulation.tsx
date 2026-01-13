@@ -1,6 +1,6 @@
 import { Card } from '@/components/common/Card'
 import Image from 'next/image'
-import ParkThumbnail from '../detail/components/ParkThumbnail'
+import ParkThumbnail from '@/app/(view)/detail/_components/ParkThumbnail'
 
 export default function ParkListWithPopulation() {
   return (

@@ -1,10 +1,10 @@
 import {api} from "@/shared/libs/axios";
-import ParkThumbnail from "@/app/(view)/detail/components/ParkThumbnail";
-import ParkInfoDashboard from "@/app/(view)/detail/components/ParkInfoDashboard";
-import EnvironmentDashboard from "@/app/(view)/detail/components/EnvironmentDashboard";
-import CongestionInfoDashboard from "@/app/(view)/detail/components/CongestionInfoDashboard";
-import TransportDashboard from "@/app/(view)/detail/components/TransportDashboard";
-import AlternativeParkDashboard from "@/app/(view)/detail/components/AlternativeParkDashboard";
+import ParkThumbnail from "@/app/(view)/detail/_components/ParkThumbnail";
+import ParkInfoDashboard from "@/app/(view)/detail/_components/ParkInfoDashboard";
+import EnvironmentDashboard from "@/app/(view)/detail/_components/EnvironmentDashboard";
+import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionInfoDashboard";
+import TransportDashboard from "@/app/(view)/detail/_components/TransportDashboard";
+import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
 import {MapDataType} from "@/shared/types/map-types";
 
 const data = {
