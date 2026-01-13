@@ -1,6 +1,7 @@
 package groom.backend.domain.park.service.impl;
 
 import groom.backend.domain.park.dto.response.GetAllParksResponse;
+import groom.backend.domain.park.dto.response.GetParkResponse;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.park.service.spec.ParkService;
@@ -122,6 +123,68 @@ public class ParkServiceImpl implements ParkService {
 
         log.info("공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
                 parkInfoList.size(), hasNext);
+
+        return response;
+    }
+
+    /**
+     * areaCode로 특정 공원을 조회합니다.
+     *
+     * @param areaCode 지역 코드
+     * @return 공원 정보
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public GetParkResponse getParkByAreaCode(String areaCode) {
+        log.info("특정 공원 조회 시작 - AREA_CODE: {}", areaCode);
+
+        // 공원 정보 조회
+        Optional<Park> parkOptional = parkRepository.findByAreaCode(areaCode);
+        if (parkOptional.isEmpty()) {
+            log.warn("공원 정보를 찾을 수 없습니다 - AREA_CODE: {}", areaCode);
+            throw new RuntimeException("공원 정보를 찾을 수 없습니다: " + areaCode);
+        }
+
+        Park park = parkOptional.get();
+
+        // 날씨 정보 조회
+        Optional<WeatherStatus> weatherStatusOptional = 
+                weatherStatusRepository.findTopByAreaCodeOrderByDataGetTimeDesc(park.getAreaCode());
+        
+        // 인구 정보 조회
+        Optional<LivePopStatus> livePopStatusOptional = 
+                livePopStatusRepository.findLatestByAreaCode(park.getAreaCode());
+
+        GetParkResponse.ParkInfo.ParkInfoBuilder builder = GetParkResponse.ParkInfo.builder()
+                .areaCode(park.getAreaCode())
+                .areaName(park.getAreaName())
+                .longitude(park.getLongitude())
+                .latitude(park.getLatitude())
+                .distance(null)
+                .image(null)
+                .tags(null);
+
+        // 날씨 정보 설정
+        if (weatherStatusOptional.isPresent()) {
+            WeatherStatus weatherStatus = weatherStatusOptional.get();
+            builder.temp(weatherStatus.getTemp())
+                    .precptMsg(weatherStatus.getPrecptMsg())
+                    .airIndex(weatherStatus.getAirIndex());
+        }
+
+        // 인구 혼잡도 정보 설정
+        if (livePopStatusOptional.isPresent()) {
+            LivePopStatus livePopStatus = livePopStatusOptional.get();
+            builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
+        }
+
+        GetParkResponse.ParkInfo parkInfo = builder.build();
+
+        GetParkResponse response = GetParkResponse.builder()
+                .park(parkInfo)
+                .build();
+
+        log.info("특정 공원 조회 완료 - AREA_CODE: {}", areaCode);
 
         return response;
     }

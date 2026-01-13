@@ -2,6 +2,7 @@ package groom.backend.domain.park.controller;
 
 import groom.backend.common.response.ApiResponse;
 import groom.backend.domain.park.dto.response.GetAllParksResponse;
+import groom.backend.domain.park.dto.response.GetParkResponse;
 import groom.backend.domain.park.service.spec.ParkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,6 +58,37 @@ public class ParkController {
     ) {
         GetAllParksResponse response = parkService.getParks(cursor, size);
         return ApiResponse.success(200, "공원 리스트 조회 성공", response);
+    }
+
+    @GetMapping("/{areaCode}")
+    @Operation(
+            summary = "특정 공원 조회 (공원 상세 정보 카드)",
+            description = "areaCode로 특정 공원의 상세 정보를 조회합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "공원 정보를 찾을 수 없음"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류"
+            )
+    })
+    public ApiResponse<GetParkResponse> getParkByAreaCode(
+            @Parameter(
+                    description = "지역 코드 (AREA_CODE)",
+                    required = true,
+                    example = "POI093"
+            )
+            @PathVariable String areaCode
+    ) {
+        GetParkResponse response = parkService.getParkByAreaCode(areaCode);
+        return ApiResponse.success(200, "공원 조회 성공", response);
     }
 }
 
