@@ -60,30 +60,30 @@ const ALL_CATEGORY_DATA: MapDataType[] = [
 
 export default function TransportDashboard ({data}:any) {
   return (
-    <div className="mt-8">
-      <h3 className="font-sb">주변 대중교통 및 편의시설</h3>
+    <div className="mt s-6 mb-6">
+      <h3 className="text-body-1-sb">주변 대중교통 및 편의시설</h3>
       <div className="w-full h-60 mt-3 rounded-xl overflow-hidden">
         <DetailMap data={ALL_CATEGORY_DATA} center={center}/>
       </div>
       <div className="grid grid-cols-3 mt-3">
-        <div className="flex items-center justify-start gap-3">
-          <Image src="/images/icons/facility/parking.svg" width={20} height={20} alt={"주차장"}/>
+        <div className="flex items-center justify-start gap s-2">
+          <Image src="/images/icons/facility/parking.svg" width={16} height={16} alt={"주차장"}/>
           <p className="font-xs">주차공간</p>
         </div>
-        <div className="flex items-center justify-start gap-3">
-          <Image src="/images/icons/facility/electric.svg" width={20} height={20} alt={"전기차 충전소"}/>
+        <div className="flex items-center justify-start gap s-2">
+          <Image src="/images/icons/facility/electric.svg" width={16} height={16} alt={"전기차 충전소"}/>
           <p className="font-xs">전기차 충전소</p>
         </div>
-        <div className="flex items-center justify-start gap-3">
-          <Image src="/images/icons/facility/bicycle.svg" width={20} height={20} alt={"따릉이"}/>
+        <div className="flex items-center justify-start gap s-2">
+          <Image src="/images/icons/facility/bicycle.svg" width={16} height={16} alt={"따릉이"}/>
           <p className="font-xs">따릉이</p>
         </div>
-        <div className="flex items-center justify-start gap-3">
-          <Image src="/images/icons/facility/subway.svg" width={20} height={20} alt={"지하철"}/>
+        <div className="flex items-center justify-start gap s-2">
+          <Image src="/images/icons/facility/subway.svg" width={16} height={16} alt={"지하철"}/>
           <p className="font-xs">지하철</p>
         </div>
-        <div className="flex items-center justify-start gap-3">
-          <Image src="/images/icons/facility/bus.svg" width={20} height={20} alt={"버스"}/>
+        <div className="flex items-center justify-start gap s-2">
+          <Image src="/images/icons/facility/bus.svg" width={16} height={16} alt={"버스"}/>
           <p className="font-xs">버스</p>
         </div>
       </div>

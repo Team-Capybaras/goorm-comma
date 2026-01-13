@@ -10,6 +10,7 @@ import {
   LineElement,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js'
 import {useState} from "react";
 
@@ -19,7 +20,8 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 )
 
 type Weekday =
@@ -62,48 +64,206 @@ export default function CongestionInfoDashboard({data}: CongestionProps) {
 
   const labels = ['6', '8', '10', '12', '14', '16', '18', '20', '22']
 
-  const dataset = [{
-    id: selectedDay,
-    label: `실시간 방문 추이`,
-    data: data.transition[selectedDay].now.map(Number),
-    tension: 0.4,
-    borderWidth: 2,
-    borderColor: '#5F98FE',
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
-    fill: true,
-    pointRadius: 0,
-  },
+  const currentHour = new Date().getHours()
+
+  const currentIndex = labels.findIndex(
+    (label) => Number(label) >= currentHour
+  )
+
+  const mergedData = labels.map((_, index) => {
+    if (index < currentIndex) {
+      return Number(data.transition[selectedDay].now[index])
+    }
+    if (index === currentIndex) {
+      return Number(data.transition[selectedDay].now[index])
+    }
+    return Number(data.transition[selectedDay].future[index])
+  })
+
+  const createRealtimeGradient = (ctx: CanvasRenderingContext2D, chartArea: any) => {
+    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
+
+    gradient.addColorStop(0, 'rgba(95,152,254,0.35)') // 위 진하게
+    gradient.addColorStop(1, 'rgba(95,152,254,0.01)') // 아래 연하게
+
+    return gradient
+  }
+
+  const dataset = [
     {
-      id: selectedDay,
-      label: `과거 방문 추이`,
+      label: '과거 방문추이',
       data: data.transition[selectedDay].past.map(Number),
+      borderColor: '#BBBCBB',
+      borderWidth: 1,
+      order: 3,
       tension: 0.4,
-      borderWidth: 2,
-      borderColor: '#D6D6D6',
-      backgroundColor: 'rgba(59, 130, 246, 0.15)',
-      fill: true,
       pointRadius: 0,
+      fill: true,
+      backgroundColor: 'rgba(214,214,214,0.25)',
     },
     {
-      id: selectedDay,
-      label: `예측 추이`,
-      data: data.transition[selectedDay].future.map(Number),
+      label: '실시간 방문추이',
+      data: mergedData,
       tension: 0.4,
-      borderWidth: 2,
-      borderColor: '#3B82F6',
-      backgroundColor: 'rgba(59, 130, 246, 0.15)',
-      fill: true,
+      borderColor: '#5F98FE',
+      borderWidth: 1,
+      order:1,
       pointRadius: 0,
-    }
+      fill: true,
+      backgroundColor: (context) => {
+        const { chart } = context
+        const { ctx, chartArea } = chart
+
+        if (!chartArea) return null
+
+        return createRealtimeGradient(ctx, chartArea)
+      },
+
+      segment: {
+        borderDash: (ctx) =>
+          ctx.p0DataIndex >= currentIndex ? [6, 4] : undefined,
+
+        backgroundColor: (ctx) =>
+          ctx.p0DataIndex >= currentIndex
+            ? 'rgba(0,0,0,0)'
+            : undefined,
+      },
+    },
+    {
+      label: '예측 추이',
+      data: [],
+      order:2,
+      borderColor: '#5F98FE',
+      borderDash: [6, 4],
+      borderWidth: 1,
+      pointRadius: 0,
+    },
   ]
 
+  const predictHour = Number(data.predict) // 17
+  const predictIndex = labels.findIndex(
+    (label) => Number(label) === predictHour
+  )
+
+  const tooltipBubblePlugin = {
+    id: 'tooltipBubble',
+    afterDraw(chart: any) {
+      const { ctx, scales } = chart
+      const x = (() => {
+        const leftIndex = labels.findIndex(l => Number(l) === 16)
+        const rightIndex = labels.findIndex(l => Number(l) === 18)
+
+        const xLeft = scales.x.getPixelForTick(leftIndex)
+        const xRight = scales.x.getPixelForTick(rightIndex)
+
+        return (xLeft + xRight) / 2
+      })()
+
+      const topY = scales.y.top - 35
+
+      const text = `오늘 ${predictHour}시대가 가장 한적해요`
+
+      // bubble size
+      const padding = 10
+      ctx.font = '12px Pretendard'
+      const textWidth = ctx.measureText(text).width
+      const bubbleWidth = textWidth + padding * 2
+      const bubbleHeight = 28
+
+      const bubbleX = x - bubbleWidth / 2
+      const bubbleY = topY
+
+      ctx.save()
+
+      // bubble
+      ctx.fillStyle = '#3B82F6'
+      ctx.beginPath()
+      ctx.roundRect(bubbleX, bubbleY, bubbleWidth, bubbleHeight, 14)
+      ctx.fill()
+
+      // text
+      ctx.fillStyle = '#FFFFFF'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, x, bubbleY + bubbleHeight / 2)
+
+      ctx.restore()
+    },
+  }
+
+  const verticalLinePlugin = {
+    id: 'verticalLine',
+    afterDraw(chart: any) {
+      const { ctx, scales, chartArea } = chart
+      if (!chartArea) return
+
+      const xScale = scales.x
+      const yScale = scales.y
+
+      const leftIndex = labels.findIndex(l => Number(l) === 16)
+      const rightIndex = labels.findIndex(l => Number(l) === 18)
+
+      if (leftIndex === -1 || rightIndex === -1) return
+
+      const xLeft = xScale.getPixelForTick(leftIndex)
+      const xRight = xScale.getPixelForTick(rightIndex)
+      const x = (xLeft + xRight) / 2
+
+      ctx.save()
+
+      /* =====================
+         세로 점선
+      ===================== */
+      ctx.setLineDash([4, 4])
+      ctx.strokeStyle = '#0C4596'
+      ctx.lineWidth = 1
+
+      ctx.beginPath()
+      ctx.moveTo(x, yScale.top)
+      ctx.lineTo(x, yScale.bottom)
+      ctx.stroke()
+
+      /* =====================
+         위쪽 삼각형
+      ===================== */
+      const triangleSize = 6
+      const triangleY = chartArea.top
+
+      ctx.setLineDash([])
+      ctx.fillStyle = '#0C4596'
+
+      ctx.beginPath()
+      ctx.moveTo(x - triangleSize, triangleY)
+      ctx.lineTo(x + triangleSize, triangleY)
+      ctx.lineTo(x, triangleY + triangleSize)
+      ctx.closePath()
+      ctx.fill()
+
+      ctx.restore()
+    },
+  }
+
+
+  const legendMargin = {
+    id: 'legendMargin',
+    beforeInit(chart, legend, options) {
+      const fitValue = chart.legend.fit
+      const spacing = 46 // 추가할 간격
+
+      chart.legend.fit = function fit() {
+        fitValue.bind(chart.legend)()
+        return (this.height += spacing)
+      }
+    },
+  }
+
   return (
-    <div className="mt-8">
-      <div className="flex justify-between items-end">
-        <h3 className="font-sb">혼잡도</h3>
-        <p className="font-3xs text-gray-400">{data?.refresh_time}</p>
+    <div className="mt s-6">
+      <div className="flex justify-between items-center">
+        <h3 className="text-body-1-sb">혼잡도</h3>
+        <p className="text-caption-3-m text-gray-300">{data?.refresh_time}</p>
       </div>
-      <div className="border-1-line-default p-4 rounded-xl mt-3">
+      <div className="border-1-line-default p s-4 rounded-xl mt s-4">
         <div>
           <Line
             datasetIdKey="id"
@@ -111,57 +271,100 @@ export default function CongestionInfoDashboard({data}: CongestionProps) {
               labels,
               datasets: dataset,
             }}
+            plugins={[legendMargin,verticalLinePlugin, tooltipBubblePlugin]}
             options={{
-              responsive: true,
-              maintainAspectRatio: false,
               plugins: {
-                legend: {display: true},
+                legend: {
+                  display: true,
+                  align: 'end',
+                  labels: {
+                    color: '#383938',
+                    font: {
+                      size: 9,
+                    },
+                    boxWidth: 12,
+                    boxHeight: 1,
+                    padding: 8,
+                    generateLabels: () => [
+                      {
+                        text: '과거 방문추이',
+                        strokeStyle: '#BBBCBB',
+                        lineWidth: 1,
+                        lineDash: [],
+                        borderRadius: 1,
+                        fillStyle: '#BBBCBB',
+                      },
+                      {
+                        text: '실시간 방문추이',
+                        strokeStyle: '#5F98FE',
+                        lineWidth: 2,
+                        lineDash: [],
+                        borderRadius: 1,
+                        fillStyle: '#5F98FE',
+                      },
+                      {
+                        text: '예측 추이',
+                        strokeStyle: '#5F98FE',
+                        lineWidth: 2,
+                        lineDash: [4, 3],
+                        fillStyle: 'transparent',
+                      },
+                    ],
+                  },
+                },
               },
+
               scales: {
-                y: {
+                x: {
+                  ticks: {
+                    font: {
+                      size: 8,
+                      weight: 500,
+                      color: '#D6D6D6',
+                    }
+                  },
                   grid: {
-                    display: true,
-                    drawBorder: false ,
+                    display: false,
+                    drawBorder: false,
+                  },
+                },
+                y: {
+                  border: {
+                    display:false
                   },
                   ticks: {
                     display: false,
+                    count: 5,
+                  },
+                  grid: {
+                    display: true,
+                    drawBorder: false,
+                    drawTicks : false,
+                    color: '#E8E8E8',
                   },
                 },
-                x: {
-                  grid: {display: false},
-                },
-              },
-              animation: {
-                duration: 300,
-              },
+              }
             }}
             height={180}
           />
         </div>
-        <div className="flex justify-between mt-2 px-1">
+        <div className="flex justify-between mt-2 px-4">
           {(Object.keys(DAY_LABEL) as Weekday[]).map((day) => (
             <button
               key={day}
               onClick={() => setSelectedDay(day)}
               className={`
-                w-[28px] h-[28px] rounded-full border text-sm font-sb
-                transition-all
+                w-[28px] h-[28px] rounded-full font-2xs
                 ${
                 selectedDay === day
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white text-gray-500 border-gray-200'
+                  ? 'bg-blue-100 text-white text-blue-600'
+                  : 'bg-white text-sub border-1-line-default'
               }
               `}
             >
               {DAY_LABEL[day]}
             </button>
           ))}
-        </div>
-      </div>
-      <div className="py-3 bg-blue-0 border-1-line-blue mt-5">
-        <div className="flex items-center justify-center">
-          <Image src={"/images/icons/crowd.svg"} className="mr-3" width={16} height={16} alt={"사람 아이콘"}/>
-          <p className="text-blue-500 font-sb font-xs">오늘 {data?.predict}시가 가장 한적해요</p>
         </div>
       </div>
     </div>

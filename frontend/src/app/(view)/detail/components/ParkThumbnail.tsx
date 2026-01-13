@@ -37,17 +37,17 @@ export default function ParkThumbnail({data}: ParkThumbnailProps) {
             ))}
           </div>
           {/* dots */}
-          <div className="absolute left-1/2 bottom-7 -translate-x-1/2 flex flex-wrap justify-center items-center gap-0.5">
+          <div className="absolute left-1/2 bottom-[48px] -translate-x-1/2 flex flex-wrap justify-center items-center gap s-3">
             {scrollSnaps.map((_, index) => (
               <DotButton
                 key={index}
                 onClick={() => onDotButtonClick(index)}
                 className={[
-                  'flex justify-center items-center w-5 h-5',
+                  'flex justify-center items-center w-[8px] h-[8px] rounded-full',
                   'after:content-[""] after:w-2 after:h-2 after:rounded-full after:cursor-pointer',
                   index === selectedIndex
                     ? 'after:bg-white'
-                    : 'after:bg-neutral-800',
+                    : 'bg-inverse opacity-50',
                 ].join(' ')}
               />
             ))}

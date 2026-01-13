@@ -42,7 +42,7 @@ const data = {
     predict: "17",
     transition: {
       monday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
+        past: ['1', '2', '12', '15', '10', '10', '15', '8', '10'],
         now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
         future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
       },
@@ -103,6 +103,18 @@ const data = {
       congestion: "보통",
       distance: "7.2"
     },
+    {
+      thumbnail : "/test.jpg",
+      area_name: "공공원원",
+      congestion: "보통",
+      distance: "7.2"
+    },
+    {
+      thumbnail : "/test.jpg",
+      area_name: "공공원원",
+      congestion: "보통",
+      distance: "7.2"
+    },
   ]
 }
 
@@ -122,17 +134,25 @@ export default async function page () {
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
       <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
-        <div className="px-4 pb-3 flex flex-col gap-xs rounded-xl overflow-hidden relative">
-          <ParkInfoDashboard data={data.park}/>
+        {/* 공원 종합 정보 */}
+        <ParkInfoDashboard data={data.park}/>
+
+        {/* bar */}
+        <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>
+
+        {/* 날씨/혼잡도/대중교통 및 편의시설 */}
+        <div className="px s-5 flex flex-col gap-xs rounded-xl">
           <EnvironmentDashboard data={data.weather}/>
           <CongestionInfoDashboard data={data.congestion}/>
           <TransportDashboard/>
         </div>
       </div>
+
+      {/* bar */}
       <div className="bg-gray-100 w-full h-[8px]"></div>
-      <div>
-        <AlternativeParkDashboard data={data.alternative}/>
-      </div>
+
+      {/* 대체 공원 */}
+      <AlternativeParkDashboard data={data.alternative}/>
     </div>
   )
 }
