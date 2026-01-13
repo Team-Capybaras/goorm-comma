@@ -1,0 +1,11 @@
+package groom.backend.application.avoidance.service.spec;
+
+import groom.backend.domain.avoidance.entity.ParkStatistics;
+
+public interface CongestionRecommendService {
+  /**
+   * parkStatistics 기반 여러 정보를 취합하여 가장 적합한 시간대를 방문시간대로 추천한다.
+   * @return
+   */
+  public Integer congestionRecommend(String areaCode);
+}
