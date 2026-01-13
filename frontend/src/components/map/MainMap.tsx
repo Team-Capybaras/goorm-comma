@@ -52,8 +52,9 @@ export default function MainMap({ data, center }: Props) {
         data={data}
         center={center}
         level={7} // 구 단위가 보이는 적절한 줌 레벨
-        //혼잡도별 마커 이미지
-        getMarkerImage={(item) => getCongestionMarkerIcon(item.congestion)}
+        getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
+        markerSize={{ width: 32, height: 32 }}
+        activeMarkerSize={{ width: 48, height: 48 }}
         //카드 렌더링
         renderCard={(item) => <ParkMapCard item={item} />}
         onMapLoad={(loadedMap) => setMap(loadedMap)}
