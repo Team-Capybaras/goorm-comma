@@ -20,6 +20,14 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       # =====================
+      # Backend Secret Inject
+      # =====================
+      - name: Create application-secret.yml
+        run: |
+          mkdir -p backend/src/main/resources
+          echo "${{ secrets.BE_APPLICATION_SECRET }}" > backend/src/main/resources/application-secret.yml
+
+      # =====================
       # Backend Image
       # =====================
       - name: Build & Push Backend Image
