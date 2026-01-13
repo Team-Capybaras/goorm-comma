@@ -3,6 +3,7 @@ package groom.backend.application.avoidance.service.impl;
 import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
 import groom.backend.application.avoidance.mapper.ParkStatisticsMapper;
 import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
+import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.population.entity.LivePopStatus;
 import groom.backend.domain.population.repository.LivePopStatusRepository;
 import groom.backend.domain.avoidance.entity.ParkStatistics;
@@ -21,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,10 +31,13 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
   private final ParkStatisticsRepository parkStatisticsRepository;
   private final ParkStatisticsLogRepository parkStatisticsLogRepository;
 
+  private final ParkRepository parkRepository;
+
   private final ParkStatisticsMapper parkStatisticsMapper;
 
   /**
    * 전체 인구 데이터를 기반으로 공원 혼잡도 통계를 집계한다.
+   * 집계가 수행되면 모든 캐시는 무효화된다.
    */
   @Transactional
   @CacheEvict(
@@ -42,7 +45,12 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
           allEntries = true
   )
   public void aggregateAll() {
+
     log.info("공원 혼잡도 전체 집계 시작");
+
+    // TODO: 추후 UPSERT로 리팩토링
+    log.info("기존 집계 데이터 제거");
+    parkStatisticsRepository.deleteAll();
 
     List<LivePopStatus> allStatuses = livePopStatusRepository.findAll();
 
@@ -60,28 +68,90 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
     log.info("공원 혼잡도 전체 집계 완료");
   }
 
+  /**
+   * 공원 혼잡도 통계 조회
+   */
   @Override
   @Cacheable(
           cacheNames = "parkStatistics",
           key = "#areaCode"
   )
   public ParkStatisticsResponse getParkStatistics(String areaCode) {
-    // TODO : 집계 데이터 반환
-    List<ParkStatistics> statistics = parkStatisticsRepository.findByAreaCode(areaCode);
 
-    ParkStatisticsResponse response = parkStatisticsMapper.toParkStatisticsResponse(statistics);
+    List<ParkStatistics> statistics =
+            parkStatisticsRepository.findByAreaCode(areaCode);
+
+    // 1. 기본 구조 매핑
+    ParkStatisticsResponse response =
+            parkStatisticsMapper.toParkStatisticsResponse(
+                    areaCode,
+                    LocalDateTime.now(),
+                    null, // recommendedVisitHour (TODO)
+                    statistics
+            );
+
+    // 2. today / uncrowdedTime / uncrowdedHours 후처리
+    applyDerivedFields(response);
 
     return response;
   }
 
+  /**
+   * 파생 필드 계산 (정책 영역)
+   *
+   * - today 판별
+   * - uncrowdedHours / uncrowdedTime 계산
+   * - recommendedVisitHour 계산
+   *
+   * ※ 현재는 TODO 형태로 두고 기본값만 세팅
+   */
+  private void applyDerivedFields(ParkStatisticsResponse response) {
 
-//  private int uncrowdedTime(ParkStatisticsResponse data) {
-//    data.getStatistics();
-//  }
+    LocalDateTime now = LocalDateTime.now();
+    Weekday todayWeekday = Weekday.from(now.getDayOfWeek());
 
+    response.getWeekdays().forEach(weekdayAggregate -> {
 
+      // today 여부 설정
+      boolean isToday = weekdayAggregate.getWeekday() == todayWeekday;
+      weekdayAggregate.setToday(isToday);
 
+      // TODO: 혼잡도 기준 계산 로직
+      // - past / now / future 우선순위 판단
+      // - 혼잡도 오름차순 정렬
+      // - 상위 N개 시간 추출
+
+      // 임시 처리 (placeholder)
+      List<Integer> uncrowdedHours =
+              weekdayAggregate.getHours().stream()
+                      .map(hour -> hour.getHour())
+                      .sorted()
+                      .limit(2)
+                      .collect(Collectors.toList());
+
+      weekdayAggregate.setUncrowdedHours(uncrowdedHours);
+
+      if (!uncrowdedHours.isEmpty()) {
+        weekdayAggregate.setUncrowdedTime(uncrowdedHours.get(0));
+      } else {
+        weekdayAggregate.setUncrowdedTime(0);
+      }
+
+      // TODO: today 기준 추천 방문 시간 계산
+      // - now 존재 시 now 기준
+      // - 없으면 future
+      // - 그래도 없으면 uncrowdedTime
+    });
+
+    // TODO: recommendedVisitHour 산출
+    response.setRecommendedVisitHour(null);
+  }
+
+  /**
+   * 단일 그룹 집계 처리
+   */
   private void aggregateOne(GroupKey key, List<LivePopStatus> statuses) {
+
     int avgMin =
             (int) statuses.stream()
                     .mapToInt(LivePopStatus::getAreaPopMin)
@@ -94,7 +164,8 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
                     .average()
                     .orElse(0);
 
-    // 1. 집계 테이블 UPSERT
+    // UPSERT 연산은 JPA에서 지원하지 않는다. 개별 update만 지원
+    // 1. 집계 테이블 저장
     ParkStatistics statistics =
             ParkStatistics.builder()
                     .areaCode(key.areaCode())
@@ -106,9 +177,10 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
 
     parkStatisticsRepository.save(statistics);
 
-    // 2. 로그 테이블 INSERT
+    // 2. 로그 테이블 저장
     ParkStatisticsLog logEntity =
             ParkStatisticsLog.builder()
+                    .park(parkRepository.findByAreaCode(key.areaCode()).orElse(null))
                     .weekday(key.weekday())
                     .hour(key.hour())
                     .popMeanMin(avgMin)
@@ -125,7 +197,11 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
     );
   }
 
+  /**
+   * 집계 키 생성
+   */
   private GroupKey groupKey(LivePopStatus status) {
+
     LocalDateTime time = status.getDataGetTime();
 
     return new GroupKey(
@@ -148,18 +224,6 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
             .max(LocalDateTime::compareTo)
             .orElse(null);
   }
-
-  /**
-   * 방문 시간 기반 최소 혼잡도 제공 기능
-   * 현재 시간을 받는다.
-   * FE는 한꺼번에 받는 것이 좋다.
-   * 시간 입력은 UTC냐 integer냐 -> 일단 YYYY.MM.DD hh:mm 형식으로...
-   * ParkStatistics의 내부 기능이 될까 분리가 될까. FE 에 따른다.
-   */
-  private void temp() {
-
-  }
-
 
   /**
    * 집계용 내부 키

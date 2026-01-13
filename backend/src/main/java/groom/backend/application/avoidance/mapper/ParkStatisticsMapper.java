@@ -7,6 +7,7 @@ import groom.backend.domain.avoidance.entity.ParkStatistics;
 import groom.backend.domain.avoidance.enums.Weekday;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,17 +18,27 @@ public class ParkStatisticsMapper {
    * ParkStatistics 엔티티 리스트를
    * ParkStatisticsResponse DTO로 변환한다.
    *
-   * - weekday 기준으로 그룹핑
-   * - 각 weekday 내부에 hour 리스트 구성
-   * - statistics 필드는 항상 non-null
+   * ParkStatistics가 빈 배열일 수 있기 때문에 areaCode를 입력으로 받는다.
+   * recommendedVisitHour는 계산 후 입력 받는다.
+   *
+   * 책임:
+   * - weekday 기준 그룹핑
+   * - hour 리스트 구성
+   * - 구조적 변환만 수행
    */
   public ParkStatisticsResponse toParkStatisticsResponse(
+          String areaCode,
+          LocalDateTime refreshTime,
+          Integer recommendedVisitHour,
           List<ParkStatistics> statisticsList
   ) {
 
     if (statisticsList == null || statisticsList.isEmpty()) {
       return ParkStatisticsResponse.builder()
-              .statistics(Collections.emptyList())
+              .areaCode(areaCode)
+              .refreshTime(refreshTime)
+              .recommendedVisitHour(recommendedVisitHour)
+              .weekdays(Collections.emptyList())
               .build();
     }
 
@@ -44,14 +55,20 @@ public class ParkStatisticsMapper {
                     .collect(Collectors.toList());
 
     return ParkStatisticsResponse.builder()
-            .statistics(weekdayAggregates)
+            .areaCode(areaCode)
+            .refreshTime(refreshTime)
+            .recommendedVisitHour(recommendedVisitHour)
+            .weekdays(weekdayAggregates)
             .build();
   }
 
   /**
    * 특정 요일에 대한 ParkStatistics 목록을
    * WeekdayAggregateResponse로 변환한다.
-   * TODO : uncrowdedTime 계산 및 message 작성
+   *
+   * 주의:
+   * - today / uncrowdedTime / uncrowdedHours 는
+   *   Service 계층에서 채워 넣는 것을 전제로 한다.
    */
   private WeekdayAggregateResponse toWeekdayAggregateResponse(
           Weekday weekday,
@@ -61,28 +78,34 @@ public class ParkStatisticsMapper {
     List<HourAggregateResponse> hourAggregates =
             statisticsList.stream()
                     .map(this::toHourAggregateResponse)
-                    .sorted(Comparator.comparing(HourAggregateResponse::getTime))
+                    .sorted(Comparator.comparing(HourAggregateResponse::getHour))
                     .collect(Collectors.toList());
 
     return WeekdayAggregateResponse.builder()
             .weekday(weekday)
-            .hour(hourAggregates)
-            .message(null)
-            .uncrowdedTime(0)
+            .today(false) // Service에서 재설정
+            .uncrowdedTime(0) // Service에서 재설정
+            .uncrowdedHours(Collections.emptyList()) // Service에서 재설정
+            .hours(hourAggregates)
             .build();
   }
 
   /**
    * ParkStatistics 엔티티를
    * HourAggregateResponse DTO로 변환한다.
+   *
+   * - past / now / future 중
+   *   ParkStatistics는 "과거 통계" 역할만 수행
    */
   private HourAggregateResponse toHourAggregateResponse(
           ParkStatistics statistics
   ) {
-    return new HourAggregateResponse(
-            statistics.getHour(),
-            statistics.getPopMeanMin(),
-            statistics.getPopMeanMax()
-    );
+
+    return HourAggregateResponse.builder()
+            .hour(statistics.getHour())
+            .past(statistics.getPopMeanMin())
+            .now(null)
+            .future(statistics.getPopMeanMax())
+            .build();
   }
 }
