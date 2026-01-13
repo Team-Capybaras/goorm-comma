@@ -9,7 +9,7 @@ interface ParkInfoDashboardProps {
     distance: string;
     air_ms: string;
     congestion: string;
-    tags: string[]
+    tags: string[];
   }
 }
 
@@ -25,7 +25,7 @@ export default function ParkInfoDashboard({data}: ParkInfoDashboardProps) {
         <p className="text-green-500 font-b font-sm">{data?.congestion}</p>
         <div className="w-[3px] h-[3px] rounded-full mx s-2 bg-deep"></div>
         <p className="text-sub-deep text-caption-1-m mr s-3">{data?.address}</p>
-        <a href="/" className="flex items-center">
+        <a href={`https://map.kakao.com/link/to/${data?.area_name},37.3952969470752,127.110449292622`} className="flex items-center" target={"_blank"}>
           <p className="text-caption-1-m text-sub-bright">길찾기</p>
           <Image src={"/images/icons/arrow/right-gray.svg"}  width={16} height={16} alt={"바로가기"}/>
         </a>
