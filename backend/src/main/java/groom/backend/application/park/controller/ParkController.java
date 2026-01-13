@@ -1,9 +1,9 @@
 package groom.backend.application.park.controller;
 
+import groom.backend.application.park.dto.response.GetAllParksResponse;
+import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.common.response.ApiResponse;
-import groom.backend.domain.park.dto.response.GetAllParksResponse;
-import groom.backend.domain.park.dto.response.GetParkResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

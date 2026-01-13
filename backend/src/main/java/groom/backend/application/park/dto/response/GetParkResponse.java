@@ -1,4 +1,4 @@
-package groom.backend.domain.park.dto.response;
+package groom.backend.application.park.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,42 +10,23 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * 공원 리스트 조회 응답 DTO (커서 기반 페이지네이션)
+ * 특정 공원 조회 응답 DTO
  */
 @Schema(
-        name = "GetAllParksResponse",
-        description = "공원 리스트 조회 응답 (커서 기반 페이지네이션)"
+        name = "GetParkResponse",
+        description = "특정 공원 조회 응답"
 )
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetAllParksResponse {
+public class GetParkResponse {
     @Schema(
-            description = "공원 정보 리스트 (빈 배열일 수 있음)",
-            example = "[]"
+            description = "공원 정보",
+            name = "ParkInfo"
     )
-    private List<ParkInfo> parks;
-
-    @Schema(
-            description = "다음 페이지 커서 (다음 페이지가 없으면 null)",
-            example = "POI100",
-            nullable = true
-    )
-    private String nextCursor;
-
-    @Schema(
-            description = "다음 페이지 존재 여부",
-            example = "true"
-    )
-    private Boolean hasNext;
-
-    @Schema(
-            description = "조회된 공원 수",
-            example = "10"
-    )
-    private Integer size;
+    private ParkInfo park;
 
     /**
      * 공원 정보

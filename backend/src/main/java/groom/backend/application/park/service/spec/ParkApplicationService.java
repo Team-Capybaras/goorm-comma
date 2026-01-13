@@ -1,7 +1,7 @@
 package groom.backend.application.park.service.spec;
 
-import groom.backend.domain.park.dto.response.GetAllParksResponse;
-import groom.backend.domain.park.dto.response.GetParkResponse;
+import groom.backend.application.park.dto.response.GetAllParksResponse;
+import groom.backend.application.park.dto.response.GetParkResponse;
 
 /**
  * 공원 정보 조회 애플리케이션 서비스 인터페이스

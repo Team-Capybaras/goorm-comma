@@ -1,8 +1,8 @@
 package groom.backend.application.park.service.impl;
 
+import groom.backend.application.park.dto.response.GetAllParksResponse;
+import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
-import groom.backend.domain.park.dto.response.GetAllParksResponse;
-import groom.backend.domain.park.dto.response.GetParkResponse;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.weather.entity.WeatherStatus;
