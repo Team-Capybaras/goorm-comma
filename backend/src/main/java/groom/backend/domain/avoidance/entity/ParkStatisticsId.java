@@ -1,6 +1,6 @@
-package groom.backend.application.avoidance.entity;
+package groom.backend.domain.avoidance.entity;
 
-import groom.backend.application.avoidance.enums.Weekday;
+import groom.backend.domain.avoidance.enums.Weekday;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

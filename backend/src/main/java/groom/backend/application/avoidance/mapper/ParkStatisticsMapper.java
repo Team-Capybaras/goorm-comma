@@ -3,8 +3,8 @@ package groom.backend.application.avoidance.mapper;
 import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
 import groom.backend.application.avoidance.dto.response.WeekdayAggregateResponse;
 import groom.backend.application.avoidance.dto.response.WeekdayAggregateResponse.HourAggregateResponse;
-import groom.backend.application.avoidance.entity.ParkStatistics;
-import groom.backend.application.avoidance.enums.Weekday;
+import groom.backend.domain.avoidance.entity.ParkStatistics;
+import groom.backend.domain.avoidance.enums.Weekday;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

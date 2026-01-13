@@ -1,4 +1,4 @@
-package groom.backend.application.avoidance.enums;
+package groom.backend.domain.avoidance.enums;
 
 import java.time.DayOfWeek;
 

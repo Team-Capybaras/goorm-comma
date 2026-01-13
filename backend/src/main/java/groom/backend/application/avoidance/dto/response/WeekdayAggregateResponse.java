@@ -1,6 +1,6 @@
 package groom.backend.application.avoidance.dto.response;
 
-import groom.backend.application.avoidance.enums.Weekday;
+import groom.backend.domain.avoidance.enums.Weekday;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
