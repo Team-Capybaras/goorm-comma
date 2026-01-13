@@ -1,4 +1,4 @@
-import { CongestionLevel } from '@/shared/types/map-types'
+import { CongestionLevel, FacilityCategory } from '@/shared/types/map-types'
 
 //날씨 상태 문자열에 따라 아이콘 경로 반환
 export const getWeatherIconPath = (status: string): string => {
@@ -60,4 +60,20 @@ export const getCongestionMarkerIcon = (level: CongestionLevel): string => {
   }
 
   return '/images/icons/map/state=normal.svg'
+}
+
+const FACILITY_ICON_MAP: Record<FacilityCategory, string> = {
+  PARKING: 'parking',
+  SUBWAY: 'subway',
+  BIKE: 'bicycle',
+  BUS: 'bus',
+  EV_CHARGER: 'charge',
+}
+
+export const getFacilityMarkerIcon = (category: FacilityCategory, isSelected: boolean): string => {
+  const typeStr = FACILITY_ICON_MAP[category] || 'bus'
+
+  const stateStr = isSelected ? 'focused' : 'Default'
+
+  return `/images/icons/map/state=${stateStr}, type=${typeStr}.svg`
 }
