@@ -85,7 +85,6 @@ public class ParkStatisticsMapper {
             .weekday(weekday)
             .today(false) // Service에서 재설정
             .uncrowdedTime(0) // Service에서 재설정
-            .uncrowdedHours(Collections.emptyList()) // Service에서 재설정
             .hours(hourAggregates)
             .build();
   }

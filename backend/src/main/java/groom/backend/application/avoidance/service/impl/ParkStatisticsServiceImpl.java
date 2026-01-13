@@ -1,6 +1,7 @@
 package groom.backend.application.avoidance.service.impl;
 
 import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
+import groom.backend.application.avoidance.dto.response.WeekdayAggregateResponse;
 import groom.backend.application.avoidance.mapper.ParkStatisticsMapper;
 import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
 import groom.backend.domain.park.repository.ParkRepository;
@@ -121,21 +122,20 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
       // - 혼잡도 오름차순 정렬
       // - 상위 N개 시간 추출
 
+      // - past / now / future 우선순위 판단
+      // - 혼잡도 오름차순 정렬
+      // - 동률 시 hour 오름차순
+
       // 임시 처리 (placeholder)
-      List<Integer> uncrowdedHours =
-              weekdayAggregate.getHours().stream()
-                      .map(hour -> hour.getHour())
-                      .sorted()
-                      .limit(2)
-                      .collect(Collectors.toList());
+      // 현재는 단순히 가장 빠른 시간대를 uncrowdedTime으로 설정
+            Integer uncrowdedTime =
+                    weekdayAggregate.getHours().stream()
+                            .map(WeekdayAggregateResponse.HourAggregateResponse::getHour)
+                            .min(Integer::compareTo)
+                            .orElse(0);
 
-      weekdayAggregate.setUncrowdedHours(uncrowdedHours);
 
-      if (!uncrowdedHours.isEmpty()) {
-        weekdayAggregate.setUncrowdedTime(uncrowdedHours.get(0));
-      } else {
-        weekdayAggregate.setUncrowdedTime(0);
-      }
+      weekdayAggregate.setUncrowdedTime(uncrowdedTime);
 
       // TODO: today 기준 추천 방문 시간 계산
       // - now 존재 시 now 기준

@@ -59,19 +59,6 @@ public class WeekdayAggregateResponse {
 
   @Schema(
           description = """
-                  가장 여유로운 혼잡대 후보 시간 목록입니다.
-                  
-                  - uncrowdedTime을 포함합니다.
-                  - 혼잡도가 낮은 순으로 정렬되어 있습니다.
-                  - 정책에 따라 상위 N개만 포함됩니다.
-                  """,
-          example = "[13, 14]",
-          nullable = false
-  )
-  private List<Integer> uncrowdedHours;
-
-  @Schema(
-          description = """
                   시간대별 상세 혼잡도 정보 목록입니다.
                   
                   - hour 값은 0~23 기준입니다.
