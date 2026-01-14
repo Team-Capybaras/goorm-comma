@@ -1,4 +1,4 @@
-package groom.backend.domain.location.dto.response;
+package groom.backend.common.utils.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

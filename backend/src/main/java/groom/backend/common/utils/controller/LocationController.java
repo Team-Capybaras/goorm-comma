@@ -1,9 +1,10 @@
-package groom.backend.domain.location.controller;
+package groom.backend.common.utils.controller;
 
+import groom.backend.common.utils.dto.request.GetLocationRequest;
+import groom.backend.common.utils.dto.response.GetLocationResponse;
+import groom.backend.common.utils.dto.response.GetParksWithDistanceResponse;
+import groom.backend.common.utils.service.spec.LocationService;
 import groom.backend.common.response.ApiResponse;
-import groom.backend.domain.location.dto.request.GetLocationRequest;
-import groom.backend.domain.location.dto.response.GetLocationResponse;
-import groom.backend.domain.location.service.spec.LocationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -61,5 +62,47 @@ public class LocationController {
 
         GetLocationResponse response = locationService.getCurrentLocation(request);
         return ApiResponse.success(200, "현재 위치 정보 조회 성공", response);
+    }
+
+    @GetMapping("/parks-distance")
+    @Operation(
+            summary = "공원과의 거리 계산",
+            description = "FE로부터 현재 위치(경도, 위도)를 받아 모든 공원과의 직선거리를 계산합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 (경도 또는 위도 누락)"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류"
+            )
+    })
+    public ApiResponse<GetParksWithDistanceResponse> getParksWithDistance(
+            @Parameter(
+                    description = "경도",
+                    required = true,
+                    example = "127.069903"
+            )
+            @RequestParam("longitude") Double longitude,
+            @Parameter(
+                    description = "위도",
+                    required = true,
+                    example = "37.529546"
+            )
+            @RequestParam("latitude") Double latitude
+    ) {
+        GetLocationRequest request = GetLocationRequest.builder()
+                .longitude(longitude)
+                .latitude(latitude)
+                .build();
+
+        GetParksWithDistanceResponse response = locationService.getParksWithDistance(request);
+        return ApiResponse.success(200, "공원 거리 계산 성공", response);
     }
 }

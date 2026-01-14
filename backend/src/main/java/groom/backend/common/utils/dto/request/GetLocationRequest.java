@@ -1,4 +1,4 @@
-package groom.backend.domain.location.dto.request;
+package groom.backend.common.utils.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
