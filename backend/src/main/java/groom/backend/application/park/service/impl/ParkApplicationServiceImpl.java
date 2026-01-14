@@ -122,7 +122,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                             .longitude(park.getLongitude())
                             .latitude(park.getLatitude())
                             .distance(distance)
-                            .image(null)
+                            .image(park.getImageUrl())
                             .tags(tags.isEmpty() ? null : tags);
 
                     // 날씨 정보 설정
@@ -214,7 +214,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 .longitude(park.getLongitude())
                 .latitude(park.getLatitude())
                 .distance(distance)
-                .image(null)
+                .image(park.getImageUrl())
                 .tags(tags.isEmpty() ? null : tags);
 
         // 날씨 정보 설정
