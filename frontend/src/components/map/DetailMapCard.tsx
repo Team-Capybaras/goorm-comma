@@ -1,110 +1,105 @@
 import type { FacilityItem } from '@/shared/types/map-types'
+import { getSubwayColor } from '@/shared/utils/map-helpers'
 
-interface FacilityMapCardProps {
+interface DetailMapCardProps {
   item: FacilityItem
   onClose?: () => void
 }
 
-const getSubwayLineColor = (lineName: string): string => {
-  if (lineName.includes('1호선')) return '#004A85'
-  if (lineName.includes('2호선')) return '#00A23F'
-  if (lineName.includes('3호선')) return '#ED6C00'
-  if (lineName.includes('4호선')) return '#009BCE'
-  if (lineName.includes('5호선')) return '#794698'
-  if (lineName.includes('6호선')) return '#7C4932'
-  if (lineName.includes('7호선')) return '#6E7E31'
-  if (lineName.includes('8호선')) return '#D11D70'
-  if (lineName.includes('9호선')) return '#A49D87'
-  if (lineName.includes('우이신설선')) return '#BACC50'
-  if (lineName.includes('신림선')) return '#5E7DBB'
-  if (lineName.includes('수인분당')) return '#ECA300'
-  if (lineName.includes('신분당')) return '#B81B30'
-  if (lineName.includes('공항철도')) return '#0079AC'
-  return '#999A98' // 기본 회색
-}
-
-export default function FacilityMapCard({ item, onClose }: FacilityMapCardProps) {
+export default function DetailMapCard({ item, onClose }: DetailMapCardProps) {
   const isParking = item.category === 'PARKING'
   const isSubway = item.category === 'SUBWAY'
   const isBus = item.category === 'BUS'
-
   const isFree = item.tags?.includes('무료')
-  // 태그에서 '호선'이 포함된 문자열 찾기
-  const subwayLine = item.tags?.find((t) => t.includes('호선') || t.includes('선'))
-  // 지하철 컬러 결정
-  const subwayColor = subwayLine ? getSubwayLineColor(subwayLine) : '#999A98'
+  const subwayLineName = item.tags?.find((t) => t.includes('호선') || t.includes('선'))
+  const subwayColor = isSubway ? getSubwayColor(item.tags) : '#999A98'
 
   return (
     <article
-      className="w-full bg-default rounded-t-xl shadow-[0_-4px_16px_rgba(0,0,0,0.1)] p-5 animate-slide-up cursor-default relative"
+      className="w-full bg-default rounded-2xl shadow-md p-5 animate-slide-up cursor-default relative"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* 시설 이름 + 카테고리별 뱃지/정보 */}
-      <div className="flex justify-between items-start mb-1 gap-2">
-        <div className="flex items-center flex-wrap gap-2 pr-6">
-          {/* 시설 이름 */}
-          <h3 className="text-heading-sb text-default break-keep">{item.name}</h3>
+      {/* 닫기 버튼 */}
+      {onClose && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onClose()
+          }}
+          className="absolute top-4 right-4 p-1 text-sub hover:text-default transition-colors z-10"
+          aria-label="닫기"
+        >
+          <span className="text-xl font-medium">✕</span>
+        </button>
+      )}
 
-          {/* 주차장 */}
-          {isParking && isFree && (
-            <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-xs text-caption-2-m bg-positive-pale text-positive align-middle">
-              무료
-            </span>
-          )}
+      {/* Header: 이름 + 태그 */}
+      <div className="flex items-baseline flex-wrap gap-2 mb-1 w-full pr-8">
+        {/* Title: 16px SemiBold (#383938) */}
+        <h3 className="text-body-1-sb text-default break-keep">{item.name}</h3>
 
-          {/* 지하철 */}
-          {isSubway && subwayLine && (
-            <span
-              className="text-caption-1-sb"
-              style={{ color: subwayColor }} // 동적 컬러 적용
-            >
-              {subwayLine}
-            </span>
-          )}
+        {/* [Tag Spec 반영]
+           - Spec: Body2/B (14px, Bold 700)
+           - Color: Gray 500 (#999A98)
+           - Code: text-[14px] font-bold text-gray-500
+        */}
+        {isParking && isFree && (
+          <span className="text-[14px] leading-[1.5] font-bold text-gray-500">무료</span>
+        )}
 
-          {/* 버스*/}
-          {isBus && <span className="text-body-2-r text-sub-deep">{item.id}</span>}
-        </div>
-
-        {/* 닫기 버튼 */}
-        {onClose && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onClose()
-            }}
-            className="p-1 -mr-2 -mt-1 text-sub hover:text-default transition-colors shrink-0"
-            aria-label="닫기"
+        {/* 지하철 태그 (컬러는 동적, 폰트는 Bold 적용) */}
+        {isSubway && subwayLineName && (
+          <span
+            className="text-[14px] leading-[1.5] font-bold whitespace-nowrap"
+            style={{ color: subwayColor }}
           >
-            <span className="text-xl font-medium">✕</span>
-          </button>
+            {subwayLineName}
+          </span>
+        )}
+
+        {/* 버스 태그 (Gray 500, Bold) */}
+        {isBus && (
+          <span className="text-[14px] leading-[1.5] font-bold text-gray-500">{item.id}</span>
         )}
       </div>
 
-      {/* 주소 */}
-      {item.address && <p className="text-body-2-r text-sub mb-5 break-keep">{item.address}</p>}
+      {/* Body: 주소 */}
+      {/* Spec: Caption1/M (13px, Medium), #70716F */}
+      {item.address && (
+        <p className="text-caption-1-m text-sub-deep mb-4 break-keep">{item.address}</p>
+      )}
 
-      {/* 주차장 전용 현황판*/}
+      {/* Footer: 주차장 전용 현황판 */}
       {isParking && (
-        <>
-          {/* 구분선 */}
-          <div className="w-full h-[1px] bg-line-bright mb-4" />
+        <div className="flex flex-col gap-1">
+          {item.updatedAt && (
+            <span className="text-caption-2-r text-sub-bright text-right">
+              {item.updatedAt} 기준
+            </span>
+          )}
 
-          <div className="flex justify-between items-end">
-            <div>
-              <span className="text-caption-1-m text-sub-deep block mb-1">잔여 주차공간 현황</span>
-              <div className="flex items-baseline gap-1">
-                <span className="text-title-1-b text-default">{item.availableSpots ?? '-'}</span>
-                <span className="text-body-2-m text-sub-bright">/ {item.totalSpots ?? '-'}</span>
-              </div>
+          {/* 주차 현황 박스 */}
+          <div className="w-full bg-gray-100 rounded-lg py-3 px-4 flex justify-between items-center">
+            {/* [Label Spec 반영]
+               - Spec: Caption1/SB (13px, SemiBold 600)
+               - Color: Sub-Deep (#70716F)
+               - Code: text-caption-1-sb text-sub-deep
+            */}
+            <span className="text-caption-1-sb text-sub-deep">잔여 주차공간 현황</span>
+
+            {/* 숫자 영역 */}
+            <div className="flex items-baseline gap-0.5">
+              {/* 잔여: 13px SemiBold, Gray 700 (#515251) */}
+              <span className="text-caption-1-sb text-gray-700">{item.availableSpots ?? '-'}</span>
+
+              {/* 구분선: Gray 500 */}
+              <span className="text-caption-1-m text-gray-500">/</span>
+
+              {/* 전체: 13px Medium, Gray 500 (#999A98) */}
+              <span className="text-caption-1-m text-gray-500">{item.totalSpots ?? '-'}</span>
             </div>
-
-            {/* 업데이트 시간*/}
-            {item.updatedAt && (
-              <span className="text-caption-2-r text-sub-bright mb-0.5">{item.updatedAt} 기준</span>
-            )}
           </div>
-        </>
+        </div>
       )}
     </article>
   )
