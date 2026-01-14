@@ -5,7 +5,10 @@ import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.common.utils.util.DistanceCalculator;
 import groom.backend.domain.park.entity.Park;
+import groom.backend.domain.park.entity.ParkTag;
 import groom.backend.domain.park.repository.ParkRepository;
+import groom.backend.domain.park.repository.ParkTagRepository;
+import groom.backend.domain.tag.entity.Tag;
 import groom.backend.domain.weather.entity.WeatherStatus;
 import groom.backend.domain.weather.repository.WeatherStatusRepository;
 import groom.backend.domain.population.entity.LivePopStatus;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ParkApplicationServiceImpl implements ParkApplicationService {
     private final ParkRepository parkRepository;
+    private final ParkTagRepository parkTagRepository;
     private final WeatherStatusRepository weatherStatusRepository;
     private final LivePopStatusRepository livePopStatusRepository;
 
@@ -90,6 +94,14 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                     Optional<LivePopStatus> livePopStatusOptional = 
                             livePopStatusRepository.findLatestByAreaCode(park.getAreaCode());
 
+                    // 태그 정보 조회
+                    List<ParkTag> parkTags = parkTagRepository.findByAreaCodeWithTag(park.getAreaCode());
+                    List<String> tags = parkTags.stream()
+                            .map(ParkTag::getTag)
+                            .filter(tag -> tag != null)
+                            .map(Tag::getTagName)
+                            .collect(Collectors.toList());
+
                     // 거리 계산 (현재 위치와 공원 좌표가 모두 있는 경우)
                     Double distance = null;
                     if (longitude != null && latitude != null
@@ -111,7 +123,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                             .latitude(park.getLatitude())
                             .distance(distance)
                             .image(null)
-                            .tags(null);
+                            .tags(tags.isEmpty() ? null : tags);
 
                     // 날씨 정보 설정
                     if (weatherStatusOptional.isPresent()) {
@@ -174,6 +186,14 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         Optional<LivePopStatus> livePopStatusOptional = 
                 livePopStatusRepository.findLatestByAreaCode(park.getAreaCode());
 
+        // 태그 정보 조회
+        List<ParkTag> parkTags = parkTagRepository.findByAreaCodeWithTag(park.getAreaCode());
+        List<String> tags = parkTags.stream()
+                .map(ParkTag::getTag)
+                .filter(tag -> tag != null)
+                .map(Tag::getTagName)
+                .collect(Collectors.toList());
+
         // 거리 계산 (현재 위치와 공원 좌표가 모두 있는 경우)
         Double distance = null;
         if (longitude != null && latitude != null
@@ -195,7 +215,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 .latitude(park.getLatitude())
                 .distance(distance)
                 .image(null)
-                .tags(null);
+                .tags(tags.isEmpty() ? null : tags);
 
         // 날씨 정보 설정
         if (weatherStatusOptional.isPresent()) {
