@@ -1,5 +1,6 @@
 package groom.backend.application.avoidance.service.impl;
 
+import groom.backend.application.avoidance.dto.response.CongestionPredResult;
 import groom.backend.application.avoidance.service.spec.CongestionRecommendService;
 import groom.backend.domain.avoidance.entity.ParkStatistics;
 import groom.backend.domain.avoidance.enums.Weekday;
@@ -11,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 당일에 대한 혼잡도 예측 기반 시간대 추천 서비스 기능
+ *
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,11 +24,11 @@ public class CongestionRecommendServiceImpl implements CongestionRecommendServic
 
 
   /**
-   * 09-22 시간대 사이 기준 공원 혼잡도에서 가장 여유로운 시간대 추출
+   * 특정 요일에 대해, 09-22 시간대 사이 기준 공원 혼잡도에서 가장 여유로울 것으로 예측되는 시간대 추천 및 텍스트 생성
    * @return
    */
   @Override
-  public Integer congestionRecommend(String areaCode) {
+  public CongestionPredResult recommend(String areaCode, Weekday weekday) {
     // 현재 서버 시각 기준 요일 산출
     LocalDateTime now = LocalDateTime.now();
     Weekday currentWeekday = localDateTimetoWeekday(now);

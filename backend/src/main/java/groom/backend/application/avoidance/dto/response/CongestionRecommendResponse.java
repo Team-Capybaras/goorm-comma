@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Setter
-public class ParkStatisticsResponse {
+public class CongestionRecommendResponse {
 
   @Schema(
           description = """
@@ -38,7 +38,6 @@ public class ParkStatisticsResponse {
           description = """
                   본 응답이 생성된 기준 시각입니다.
                   
-                  - 서버 기준 시각이며, 캐시 여부와 무관합니다.
                   - 클라이언트는 이 값을 기준으로 데이터 신선도를 판단할 수 있습니다.
                   """,
           example = "2026-01-13T13:30:00",

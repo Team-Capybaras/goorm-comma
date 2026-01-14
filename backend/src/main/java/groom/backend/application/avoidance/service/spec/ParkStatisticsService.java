@@ -1,6 +1,8 @@
 package groom.backend.application.avoidance.service.spec;
 
-import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
+import groom.backend.application.avoidance.dto.response.CongestionStatistics;
+
+import java.util.List;
 
 public interface ParkStatisticsService {
   /**
@@ -8,9 +10,5 @@ public interface ParkStatisticsService {
    */
   public void aggregateAll();
 
-  /**
-   * 특정 공원의 요일별 시간단위 혼잡도 데이터를 조회한다.
-   * @param areaCode
-   */
-  public ParkStatisticsResponse getParkStatistics(String areaCode);
+  public List<CongestionStatistics> getCongestionStatistics(String areaCode);
 }
