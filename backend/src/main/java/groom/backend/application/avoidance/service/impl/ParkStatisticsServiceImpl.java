@@ -95,6 +95,7 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
     // 2. 로그 테이블 INSERT
     ParkStatisticsLog logEntity =
             ParkStatisticsLog.builder()
+                    .areaCode(key.areaCode())
                     .weekday(key.weekday())
                     .hour(key.hour())
                     .popMeanMin(avgMin)

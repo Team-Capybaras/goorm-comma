@@ -120,11 +120,11 @@ public class GetAllParksResponse {
         private Double distance;
 
         @Schema(
-                description = "이미지 URL",
-                example = "null",
+                description = "이미지 URL 리스트",
+                example = "[]",
                 nullable = true
         )
-        private String image;
+        private List<String> images;
 
         @Schema(
                 description = "태그 리스트",
