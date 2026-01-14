@@ -3,7 +3,6 @@ package groom.backend.application.avoidance.model.impl;
 import groom.backend.application.avoidance.dto.response.CongestionPredResult;
 import groom.backend.application.avoidance.dto.response.CongestionStatistics;
 import groom.backend.application.avoidance.model.spec.CongestionPredictModel;
-import groom.backend.domain.avoidance.enums.Weekday;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import java.util.List;
 public class CongestionPredictModelImpl implements CongestionPredictModel {
 
   @Override
-  public CongestionPredResult predictCongestion(
+  public List<CongestionPredResult> predictCongestion(
           List<CongestionStatistics> congestionStatistics
   ) {
 
@@ -25,9 +24,6 @@ public class CongestionPredictModelImpl implements CongestionPredictModel {
       return null;
     }
 
-    Weekday weekday = congestionStatistics.getFirst().weekday();
-    int recommendedHour = 0;
-
     // 임시 강수 확률
     // TODO : Weather 도메인 연동
     // TODO : 기상청 연계 및 API 캐싱이 되어있지 않을 시 작동 로직 설계
@@ -35,7 +31,7 @@ public class CongestionPredictModelImpl implements CongestionPredictModel {
 
     log.info("[CongestionPredict] start prediction, rainProbability={}%", rainProbability);
 
-    List<Integer> finalPredicted = congestionStatistics.stream().map(stat -> { int baseCongestion = stat.popMeanMax();
+    return congestionStatistics.stream().map(stat -> { int baseCongestion = stat.popMeanMax();
       log.debug("[CongestionPredict] baseCongestion={}", baseCongestion);
 
       // 1. 기본 혼잡도 100%
@@ -78,23 +74,12 @@ public class CongestionPredictModelImpl implements CongestionPredictModel {
               predictedCongestion
       );
 
-      return predictedCongestion;
+      return CongestionPredResult.builder()
+              .weekday(stat.weekday())
+              .hour(stat.hour())
+              .predCongestions(predictedCongestion)
+              .build();
     }).toList();
-
-    int minimumCongestion = Integer.MAX_VALUE;
-    for (int i = 8; i < 22; i++) {
-      if (recommendedHour == 0 || minimumCongestion > finalPredicted.get(i)) {
-        recommendedHour = i;
-        minimumCongestion = finalPredicted.get(i);
-      }
-
-    }
-
-    return new CongestionPredResult(
-            weekday,
-            recommendedHour,
-            finalPredicted
-    );
   }
 }
 

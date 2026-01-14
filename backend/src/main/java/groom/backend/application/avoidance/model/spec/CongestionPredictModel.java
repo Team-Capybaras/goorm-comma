@@ -2,7 +2,6 @@ package groom.backend.application.avoidance.model.spec;
 
 import groom.backend.application.avoidance.dto.response.CongestionPredResult;
 import groom.backend.application.avoidance.dto.response.CongestionStatistics;
-import groom.backend.domain.avoidance.enums.Weekday;
 
 import java.util.List;
 
@@ -15,5 +14,5 @@ public interface CongestionPredictModel {
    * 주의 : 검증되지 않음.
    * @return
    */
-  public CongestionPredResult predictCongestion(List<CongestionStatistics> congestionStatistics);
+  public List<CongestionPredResult> predictCongestion(List<CongestionStatistics> congestionStatistics);
 }

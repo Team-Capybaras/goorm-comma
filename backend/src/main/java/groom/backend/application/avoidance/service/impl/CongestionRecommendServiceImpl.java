@@ -1,15 +1,17 @@
 package groom.backend.application.avoidance.service.impl;
 
 import groom.backend.application.avoidance.dto.response.CongestionPredResult;
+import groom.backend.application.avoidance.dto.response.CongestionRecommendResult;
+import groom.backend.application.avoidance.dto.response.CongestionStatistics;
+import groom.backend.application.avoidance.model.spec.CongestionPredictModel;
 import groom.backend.application.avoidance.service.spec.CongestionRecommendService;
-import groom.backend.domain.avoidance.entity.ParkStatistics;
+import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
 import groom.backend.domain.avoidance.enums.Weekday;
-import groom.backend.domain.avoidance.repository.ParkStatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -20,60 +22,39 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CongestionRecommendServiceImpl implements CongestionRecommendService {
-  private final ParkStatisticsRepository parkStatisticsRepository;
+  private final ParkStatisticsService parkStatisticsService;
+  private final CongestionPredictModel congestionPredictModel;
 
 
   /**
    * 특정 요일에 대해, 09-22 시간대 사이 기준 공원 혼잡도에서 가장 여유로울 것으로 예측되는 시간대 추천 및 텍스트 생성
+   * 또한 예측 모델을 이용해 해당 요일의 혼잡도를 예측한다.
    * @return
    */
   @Override
-  public CongestionPredResult recommend(String areaCode, Weekday weekday) {
-    // 현재 서버 시각 기준 요일 산출
-    LocalDateTime now = LocalDateTime.now();
-    Weekday currentWeekday = localDateTimetoWeekday(now);
+  public CongestionRecommendResult recommend(String areaCode, Weekday weekday) {
+    List<CongestionStatistics> filtered =
+            parkStatisticsService.getCongestionStatistics(areaCode).stream()
+                    .filter(s -> s.weekday() == weekday)
+                    .toList();
 
-    // 23시 이후면 다음 날 기준으로 판단
-    if (now.getHour() >= 23) {
-      now = now.plusDays(1);
-    }
-
-    // 데이터 조회
-    List<ParkStatistics> statistics =
-            parkStatisticsRepository.findByAreaCode(areaCode);
+    List<CongestionPredResult> predResults = congestionPredictModel.predictCongestion(filtered);
 
     // 현재 요일 + 추천 가능 시간대(9~22) 필터링 후
     // 혼잡도(popMeanMax)가 가장 낮은 시간 반환
-    return statistics.stream()
-            .filter(stat -> stat.getWeekday() == currentWeekday)
+    int recommendedHour = predResults.stream()
             .filter(stat -> stat.getHour() >= 9 && stat.getHour() <= 22)
-            .min((a, b) -> Integer.compare(a.getPopMeanMax(), b.getPopMeanMax()))
-            .map(ParkStatistics::getHour)
+            .min(Comparator.comparingInt(CongestionPredResult::getPredCongestions))
+            .map(CongestionPredResult::getHour)
             .orElse(0); // 데이터 없을 경우 기본값
-  }
 
-  /**
-   * localDateTime을 WeekDay enum으로 변환
-   * @param localDateTime
-   * @return
-   */
-  private Weekday localDateTimetoWeekday(LocalDateTime localDateTime) {
-    return switch (localDateTime.getDayOfWeek()) {
-      case MONDAY -> Weekday.MON;
-      case TUESDAY -> Weekday.TUE;
-      case WEDNESDAY -> Weekday.WED;
-      case THURSDAY -> Weekday.THU;
-      case FRIDAY -> Weekday.FRI;
-      case SATURDAY -> Weekday.SAT;
-      case SUNDAY -> Weekday.SUN;
-    };
-  }
+    String message = recommendedHour + "시가 가장 여유로울 것으로 예측되요.";
+    if (recommendedHour == 0) message = "오늘은 사람이 붐빌수도 있어요";
 
-
-  // TODO : 24개 숫자를 통해 시간별 혼잡도 예측
-  // 구체적 로직 구현 필요
-  public List<Integer> predCongestion(String areaCode) {
-
-    return List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    return CongestionRecommendResult.builder()
+            .recommendedHour(recommendedHour)
+            .message(message)
+            .predCongestions(predResults)
+            .build();
   }
 }

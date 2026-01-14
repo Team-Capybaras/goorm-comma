@@ -1,6 +1,6 @@
 package groom.backend.application.avoidance.service.impl;
 
-import groom.backend.application.avoidance.dto.response.CongestionPredResult;
+import groom.backend.application.avoidance.dto.response.CongestionRecommendResult;
 import groom.backend.application.avoidance.dto.response.CongestionRecommendResponse;
 import groom.backend.application.avoidance.dto.response.CongestionStatistics;
 import groom.backend.application.avoidance.mapper.CongestionAvoidanceMapper;
@@ -79,7 +79,7 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
       // - 상위 N개 시간 추출
       // 특정 요일에 대한 혼잡도 회피 추천 시간 검색
 
-      CongestionPredResult recommendResult = congestionRecommendService.recommend(areaCode, null);
+      CongestionRecommendResult recommendResult = congestionRecommendService.recommend(areaCode, null);
 
 
       weekdayAggregate.setRecommendedVisitHour(recommendResult.getRecommendedHour());
