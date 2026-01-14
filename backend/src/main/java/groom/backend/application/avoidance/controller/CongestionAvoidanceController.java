@@ -68,5 +68,16 @@ public class CongestionAvoidanceController {
     return ApiResponse.success(200, "공원 혼잡도 통계 조회 성공", response);
   }
 
+  /**
+   * test 코드.
+   * 트리거 기능 테스트 api
+   * @return
+   */
+  @GetMapping("/aggregate")
+  public ApiResponse<String> aggregateTriger() {
+    parkStatisticsService.aggregateAll();
+    return ApiResponse.success(200, "triggered. aggregate start", "");
+  }
+
   // TODO: 시간대 추천 기능
 }
