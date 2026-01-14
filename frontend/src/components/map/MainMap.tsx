@@ -43,7 +43,7 @@ export default function MainMap({ data, center }: Props) {
   }
 
   const handleCardClick = (item: ParkItem) => {
-    router.push(`/detail`)
+    router.push(`/detail/[id]`)
   }
 
   return (

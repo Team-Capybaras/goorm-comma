@@ -1,99 +1,80 @@
 'use client'
 
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+
+// 공통 컴포넌트 & 타입
 import KakaoMap from '@/components/common/KakaoMap'
-import type { MapDataType } from '@/shared/types/map-types'
+import type { FacilityItem } from '@/shared/types/map-types'
+
+// 컴포넌트 & 헬퍼
+import DetailMapCard from '@/components/map/DetailMapCard'
+import { getFacilityMarkerIcon } from '@/shared/utils/map-helpers'
 
 interface Props {
-  data: MapDataType[]
+  data: FacilityItem[]
   center: { lat: number; lng: number }
+  /**
+   * preview: 대시보드 내 작은 지도 (확대 버튼, 조작 불가)
+   * full: 전체 화면 지도 (축소 버튼, 조작 가능, 카드 노출)
+   * @default 'full'
+   */
+  mode?: 'preview' | 'full'
 }
 
-export default function DetailMap({ data, center }: Props) {
-  return (
-    <section className="w-full h-full relative ">
-      <KakaoMap<MapDataType>
-        data={data}
-        center={center}
-        level={4}
-        // 카테고리별 마커 이미지 연결
-        getMarkerImage={(item) => {
-          switch (item.category) {
-            case 'PARK':
-              return '/images/icons/marker.svg'
-            case 'PARKING':
-              return '/images/icons/marker.svg'
-            case 'SUBWAY':
-              return '/images/icons/marker.svg'
-            case 'BIKE':
-              return '/images/icons/marker.svg'
-            case 'BUS':
-              return '/images/icons/marker.svg'
-            case 'EV_CHARGER':
-              return '/images/icons/marker.svg'
-            default:
-              return '/images/icons/marker.svg'
-          }
-        }}
-        // 마커 클릭 시 보여줄 하단 카드 디자인
-        renderCard={(item) => {
-          // 메인 공원일 때
-          if (item.category === 'PARK') {
-            return (
-              <div className="p-2 text-center">
-                <h3 className="text-body-1-sb text-primary">{item.name}</h3>
-                <p className="text-caption-1-m text-sub">현재 보고 계신 장소입니다</p>
-              </div>
-            )
-          }
+export default function DetailMap({ data, center, mode = 'full' }: Props) {
+  const router = useRouter()
+  const [map, setMap] = useState<any>(null)
 
-          // 주변 편의시설일 때 (주차장, 지하철 등)
-          return (
-            <div className="flex flex-col gap-xs p-1">
-              <div className="flex items-center gap-sm">
-                {/* 카테고리 뱃지 */}
-                <Badge category={item.category} />
-                <h3 className="text-body-1-sb text-default">{item.name}</h3>
-              </div>
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
 
-              {/* 상세 정보 (API에서 받은 detailInfo 문자열 출력) */}
-              <div className="p-3 bg-background-deep rounded-md mt-2">
-                <p className="text-caption-1-r text-sub-deep break-keep">{item.detailInfo}</p>
-              </div>
-            </div>
-          )
-        }}
-      />
-    </section>
-  )
-}
-
-// 뱃지 컴포넌트 (내부에서만 쓰니까 여기에 정의)
-function Badge({ category }: { category: string }) {
-  let label = '기타'
-  let colorClass = 'bg-sub text-white'
-
-  switch (category) {
-    case 'PARKING':
-      label = '주차장'
-      colorClass = 'bg-deep text-white'
-      break
-    case 'SUBWAY':
-      label = '지하철'
-      colorClass = 'bg-orange-500 text-white'
-      break
-    case 'BIKE':
-      label = '따릉이'
-      colorClass = 'bg-green-600 text-white'
-      break
-    case 'BUS':
-      label = '버스'
-      colorClass = 'bg-blue-600 text-white'
-      break
-    case 'EV_CHARGER':
-      label = '충전소'
-      colorClass = 'bg-blue-400 text-white'
-      break
+    if (mode === 'preview') {
+      router.push('/detail/map')
+    } else {
+      router.back()
+    }
   }
 
-  return <span className={`${colorClass} text-caption-2-b px-2 py-0.5 rounded-xs`}>{label}</span>
+  return (
+    <div className="w-full h-full relative bg-background overflow-hidden group">
+      {mode === 'preview' && (
+        <div
+          onClick={() => router.push('/detail/map')}
+          className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+        />
+      )}
+
+      <KakaoMap<FacilityItem>
+        data={data}
+        center={center}
+        level={mode === 'preview' ? 6 : 4}
+        getMarkerImage={(item, isSelected) => getFacilityMarkerIcon(item.category, isSelected)}
+        markerSize={{ width: 24, height: 24 }}
+        activeMarkerSize={{ width: 32, height: 32 }}
+        renderCard={(item) => (mode === 'full' ? <DetailMapCard item={item} /> : null)}
+        onCardClick={mode === 'full' ? undefined : () => {}}
+        onMapLoad={(loadedMap) => {
+          setMap(loadedMap)
+        }}
+      />
+
+      <button
+        onClick={handleButtonClick}
+        className="absolute top-4 right-4 z-20 w-[40px] h-[40px] bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+        aria-label={mode === 'preview' ? '지도 확대' : '지도 축소'}
+      >
+        <Image
+          // 모드에 따라 아이콘 변경
+          src={
+            mode === 'preview' ? '/images/icons/map/maximize.svg' : '/images/icons/map/minimize.svg'
+          }
+          alt={mode === 'preview' ? '확대' : '축소'}
+          width={24}
+          height={24}
+        />
+      </button>
+    </div>
+  )
 }
