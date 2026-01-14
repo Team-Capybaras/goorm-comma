@@ -82,7 +82,7 @@ public class CongestionPredictModelImpl implements CongestionPredictModel {
     }).toList();
 
     int minimumCongestion = Integer.MAX_VALUE;
-    for (int i = 9; i < 23; i++) {
+    for (int i = 8; i < 22; i++) {
       if (recommendedHour == 0 || minimumCongestion > finalPredicted.get(i)) {
         recommendedHour = i;
         minimumCongestion = finalPredicted.get(i);
