@@ -83,6 +83,7 @@ public class WeekdayAggregateResponse {
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
+  @Setter
   public static class HourAggregateResponse {
 
     @Schema(

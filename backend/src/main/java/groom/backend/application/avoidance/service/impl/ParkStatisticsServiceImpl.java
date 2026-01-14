@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -136,6 +137,78 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
             key.areaCode(), key.weekday(), key.hour(), avgMin, avgMax
     );
   }
+
+  @Override
+  public List<CongestionStatistics> getTodayCongestion(String areaCode) {
+
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
+    LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+    Weekday today = Weekday.from(now.getDayOfWeek());
+
+    log.info(
+            "오늘 실시간 혼잡도 집계 시작 - areaCode={}, date={}",
+            areaCode, startOfDay.toLocalDate()
+    );
+
+    List<LivePopStatus> todayStatuses =
+            livePopStatusRepository.findByAreaCodeAndDataGetTimeBetween(
+                    areaCode,
+                    startOfDay,
+                    endOfDay
+            );
+
+    if (todayStatuses.isEmpty()) {
+      log.warn(
+              "오늘 혼잡도 집계 대상 데이터 없음 - areaCode={}",
+              areaCode
+      );
+      return List.of();
+    }
+
+    Map<Integer, List<LivePopStatus>> groupedByHour =
+            todayStatuses.stream()
+                    .collect(Collectors.groupingBy(
+                            status -> status.getDataGetTime().getHour()
+                    ));
+
+    List<CongestionStatistics> result =
+            groupedByHour.entrySet().stream()
+                    .map(entry -> {
+                      int hour = entry.getKey();
+                      List<LivePopStatus> statuses = entry.getValue();
+
+                      int avgMin =
+                              (int) statuses.stream()
+                                      .mapToInt(LivePopStatus::getAreaPopMin)
+                                      .average()
+                                      .orElse(0);
+
+                      int avgMax =
+                              (int) statuses.stream()
+                                      .mapToInt(LivePopStatus::getAreaPopMax)
+                                      .average()
+                                      .orElse(0);
+
+                      return new CongestionStatistics(
+                              today,
+                              hour,
+                              avgMin,
+                              avgMax
+                      );
+                    })
+                    .sorted(Comparator.comparingInt(CongestionStatistics::hour))
+                    .toList();
+
+    log.debug(
+            "오늘 실시간 혼잡도 집계 완료 - areaCode={}, hourCount={}",
+            areaCode, result.size()
+    );
+
+    return result;
+  }
+
 
   /**
    * 집계 키 생성

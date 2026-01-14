@@ -11,4 +11,11 @@ public interface ParkStatisticsService {
   public void aggregateAll();
 
   public List<CongestionStatistics> getCongestionStatistics(String areaCode);
+
+  /**
+   * 특정 공원에 대한 오늘 혼잡도 출력
+   * @param areaCode
+   * @return
+   */
+  public List<CongestionStatistics> getTodayCongestion(String areaCode);
 }

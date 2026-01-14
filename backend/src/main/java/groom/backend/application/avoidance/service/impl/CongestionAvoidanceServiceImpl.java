@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,12 +80,21 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
    */
   private void applyDerivedFields(CongestionRecommendResponse response, String areaCode) {
 
-
     LocalDateTime now = LocalDateTime.now();
     Weekday todayWeekday = Weekday.from(now.getDayOfWeek());
 
     log.debug("[CongestionAvoidance] applyDerivedFields start. areaCode={}, today={}, hour={}",
             areaCode, todayWeekday, now.getHour());
+
+    // 오늘 기준 시간대별 실시간 통계 조회 (1회)
+    List<CongestionStatistics> todayStats = parkStatisticsService.getTodayCongestion(areaCode);
+
+    Map<Integer, CongestionStatistics> todayStatMap =
+            todayStats.stream()
+                    .collect(Collectors.toMap(
+                            CongestionStatistics::hour,
+                            stat -> stat
+                    ));
 
     response.getWeekdays().forEach(weekdayAggregate -> {
 
@@ -121,20 +132,35 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
                 currentHour,
                 recommendedHour
         );
-      } else {
-        log.debug(
-                "[CongestionAvoidance] non-today recommendation used. areaCode={}, weekday={}, recommendedHour={}",
-                areaCode,
-                weekdayAggregate.getWeekday(),
-                recommendedHour
-        );
       }
 
       weekdayAggregate.setRecommendedVisitHour(recommendedHour);
+
+      // ===== today 인 경우 hour.now 채움 =====
+      if (isToday && weekdayAggregate.getHours() != null) {
+
+        weekdayAggregate.getHours().forEach(hourAggregate -> {
+
+          CongestionStatistics stat =
+                  todayStatMap.get(hourAggregate.getHour());
+
+          if (stat != null) {
+            hourAggregate.setNow(stat.popMeanMin());
+          }
+        });
+
+        log.debug(
+                "[CongestionAvoidance] today hourly now-field populated. areaCode={}, weekday={}",
+                areaCode, weekdayAggregate.getWeekday()
+        );
+      }
     });
 
-    log.debug("[CongestionAvoidance] applyDerivedFields end. areaCode={}", areaCode);
-
+    log.debug(
+            "[CongestionAvoidance] applyDerivedFields end. areaCode={}",
+            areaCode
+    );
   }
+
 
 }
