@@ -3,6 +3,7 @@ package groom.backend.application.avoidance.service.impl;
 import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
 import groom.backend.application.avoidance.dto.response.WeekdayAggregateResponse;
 import groom.backend.application.avoidance.mapper.ParkStatisticsMapper;
+import groom.backend.application.avoidance.service.spec.CongestionRecommendService;
 import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.population.entity.LivePopStatus;
@@ -36,6 +37,8 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
   private final ParkRepository parkRepository;
 
   private final ParkStatisticsMapper parkStatisticsMapper;
+
+  private final CongestionRecommendService congestionRecommendService;
 
   /**
    * 전체 인구 데이터를 기반으로 공원 혼잡도 통계를 집계한다.
@@ -88,12 +91,11 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
             parkStatisticsMapper.toParkStatisticsResponse(
                     areaCode,
                     LocalDateTime.now(),
-                    null, // recommendedVisitHour (TODO)
                     statistics
             );
 
     // 2. today / uncrowdedTime / uncrowdedHours 후처리
-    applyDerivedFields(response);
+    applyDerivedFields(response, areaCode);
 
     return response;
   }
@@ -107,7 +109,7 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
    *
    * ※ 현재는 TODO 형태로 두고 기본값만 세팅
    */
-  private void applyDerivedFields(ParkStatisticsResponse response) {
+  private void applyDerivedFields(ParkStatisticsResponse response, String areaCode) {
 
     LocalDateTime now = LocalDateTime.now();
     Weekday todayWeekday = Weekday.from(now.getDayOfWeek());
@@ -123,20 +125,12 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
       // - 혼잡도 오름차순 정렬
       // - 상위 N개 시간 추출
 
-      // - past / now / future 우선순위 판단
-      // - 혼잡도 오름차순 정렬
-      // - 동률 시 hour 오름차순
-
       // 임시 처리 (placeholder)
       // 현재는 단순히 가장 빠른 시간대를 uncrowdedTime으로 설정
-            Integer uncrowdedTime =
-                    weekdayAggregate.getHours().stream()
-                            .map(WeekdayAggregateResponse.HourAggregateResponse::getHour)
-                            .min(Integer::compareTo)
-                            .orElse(0);
+      Integer uncrowdedTime = congestionRecommendService.congestionRecommend(areaCode);
 
 
-      weekdayAggregate.setUncrowdedTime(uncrowdedTime);
+      weekdayAggregate.setRecommendedVisitHour(uncrowdedTime);
 
       // TODO: today 기준 추천 방문 시간 계산
       // - now 존재 시 now 기준
@@ -144,8 +138,6 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
       // - 그래도 없으면 uncrowdedTime
     });
 
-    // TODO: recommendedVisitHour 산출
-    response.setRecommendedVisitHour(null);
   }
 
   /**

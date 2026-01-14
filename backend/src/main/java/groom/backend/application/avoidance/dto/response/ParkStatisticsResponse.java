@@ -12,8 +12,7 @@ import java.util.List;
                 특정 공원(지역)에 대한 요일·시간대별 혼잡도 통계 응답입니다.
                 
                 - 과거 통계(past), 실시간(now), 예측(future) 혼잡도를 모두 포함합니다.
-                - 요일별로 가장 여유로운 혼잡 시간대(uncrowdedTime)를 제공합니다.
-                - 오늘(today)에 해당하는 요일에 한해 추천 방문 시간(recommendedVisitHour)을 제공합니다.
+                - 요일별로 추천 방문 시간(recommendedVisitHour)을 제공합니다.
                 """
 )
 @Getter
@@ -30,7 +29,7 @@ public class ParkStatisticsResponse {
                   - 요청 path 또는 query에서 사용된 areaCode와 동일합니다.
                   - 응답의 자기 식별성을 보장하기 위한 메타데이터입니다.
                   """,
-          example = "SEOUL_PARK_001",
+          example = "POI085",
           nullable = false
   )
   private String areaCode;
@@ -47,18 +46,6 @@ public class ParkStatisticsResponse {
   )
   private LocalDateTime refreshTime;
 
-  @Schema(
-          description = """
-                  오늘(today) 기준 추천 방문 시간입니다.
-                  
-                  - 오늘에 해당하는 요일이 존재할 경우에만 값이 내려옵니다.
-                  - 실시간(now) → 예측(future) → 통계(past) 순으로 판단합니다.
-                  - 추천이 불가능한 경우 null 이 될 수 있습니다.
-                  """,
-          example = "14",
-          nullable = true
-  )
-  private Integer recommendedVisitHour;
 
   @Schema(
           description = """

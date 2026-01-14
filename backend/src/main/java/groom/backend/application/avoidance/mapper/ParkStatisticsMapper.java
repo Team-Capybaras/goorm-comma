@@ -19,7 +19,6 @@ public class ParkStatisticsMapper {
    * ParkStatisticsResponse DTO로 변환한다.
    *
    * ParkStatistics가 빈 배열일 수 있기 때문에 areaCode를 입력으로 받는다.
-   * recommendedVisitHour는 계산 후 입력 받는다.
    *
    * 책임:
    * - weekday 기준 그룹핑
@@ -29,7 +28,6 @@ public class ParkStatisticsMapper {
   public ParkStatisticsResponse toParkStatisticsResponse(
           String areaCode,
           LocalDateTime refreshTime,
-          Integer recommendedVisitHour,
           List<ParkStatistics> statisticsList
   ) {
 
@@ -37,7 +35,6 @@ public class ParkStatisticsMapper {
       return ParkStatisticsResponse.builder()
               .areaCode(areaCode)
               .refreshTime(refreshTime)
-              .recommendedVisitHour(recommendedVisitHour)
               .weekdays(Collections.emptyList())
               .build();
     }
@@ -57,7 +54,6 @@ public class ParkStatisticsMapper {
     return ParkStatisticsResponse.builder()
             .areaCode(areaCode)
             .refreshTime(refreshTime)
-            .recommendedVisitHour(recommendedVisitHour)
             .weekdays(weekdayAggregates)
             .build();
   }
@@ -67,7 +63,7 @@ public class ParkStatisticsMapper {
    * WeekdayAggregateResponse로 변환한다.
    *
    * 주의:
-   * - today / uncrowdedTime / uncrowdedHours 는
+   * - today / recommendedVisitHour / uncrowdedHours 는
    *   Service 계층에서 채워 넣는 것을 전제로 한다.
    */
   private WeekdayAggregateResponse toWeekdayAggregateResponse(
@@ -84,7 +80,7 @@ public class ParkStatisticsMapper {
     return WeekdayAggregateResponse.builder()
             .weekday(weekday)
             .today(false) // Service에서 재설정
-            .uncrowdedTime(0) // Service에서 재설정
+            .recommendedVisitHour(0) // Service에서 재설정
             .hours(hourAggregates)
             .build();
   }

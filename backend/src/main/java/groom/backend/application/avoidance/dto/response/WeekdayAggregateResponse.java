@@ -11,8 +11,7 @@ import java.util.List;
         description = """
                 특정 요일에 대한 시간대별 혼잡도 집계 정보입니다.
                 
-                - 요일별로 가장 여유로운 혼잡 시간대(uncrowdedTime)를 제공합니다.
-                - uncrowdedHours는 동일한 기준으로 계산된 후보 시간대 목록입니다.
+                - 요일별로 가장 여유로울 것으로 예측되는 시간대(recommendedVisitHour)를 제공합니다.
                 - today 여부에 따라 실시간(now) 데이터 포함 여부가 달라집니다.
                 """
 )
@@ -45,17 +44,18 @@ public class WeekdayAggregateResponse {
   )
   private boolean today;
 
+
   @Schema(
           description = """
-                  해당 요일에서 가장 여유로운 혼잡대의 대표 시간입니다.
-                  
-                  - uncrowdedHours의 첫 번째 값과 동일합니다.
-                  - 과거/예측 통계를 기반으로 계산됩니다.
+                  해당 요일 기준 추천 방문 시간입니다.
+                  만약 오늘에 해당하는 요일일 경우, 09시에서 22시 사이의 시간대를 추천하며, 23시 이후부터는 다음날의 시간대를 추천합니다.
                   """,
-          example = "13",
+          minimum = "9",
+          maximum = "22",
+          example = "14",
           nullable = false
   )
-  private int uncrowdedTime;
+  private int recommendedVisitHour;
 
   @Schema(
           description = """
@@ -99,7 +99,7 @@ public class WeekdayAggregateResponse {
                   과거 통계 기반 평균 혼잡도 값입니다.
                   
                   - 해당 요일·시간대의 누적 통계 결과입니다.
-                  - 항상 존재하지 않을 수 있습니다.
+                  - 과거 데이터가 존재하지 않을 경우 null이 올 수 있습니다.
                   """,
             example = "120",
             nullable = true
