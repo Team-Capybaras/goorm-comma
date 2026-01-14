@@ -1,5 +1,6 @@
 package groom.backend.application.avoidance.service.impl;
 
+import groom.backend.application.avoidance.dto.response.CongestionPredResult;
 import groom.backend.application.avoidance.dto.response.CongestionRecommendResult;
 import groom.backend.application.avoidance.dto.response.CongestionRecommendResponse;
 import groom.backend.application.avoidance.dto.response.CongestionStatistics;
@@ -14,6 +15,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -31,13 +33,18 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
    * 공원 혼잡도 통계 조회
    */
   @Override
-  @Cacheable(
-          cacheNames = "parkStatistics",
-          key = "#areaCode"
-  )
+//  @Cacheable(
+//          cacheNames = "parkStatistics",
+//          key = "#areaCode"
+//  )
   public CongestionRecommendResponse getParkStatistics(String areaCode) {
 
+    log.info("[CongestionAvoidance] getParkStatistics start. areaCode={}", areaCode);
+
     List<CongestionStatistics> stats = parkStatisticsService.getCongestionStatistics(areaCode);
+
+    log.debug("[CongestionAvoidance] statistics fetched. areaCode={}, count={}",
+            areaCode, stats.size());
 
     // 1. 기본 구조 매핑
     CongestionRecommendResponse response =
@@ -47,8 +54,16 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
                     stats
             );
 
+    log.debug("[CongestionAvoidance] base response mapped. areaCode={}, weekdayCount={}",
+            areaCode, response.getWeekdays().size());
+
+
     // 2. today / uncrowdedTime / uncrowdedHours 후처리
     applyDerivedFields(response, areaCode);
+
+    log.debug("[CongestionAvoidance] base response mapped. areaCode={}, weekdayCount={}",
+            areaCode, response.getWeekdays().size());
+
 
     return response;
   }
@@ -60,36 +75,65 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
    * - uncrowdedHours / uncrowdedTime 계산
    * - recommendedVisitHour 계산
    *
-   * ※ 현재는 TODO 형태로 두고 기본값만 세팅
    */
   private void applyDerivedFields(CongestionRecommendResponse response, String areaCode) {
+
 
     LocalDateTime now = LocalDateTime.now();
     Weekday todayWeekday = Weekday.from(now.getDayOfWeek());
 
+    log.debug("[CongestionAvoidance] applyDerivedFields start. areaCode={}, today={}, hour={}",
+            areaCode, todayWeekday, now.getHour());
+
     response.getWeekdays().forEach(weekdayAggregate -> {
 
-      // today 여부 설정
-      boolean isToday = weekdayAggregate.getWeekday() == todayWeekday;
+      boolean isToday =
+              weekdayAggregate.getWeekday() == todayWeekday && now.getHour() < 23;
       weekdayAggregate.setToday(isToday);
 
-      // TODO: 혼잡도 기준 계산 로직
-      // - past / now / future 우선순위 판단
-      // - 혼잡도 오름차순 정렬
-      // - 상위 N개 시간 추출
-      // 특정 요일에 대한 혼잡도 회피 추천 시간 검색
+      log.trace("[CongestionAvoidance] weekday processing. areaCode={}, weekday={}, isToday={}",
+              areaCode, weekdayAggregate.getWeekday(), isToday);
 
-      CongestionRecommendResult recommendResult = congestionRecommendService.recommend(areaCode, null);
+      CongestionRecommendResult recommendResult =
+              congestionRecommendService.recommend(areaCode, weekdayAggregate.getWeekday());
 
+      int recommendedHour = recommendResult.getRecommendedHour();
 
-      weekdayAggregate.setRecommendedVisitHour(recommendResult.getRecommendedHour());
+      if (isToday) {
+        List<CongestionPredResult> predResults =
+                recommendResult.getPredCongestions();
 
-      // TODO: today 기준 추천 방문 시간 계산
-      // - now 존재 시 now 기준
-      // - 없으면 future
-      // - 그래도 없으면 uncrowdedTime
+        int currentHour = now.getHour();
 
+        recommendedHour = predResults.stream()
+                .filter(stat ->
+                        stat.getHour() >= Math.max(currentHour, 9)
+                                && stat.getHour() <= 22)
+                .min(Comparator.comparingInt(
+                        CongestionPredResult::getPredCongestions))
+                .map(CongestionPredResult::getHour)
+                .orElse(0);
+
+        log.debug(
+                "[CongestionAvoidance] today recommendation calculated. areaCode={}, weekday={}, currentHour={}, recommendedHour={}",
+                areaCode,
+                weekdayAggregate.getWeekday(),
+                currentHour,
+                recommendedHour
+        );
+      } else {
+        log.debug(
+                "[CongestionAvoidance] non-today recommendation used. areaCode={}, weekday={}, recommendedHour={}",
+                areaCode,
+                weekdayAggregate.getWeekday(),
+                recommendedHour
+        );
+      }
+
+      weekdayAggregate.setRecommendedVisitHour(recommendedHour);
     });
+
+    log.debug("[CongestionAvoidance] applyDerivedFields end. areaCode={}", areaCode);
 
   }
 

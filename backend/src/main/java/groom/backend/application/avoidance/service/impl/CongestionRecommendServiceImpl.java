@@ -33,23 +33,55 @@ public class CongestionRecommendServiceImpl implements CongestionRecommendServic
    */
   @Override
   public CongestionRecommendResult recommend(String areaCode, Weekday weekday) {
+
+    log.info(
+            "[CongestionRecommend] recommend start. areaCode={}, weekday={}",
+            areaCode, weekday
+    );
+
     List<CongestionStatistics> filtered =
             parkStatisticsService.getCongestionStatistics(areaCode).stream()
                     .filter(s -> s.weekday() == weekday)
                     .toList();
 
-    List<CongestionPredResult> predResults = congestionPredictModel.predictCongestion(filtered);
+    log.debug(
+            "[CongestionRecommend] statistics filtered. areaCode={}, weekday={}, count={}",
+            areaCode, weekday, filtered.size()
+    );
 
-    // 현재 요일 + 추천 가능 시간대(9~22) 필터링 후
-    // 혼잡도(popMeanMax)가 가장 낮은 시간 반환
+    List<CongestionPredResult> predResults =
+            congestionPredictModel.predictCongestion(filtered);
+
+    log.debug(
+            "[CongestionRecommend] prediction completed. areaCode={}, weekday={}, predCount={}",
+            areaCode, weekday, predResults.size()
+    );
+
     int recommendedHour = predResults.stream()
             .filter(stat -> stat.getHour() >= 9 && stat.getHour() <= 22)
             .min(Comparator.comparingInt(CongestionPredResult::getPredCongestions))
             .map(CongestionPredResult::getHour)
-            .orElse(0); // 데이터 없을 경우 기본값
+            .orElse(0);
+
+    if (recommendedHour == 0) {
+      log.warn(
+              "[CongestionRecommend] no valid recommendation found. areaCode={}, weekday={}",
+              areaCode, weekday
+      );
+    } else {
+      log.info(
+              "[CongestionRecommend] recommendedHour determined. areaCode={}, weekday={}, hour={}",
+              areaCode, weekday, recommendedHour
+      );
+    }
 
     String message = recommendedHour + "시가 가장 여유로울 것으로 예측되요.";
     if (recommendedHour == 0) message = "오늘은 사람이 붐빌수도 있어요";
+
+    log.debug(
+            "[CongestionRecommend] message generated. areaCode={}, weekday={}, message={}",
+            areaCode, weekday, message
+    );
 
     return CongestionRecommendResult.builder()
             .recommendedHour(recommendedHour)
@@ -58,3 +90,4 @@ public class CongestionRecommendServiceImpl implements CongestionRecommendServic
             .build();
   }
 }
+

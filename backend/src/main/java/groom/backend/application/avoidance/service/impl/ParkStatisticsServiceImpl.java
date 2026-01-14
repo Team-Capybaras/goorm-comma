@@ -68,10 +68,10 @@ public class ParkStatisticsServiceImpl implements ParkStatisticsService {
   }
 
   @Override
-  @Cacheable(
-          cacheNames = "parkStatistics",
-          key = "#areaCode"
-  )
+//  @Cacheable(
+//          cacheNames = "parkStatistics",
+//          key = "#areaCode"
+//  )
   public List<CongestionStatistics> getCongestionStatistics(String areaCode) {
 
     List<ParkStatistics> statistics =
