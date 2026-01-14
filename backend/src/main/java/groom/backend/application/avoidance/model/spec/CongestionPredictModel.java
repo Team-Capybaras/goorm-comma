@@ -1,7 +1,10 @@
 package groom.backend.application.avoidance.model.spec;
 
 import groom.backend.application.avoidance.dto.response.CongestionPredResult;
+import groom.backend.application.avoidance.dto.response.CongestionStatistics;
 import groom.backend.domain.avoidance.enums.Weekday;
+
+import java.util.List;
 
 /**
  * 각 요일별 0시부터 23시까지의 유동인구 혼잡도 예측 모델
@@ -12,5 +15,5 @@ public interface CongestionPredictModel {
    * 주의 : 검증되지 않음.
    * @return
    */
-  public CongestionPredResult predictCongestion(Weekday weekday);
+  public CongestionPredResult predictCongestion(List<CongestionStatistics> congestionStatistics);
 }
