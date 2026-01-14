@@ -12,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 공원 정보 조회 컨트롤러
+ * 공원 정보 조회 애플리케이션 컨트롤러
  * 여러 도메인을 조합하여 공원 정보를 제공합니다.
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/parks")
 @Tag(name = "Park", description = "공원 정보 조회 관리")
-public class ParkController {
+public class ParkApplicationController {
     private final ParkApplicationService parkApplicationService;
 
     @GetMapping
