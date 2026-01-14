@@ -113,8 +113,8 @@ public class GetAllParksResponse {
         private String areaCongestLevel;
 
         @Schema(
-                description = "거리 (km)",
-                example = "null",
+                description = "현재 위치로부터의 직선거리 (km), 현재 위치가 제공되지 않으면 null",
+                example = "2.5",
                 nullable = true
         )
         private Double distance;
