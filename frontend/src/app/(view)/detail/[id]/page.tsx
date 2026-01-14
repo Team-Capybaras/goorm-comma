@@ -1,5 +1,5 @@
 import {api} from "@/shared/libs/axios";
-import ParkThumbnail from "@/app/(view)/detail/_components/ParkThumbnail";
+import ParkThumbnail from "@/components/common/ParkThumbnail";
 import ParkInfoDashboard from "@/app/(view)/detail/_components/ParkInfoDashboard";
 import EnvironmentDashboard from "@/app/(view)/detail/_components/EnvironmentDashboard";
 import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionInfoDashboard";
