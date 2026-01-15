@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * 집계 시간 기록
  */
 @Entity
-@Table(name = "park_statistics")
+@Table(name = "park_statistics_log")
 @Getter
 @Setter
 @NoArgsConstructor
