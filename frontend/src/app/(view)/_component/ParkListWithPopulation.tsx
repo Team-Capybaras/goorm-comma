@@ -70,12 +70,13 @@ export default function ParkListWithPopulation() {
               <p><span className="text-body-2-b mr-3">붐비는 정도</span><span className="text-caption-1-m">예상 날씨</span></p>
             </div>
             <div className="flex gap-3">
-              <Card className="w-fit px-[12px] py-3 border-default rounded-full">
+              <Card className="w-fit h-10 px-[12px] py-1.5 border-default rounded-full">
                 태그1
               </Card>
-              <Card className="w-fit px-[12px] py-3 border-default rounded-full">
+              <Card className="w-fit h-10 px-[12px] py-1.5 border-default rounded-full">
                 태그2
-              </Card><Card className="w-fit px-[12px] py-3 border-default rounded-full">
+              </Card>
+              <Card className="w-fit h-10 px-[12px] py-1.5 border-default rounded-full">
                 태그3
               </Card>
              </div>
