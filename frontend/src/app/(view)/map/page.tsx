@@ -1,3 +1,4 @@
+import FloatingBar from '@/components/common/FloatingBar'
 import MainMap from '@/components/map/MainMap'
 import type { ParkItem } from '@/shared/types/map-types'
 
@@ -60,6 +61,7 @@ export default function MapPage() {
   return (
     <div className="w-full h-[100dvh] relative bg-default overflow-hidden">
       <MainMap data={PARK_DATA} center={initialCenter} />
+      <FloatingBar />
     </div>
   )
 }
