@@ -1,6 +1,7 @@
 package groom.backend.application.avoidance.controller;
 
-import groom.backend.application.avoidance.dto.response.ParkStatisticsResponse;
+import groom.backend.application.avoidance.dto.response.CongestionRecommendResponse;
+import groom.backend.application.avoidance.service.spec.CongestionAvoidanceService;
 import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
 import groom.backend.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 public class CongestionAvoidanceController {
 
+  private final CongestionAvoidanceService congestionAvoidanceService;
   private final ParkStatisticsService parkStatisticsService;
 
   /**
@@ -43,7 +45,7 @@ public class CongestionAvoidanceController {
           description = "공원 혼잡도 통계 조회 성공",
           content = @Content(
                   mediaType = "application/json",
-                  schema = @Schema(implementation = ParkStatisticsResponse.class)
+                  schema = @Schema(implementation = CongestionRecommendResponse.class)
           )
   )
   @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -55,7 +57,7 @@ public class CongestionAvoidanceController {
           description = "해당 지역 코드에 대한 공원 정보가 존재하지 않음"
   )
   @GetMapping("/statistics")
-  public ApiResponse<ParkStatisticsResponse> statistics(
+  public ApiResponse<CongestionRecommendResponse> statistics(
           @Parameter(
                   name = "area_code",
                   description = "공원을 식별하는 지역 코드",
@@ -64,7 +66,7 @@ public class CongestionAvoidanceController {
           )
           @RequestParam(name = "area_code") String areaCode
   ) {
-    ParkStatisticsResponse response = parkStatisticsService.getParkStatistics(areaCode);
+    CongestionRecommendResponse response = congestionAvoidanceService.getParkStatistics(areaCode);
     return ApiResponse.success(200, "공원 혼잡도 통계 조회 성공", response);
   }
 
