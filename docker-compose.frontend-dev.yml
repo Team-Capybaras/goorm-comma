@@ -14,6 +14,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      TZ: Asia/Seoul
     ports:
       - "5432:5432"
     volumes:
@@ -30,6 +31,8 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Seoul
+      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
     depends_on:
       - db
       - redis
@@ -44,6 +47,8 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    environment:
+      - TZ=Asia/Seoul
     networks:
       - goorm
 
@@ -52,6 +57,8 @@ services:
     image: nginx:latest
     ports:
       - "80:80"
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - ./nginx/nginx.frontend.conf:/etc/nginx/nginx.conf:ro
     depends_on:
