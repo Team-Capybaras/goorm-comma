@@ -73,12 +73,6 @@ public class ParkStatisticsLog {
   private LocalDateTime endTime;
 
   /**
-   * 지역 코드 (FK -> park.area_code)
-   */
-  @Column(name = "area_code", length = 20, nullable = false)
-  private String areaCode;
-
-  /**
    * 공원 정보 (FK)
    */
   @ManyToOne(fetch = FetchType.LAZY)
