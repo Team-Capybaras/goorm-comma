@@ -1,32 +1,50 @@
 import Image from "next/image";
+import {AIR_INDEX_COLOR_MAP, getAirIndexGrade} from "@/shared/utils/air-helpers";
+import {api} from "@/shared/libs/axios";
 
-interface EnvironmentDashboardProps {
-  data?: {
-    today: string;
-    precipitation: string;
-    temp: string;
-    weather_time: string;
-    air: string;
-    air_ms: string;
-    humidity: string
-  }
+interface Props {
+  areaCode: string;
 }
 
-export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) {
+interface EnvironmentTypes {
+  precptType: string;
+  rainChance: number;
+  temp: number;
+  weatherTime: string;
+  airIndexLevel: number;
+  airIndex: string;
+  humidity: number;
+}
+
+export default async function EnvironmentDashboard({areaCode}: Props) {
+  const fetchData = async () => {
+    const res = await api.get(`/v1/weather/current`, {
+      params: {
+        area_code : areaCode
+      }
+    })
+    return res.data.data
+  }
+
+  const data:EnvironmentTypes = await fetchData()
+
+  if (!data) return null
+
+  const grade = getAirIndexGrade(data?.airIndexLevel)
 
   return (
     <div className="mt s-6">
       {/* sub title */}
       <div className="flex justify-between items-center">
         <h3 className="text-body-1-sb">날씨</h3>
-        <p className="text-caption-3-m text-gray-300">{data?.weather_time}</p>
+        <p className="text-caption-3-m text-gray-300">{data?.weatherTime}</p>
       </div>
       {/* weather card */}
       <div className="border-1-line-default rounded-7 p s-4 mt s-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Image src={"/images/icons/weather/sun.svg"} className="mr s-3" width={24} height={24} alt="해"/>
-            <p className="text-body-2-m mr s-2">{data?.today}</p>
+            <p className="text-body-2-m mr s-2">{data?.precptType}</p>
             <div className="flex items-center">
               <p className="text-body-2-m mr s-1">{data?.temp}</p>
               <p className="text-caption-3-m">℃</p>
@@ -36,11 +54,11 @@ export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) 
           <div className="flex items-center">
             <div className="flex items-center mr s-4">
               <p className="text-caption-1-m text-gray-500 mr s-2-sub">강수 확률</p>
-              <p className="text-caption-1-m">{data?.precipitation}%</p>
+              <p className="text-caption-1-m">{data?.rainChance}%</p>
             </div>
             <div className="flex items-center">
               <p className="text-caption-1-m text-gray-500 mr s-2-sub">습도</p>
-              <p className="text-caption-1-m">{data?.humidity}</p>
+              <p className="text-caption-1-m">{data?.humidity}%</p>
             </div>
           </div>
         </div>
@@ -50,7 +68,11 @@ export default function EnvironmentDashboard({data}: EnvironmentDashboardProps) 
             <Image src={"/images/icons/weather/air.svg"} className="mr s-3" width={24} height={24} alt="대기환경지수" />
             <p className="text-caption-1-m">대기환경지수</p>
           </div>
-          <p className="text-caption-1-sb text-green-400">{data?.air} {data?.air_ms}</p>
+          <p className={`text-caption-1-sb ${
+            grade ? AIR_INDEX_COLOR_MAP[grade] : ''
+          }`}>
+            {data?.airIndexLevel} {data?.airIndex}
+          </p>
         </div>
       </div>
     </div>

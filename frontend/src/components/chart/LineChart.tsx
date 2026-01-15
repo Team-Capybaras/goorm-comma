@@ -30,9 +30,11 @@ type LineChartProps = {
   options?: ChartOptions<'line'>
   plugins?: Plugin<'line'>[]
   height?: number
+  chartKey?: string | number
 }
 
 export default function LineChart({
+    chartKey,
     labels,
     datasets,
     options,
@@ -41,6 +43,7 @@ export default function LineChart({
   }: LineChartProps) {
   return (
     <Line
+      key={chartKey}
       datasetIdKey="id"
       data={{ labels, datasets }}
       options={options}

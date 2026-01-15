@@ -3,7 +3,9 @@
 import DetailMap from '@/components/map/DetailMap'
 import { FacilityItem, MapDataType } from '@/shared/types/map-types'
 import Image from 'next/image'
-import { use, useState } from 'react'
+import {use, useEffect, useState} from 'react'
+import {CongestionType} from "@/shared/types/chart-types";
+import {api} from "@/shared/libs/axios";
 
 const center = {
   lat: 37.5444,
@@ -61,8 +63,30 @@ const ALL_CATEGORY_DATA: MapDataType[] = [
   },
 ]
 
-export default function TransportDashboard({ data }: any) {
+interface TransportDashboardProps {
+  areaCode: string;
+}
+
+export default function TransportDashboard({ areaCode }: TransportDashboardProps) {
+  const [data, setData] = useState<FacilityItem[]>([])
   const [isFullMapOpen, setIsFullMapOpen] = useState(false)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await api.get(`/v1/parking`, {
+        params: {
+          area_code: areaCode
+        }
+      })
+      setData(res.data.data)
+      console.log(res.data)
+    }
+
+    fetchData()
+  }, [areaCode])
+
+  if (!data) return null
+
   return (
     <div className="mt s-6 mb-6">
       <h3 className="text-body-1-sb">주변 대중교통 및 편의시설</h3>
