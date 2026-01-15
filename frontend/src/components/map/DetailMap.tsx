@@ -32,26 +32,20 @@ export default function DetailMap({ data, center, mode = 'full', onClose, onExpa
 
   return (
     <div className="w-full h-full relative bg-background overflow-hidden group">
-      {mode === 'preview' && (
-        <div
-          onClick={() => onExpand?.()}
-          className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-        />
-      )}
-
       <KakaoMap<FacilityItem>
         data={data}
         center={center}
-        level={mode === 'preview' ? 6 : 4}
+        level={mode === 'preview' ? 6 : 2}
         getMarkerImage={(item, isSelected) => getFacilityMarkerIcon(item.category, isSelected)}
         markerSize={{ width: 24, height: 24 }}
         activeMarkerSize={{ width: 32, height: 32 }}
         renderCard={(item) => (mode === 'full' ? <DetailMapCard item={item} /> : null)}
+        showLabel={false}
         onCardClick={mode === 'full' ? undefined : () => {}}
         onMapLoad={(loadedMap) => {
           setMap(loadedMap)
           if (mode === 'preview' && loadedMap) {
-            loadedMap.setDraggable(false)
+            loadedMap.setDraggable(true)
             loadedMap.setZoomable(false)
           }
         }}
