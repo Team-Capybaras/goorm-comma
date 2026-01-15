@@ -779,7 +779,7 @@
   }
 
   .border-bright {
-    border-color: rgb(var(--foreground-line-bright));
+    border: 1px solid rgb(var(--foreground-line-bright));
   }
 
   .border-deep {
