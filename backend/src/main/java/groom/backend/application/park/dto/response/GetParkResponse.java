@@ -113,6 +113,20 @@ public class GetParkResponse {
                 nullable = true
         )
         private List<String> tags;
+
+        @Schema(
+                description = "여유 예상 시간 (시), 예: \"14시 여유 예상\"",
+                example = "14시 여유 예상",
+                nullable = true
+        )
+        private String recommendedVisitHour;
+
+        @Schema(
+                description = "주소",
+                example = "null",
+                nullable = true
+        )
+        private String address;
     }
 }
 
