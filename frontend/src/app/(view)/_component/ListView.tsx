@@ -7,7 +7,7 @@ export default function ListView() {
   return (
     <div className="bg-default">
       <div className="flex bg-bright justify-center mb-3">
-        <div className="w-full max-w-2xl flex flex-col gap-lg p-xl">
+        <div className="w-full max-w-2xl flex flex-col gap-4 p-5">
         {/* 위치 및 날씨 정보 컨테이너 */}
           <div className="flex justify-between">
             <span className="inline-flex text-caption-1-m text-sub">
