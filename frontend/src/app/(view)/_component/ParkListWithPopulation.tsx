@@ -50,7 +50,7 @@ export default function ParkListWithPopulation() {
             <span className="text-body-2-m text-sub-bright">의 공원</span>
           </p>
           <div className="flex gap-3">
-            <Card className="w-[345px] h-[325px] border-default rounded-8 bg-gray-500">
+            <Card className="w-[345px] h-[325px] border-default rounded-8 bg-gray-500 overflow-hidden">
               <ParkThumbnail  
                 height={325}
                 dotBottom={12}
