@@ -3,7 +3,7 @@ package groom.backend.application.park.service.impl;
 import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
-import groom.backend.common.utils.util.DistanceCalculator;
+import groom.backend.common.utils.DistanceCalculator;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.entity.ParkTag;
 import groom.backend.domain.park.repository.ParkRepository;

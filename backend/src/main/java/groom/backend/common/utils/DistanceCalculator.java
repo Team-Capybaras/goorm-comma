@@ -1,4 +1,4 @@
-package groom.backend.common.utils.util;
+package groom.backend.common.utils;
 
 /**
  * 두 지점 간 거리 계산 유틸리티
