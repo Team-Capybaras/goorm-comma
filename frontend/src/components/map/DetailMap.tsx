@@ -35,7 +35,7 @@ export default function DetailMap({ data, center, mode = 'full', onClose, onExpa
       <KakaoMap<FacilityItem>
         data={data}
         center={center}
-        level={mode === 'preview' ? 6 : 2}
+        level={mode === 'preview' ? 4 : 3}
         getMarkerImage={(item, isSelected) => getFacilityMarkerIcon(item.category, isSelected)}
         markerSize={{ width: 24, height: 24 }}
         activeMarkerSize={{ width: 32, height: 32 }}
