@@ -13,6 +13,8 @@ import groom.backend.domain.weather.entity.WeatherStatus;
 import groom.backend.domain.weather.repository.WeatherStatusRepository;
 import groom.backend.domain.population.entity.LivePopStatus;
 import groom.backend.domain.population.repository.LivePopStatusRepository;
+import groom.backend.application.avoidance.service.spec.CongestionRecommendService;
+import groom.backend.domain.avoidance.enums.Weekday;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +39,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
     private final ParkTagRepository parkTagRepository;
     private final WeatherStatusRepository weatherStatusRepository;
     private final LivePopStatusRepository livePopStatusRepository;
+    private final CongestionRecommendService congestionRecommendService;
 
     private static final int DEFAULT_SIZE = 10;
     private static final int MAX_SIZE = 100;
@@ -139,6 +143,10 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                         builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
                     }
 
+                    // 여유 예상 시간 계산
+                    String recommendedVisitHour = calculateRecommendedVisitHour(park.getAreaCode());
+                    builder.recommendedVisitHour(recommendedVisitHour);
+
                     return builder.build();
                 })
                 .collect(Collectors.toList());
@@ -231,6 +239,13 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
         }
 
+        // 여유 예상 시간 계산
+        String recommendedVisitHour = calculateRecommendedVisitHour(park.getAreaCode());
+        builder.recommendedVisitHour(recommendedVisitHour);
+
+        // 주소 필드 (null로 설정)
+        builder.address(null);
+
         GetParkResponse.ParkInfo parkInfo = builder.build();
 
         GetParkResponse response = GetParkResponse.builder()
@@ -317,6 +332,10 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                         LivePopStatus livePopStatus = livePopStatusOptional.get();
                         builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
                     }
+
+                    // 여유 예상 시간 계산
+                    String recommendedVisitHour = calculateRecommendedVisitHour(park.getAreaCode());
+                    builder.recommendedVisitHour(recommendedVisitHour);
 
                     return builder.build();
                 })
@@ -461,6 +480,10 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                         builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
                     }
 
+                    // 여유 예상 시간 계산
+                    String recommendedVisitHour = calculateRecommendedVisitHour(park.getAreaCode());
+                    builder.recommendedVisitHour(recommendedVisitHour);
+
                     return builder.build();
                 })
                 .sorted((p1, p2) -> {
@@ -555,6 +578,31 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             case "매우붐빔" -> 4;
             default -> 999; // 알 수 없는 값도 가장 뒤로
         };
+    }
+
+    /**
+     * 공원의 여유 예상 시간을 계산합니다.
+     * CongestionRecommendService를 사용하여 오늘 요일 기준으로 가장 여유로운 시간을 추천받습니다.
+     * 
+     * @param areaCode 지역 코드
+     * @return "X시 여유 예상" 형태의 문자열, 추천 시간이 없으면 null
+     */
+    private String calculateRecommendedVisitHour(String areaCode) {
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            Weekday todayWeekday = Weekday.from(now.getDayOfWeek());
+            
+            var recommendResult = congestionRecommendService.recommend(areaCode, todayWeekday);
+            int recommendedHour = recommendResult.getRecommendedHour();
+            
+            if (recommendedHour > 0) {
+                return recommendedHour + "시 여유 예상";
+            }
+        } catch (Exception e) {
+            log.warn("여유 예상 시간 계산 중 오류 발생 - areaCode: {}, error: {}", areaCode, e.getMessage());
+        }
+        
+        return null;
     }
 }
 
