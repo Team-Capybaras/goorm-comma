@@ -381,6 +381,162 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
     }
 
     /**
+     * 거리가 가까운 순으로 공원 리스트를 조회합니다 (커서 기반 페이지네이션).
+     *
+     * @param cursor 커서 (areaCode), 첫 페이지는 null
+     * @param size 페이지 크기 (기본값: 10, 최대값: 100)
+     * @param longitude 현재 위치 경도 (거리 계산용, 필수)
+     * @param latitude 현재 위치 위도 (거리 계산용, 필수)
+     * @return 공원 리스트 및 다음 페이지 정보 (거리 가까운 순)
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public GetAllParksResponse getParksByDistance(String cursor, Integer size, Double longitude, Double latitude) {
+        // 거리 계산을 위해 위치 정보 필수
+        if (longitude == null || latitude == null) {
+            throw new IllegalArgumentException("거리 정렬을 위해서는 longitude와 latitude가 필수입니다.");
+        }
+
+        // size 검증 및 기본값 설정
+        int pageSize = (size == null || size <= 0) ? DEFAULT_SIZE : Math.min(size, MAX_SIZE);
+        
+        log.info("거리 가까운 순 공원 리스트 조회 시작 - cursor: {}, size: {}, longitude: {}, latitude: {}", 
+                cursor, pageSize, longitude, latitude);
+
+        // 모든 공원 조회
+        List<Park> allParks = parkRepository.findAllByOrderByAreaCode();
+        
+        // 각 공원의 거리를 계산하고 정렬
+        List<GetAllParksResponse.ParkInfo> allParkInfoList = allParks.stream()
+                .map(park -> {
+                    // 날씨 정보 조회
+                    Optional<WeatherStatus> weatherStatusOptional = 
+                            weatherStatusRepository.findTopByAreaCodeOrderByDataGetTimeDesc(park.getAreaCode());
+                    
+                    // 인구 정보 조회
+                    Optional<LivePopStatus> livePopStatusOptional = 
+                            livePopStatusRepository.findLatestByAreaCode(park.getAreaCode());
+
+                    // 태그 정보 조회
+                    List<ParkTag> parkTags = parkTagRepository.findByAreaCodeWithTag(park.getAreaCode());
+                    List<String> tags = parkTags.stream()
+                            .map(ParkTag::getTag)
+                            .filter(tag -> tag != null)
+                            .map(Tag::getTagName)
+                            .collect(Collectors.toList());
+
+                    // 거리 계산
+                    Double distance = null;
+                    if (park.getLongitude() != null && park.getLatitude() != null) {
+                        double calculatedDistance = DistanceCalculator.calculateDistance(
+                                latitude,
+                                longitude,
+                                park.getLatitude(),
+                                park.getLongitude()
+                        );
+                        // 소수점 첫째자리까지 반올림
+                        distance = Math.round(calculatedDistance * 10.0) / 10.0;
+                    }
+
+                    GetAllParksResponse.ParkInfo.ParkInfoBuilder builder = GetAllParksResponse.ParkInfo.builder()
+                            .areaCode(park.getAreaCode())
+                            .areaName(park.getAreaName())
+                            .longitude(park.getLongitude())
+                            .latitude(park.getLatitude())
+                            .distance(distance)
+                            .images(park.getImageUrls() != null && !park.getImageUrls().isEmpty() ? park.getImageUrls() : null)
+                            .tags(tags.isEmpty() ? null : tags);
+
+                    // 날씨 정보 설정
+                    if (weatherStatusOptional.isPresent()) {
+                        WeatherStatus weatherStatus = weatherStatusOptional.get();
+                        builder.temp(weatherStatus.getTemp())
+                                .precptMsg(weatherStatus.getPrecptMsg())
+                                .airIndex(weatherStatus.getAirIndex());
+                    }
+
+                    // 인구 혼잡도 정보 설정
+                    if (livePopStatusOptional.isPresent()) {
+                        LivePopStatus livePopStatus = livePopStatusOptional.get();
+                        builder.areaCongestLevel(livePopStatus.getAreaCongestLevel());
+                    }
+
+                    return builder.build();
+                })
+                .sorted((p1, p2) -> {
+                    Double distance1 = p1.getDistance();
+                    Double distance2 = p2.getDistance();
+                    
+                    // 거리가 null인 경우 가장 뒤로 정렬
+                    if (distance1 == null && distance2 == null) {
+                        // 둘 다 null이면 areaCode로 정렬
+                        String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
+                        String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
+                        return code1.compareTo(code2);
+                    }
+                    if (distance1 == null) {
+                        return 1; // distance1이 null이면 뒤로
+                    }
+                    if (distance2 == null) {
+                        return -1; // distance2가 null이면 뒤로
+                    }
+                    
+                    // 거리가 가까운 순으로 정렬
+                    int compare = Double.compare(distance1, distance2);
+                    
+                    // 거리가 같으면 areaCode로 정렬
+                    if (compare == 0) {
+                        String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
+                        String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
+                        compare = code1.compareTo(code2);
+                    }
+                    
+                    return compare;
+                })
+                .collect(Collectors.toList());
+
+        // 커서 기반 페이지네이션 적용
+        int startIndex = 0;
+        if (cursor != null && !cursor.trim().isEmpty()) {
+            // cursor 이후의 인덱스 찾기
+            for (int i = 0; i < allParkInfoList.size(); i++) {
+                if (allParkInfoList.get(i).getAreaCode().equals(cursor)) {
+                    startIndex = i + 1;
+                    break;
+                }
+            }
+        }
+
+        // 페이지 크기 + 1개 조회하여 다음 페이지 존재 여부 확인
+        int endIndex = Math.min(startIndex + pageSize + 1, allParkInfoList.size());
+        List<GetAllParksResponse.ParkInfo> parkInfoList = allParkInfoList.subList(startIndex, endIndex);
+
+        // 다음 페이지 존재 여부 확인
+        boolean hasNext = parkInfoList.size() > pageSize;
+        if (hasNext) {
+            parkInfoList = parkInfoList.subList(0, pageSize); // 마지막 하나 제거
+        }
+
+        // 다음 커서 설정
+        String nextCursor = null;
+        if (hasNext && !parkInfoList.isEmpty()) {
+            nextCursor = parkInfoList.get(parkInfoList.size() - 1).getAreaCode();
+        }
+
+        GetAllParksResponse response = GetAllParksResponse.builder()
+                .parks(parkInfoList)
+                .nextCursor(nextCursor)
+                .hasNext(hasNext)
+                .size(parkInfoList.size())
+                .build();
+
+        log.info("거리 가까운 순 공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), hasNext);
+
+        return response;
+    }
+
+    /**
      * 혼잡도 레벨을 숫자로 변환합니다.
      * 낮은 혼잡도일수록 작은 숫자를 반환합니다.
      * 
