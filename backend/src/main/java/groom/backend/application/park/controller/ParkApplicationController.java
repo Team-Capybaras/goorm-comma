@@ -114,5 +114,57 @@ public class ParkApplicationController {
         GetParkResponse response = parkApplicationService.getParkByAreaCode(areaCode, longitude, latitude);
         return ApiResponse.success(200, "공원 조회 성공", response);
     }
+
+    @GetMapping("/low-congestion")
+    @Operation(
+            summary = "혼잡도 낮은 순 공원 리스트 조회 (커서 기반 페이지네이션)",
+            description = "혼잡도가 낮은 순으로 공원 리스트를 조회합니다. " +
+                    "커서 기반 페이지네이션을 사용하며, 첫 페이지는 cursor를 생략하고, " +
+                    "다음 페이지는 이전 응답의 nextCursor 값을 사용합니다. " +
+                    "혼잡도 순서: 여유 < 보통 < 붐빔 < 매우붐빔"
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류"
+            )
+    })
+    public ApiResponse<GetAllParksResponse> getParksByLowCongestion(
+            @Parameter(
+                    description = "커서 (areaCode), 첫 페이지는 생략 가능",
+                    required = false,
+                    example = "POI093"
+            )
+            @RequestParam(required = false) String cursor,
+            @Parameter(
+                    description = "페이지 크기 (기본값: 10, 최대값: 100)",
+                    required = false,
+                    example = "10"
+            )
+            @RequestParam(required = false) Integer size,
+            @Parameter(
+                    description = "현재 위치 경도",
+                    required = false,
+                    example = "127.069903"
+            )
+            @RequestParam(required = false) Double longitude,
+            @Parameter(
+                    description = "현재 위치 위도",
+                    required = false,
+                    example = "37.529546"
+            )
+            @RequestParam(required = false) Double latitude
+    ) {
+        GetAllParksResponse response = parkApplicationService.getParksByLowCongestion(cursor, size, longitude, latitude);
+        return ApiResponse.success(200, "혼잡도 낮은 순 공원 리스트 조회 성공", response);
+    }
 }
 
