@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +84,10 @@ public class PublicDataScheduler {
      * 
      * ApplicationReadyEvent는 Spring Boot 애플리케이션이 완전히 시작된 후 발생하는 이벤트입니다.
      * 이 시점에 실행하면 모든 빈이 초기화되고 데이터베이스 연결도 준비된 상태입니다.
+     * @Order(1)로 설정하여 공원 데이터를 먼저 생성한 후 ParkImageInitializer가 실행되도록 합니다.
      */
     @EventListener(ApplicationReadyEvent.class)
+    @Order(1)
     public void onApplicationReady() {
         log.info("=== 애플리케이션 시작 시 공공 데이터 초기 업데이트 시작 ===");
         
@@ -97,6 +101,7 @@ public class PublicDataScheduler {
      * 공원별 경도, 위도 정보를 DB에 저장합니다.
      * 서버 실행 시 한 번만 실행됩니다.
      */
+    @Transactional
     private void updateParkCoordinates() {
         log.info("공원 경도, 위도 정보 저장 시작");
         

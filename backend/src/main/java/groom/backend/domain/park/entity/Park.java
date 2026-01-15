@@ -4,6 +4,8 @@ import groom.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * 공원 기본 정보 엔티티
  * 테이블: park
@@ -44,5 +46,13 @@ public class Park extends BaseEntity {
      */
     @Column(name = "latitude")
     private Double latitude;
+
+    /**
+     * 이미지 URL 리스트
+     */
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "park_image", joinColumns = @JoinColumn(name = "area_code"))
+    @Column(name = "image_url", length = 500)
+    private List<String> imageUrls;
 }
 

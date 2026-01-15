@@ -54,9 +54,21 @@ public class ParkApplicationController {
                     required = false,
                     example = "10"
             )
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) Integer size,
+            @Parameter(
+                    description = "현재 위치 경도",
+                    required = false,
+                    example = "127.069903"
+            )
+            @RequestParam(required = false) Double longitude,
+            @Parameter(
+                    description = "현재 위치 위도",
+                    required = false,
+                    example = "37.529546"
+            )
+            @RequestParam(required = false) Double latitude
     ) {
-        GetAllParksResponse response = parkApplicationService.getParks(cursor, size);
+        GetAllParksResponse response = parkApplicationService.getParks(cursor, size, longitude, latitude);
         return ApiResponse.success(200, "공원 리스트 조회 성공", response);
     }
 
@@ -85,9 +97,21 @@ public class ParkApplicationController {
                     required = true,
                     example = "POI093"
             )
-            @PathVariable String areaCode
+            @PathVariable String areaCode,
+            @Parameter(
+                    description = "현재 위치 경도",
+                    required = false,
+                    example = "127.069903"
+            )
+            @RequestParam(required = false) Double longitude,
+            @Parameter(
+                    description = "현재 위치 위도",
+                    required = false,
+                    example = "37.529546"
+            )
+            @RequestParam(required = false) Double latitude
     ) {
-        GetParkResponse response = parkApplicationService.getParkByAreaCode(areaCode);
+        GetParkResponse response = parkApplicationService.getParkByAreaCode(areaCode, longitude, latitude);
         return ApiResponse.success(200, "공원 조회 성공", response);
     }
 }
