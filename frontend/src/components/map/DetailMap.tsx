@@ -1,39 +1,32 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-
-// 공통 컴포넌트 & 타입
 import KakaoMap from '@/components/common/KakaoMap'
 import type { FacilityItem } from '@/shared/types/map-types'
-
-// 컴포넌트 & 헬퍼
 import DetailMapCard from '@/components/map/DetailMapCard'
 import { getFacilityMarkerIcon } from '@/shared/utils/map-helpers'
 
 interface Props {
   data: FacilityItem[]
   center: { lat: number; lng: number }
-  /**
-   * preview: 대시보드 내 작은 지도 (확대 버튼, 조작 불가)
-   * full: 전체 화면 지도 (축소 버튼, 조작 가능, 카드 노출)
-   * @default 'full'
-   */
+
   mode?: 'preview' | 'full'
+
+  onClose?: () => void
+  onExpand?: () => void
 }
 
-export default function DetailMap({ data, center, mode = 'full' }: Props) {
-  const router = useRouter()
+export default function DetailMap({ data, center, mode = 'full', onClose, onExpand }: Props) {
   const [map, setMap] = useState<any>(null)
 
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation()
 
     if (mode === 'preview') {
-      router.push('/detail/map')
+      onExpand?.()
     } else {
-      router.back()
+      onClose?.()
     }
   }
 
@@ -41,7 +34,7 @@ export default function DetailMap({ data, center, mode = 'full' }: Props) {
     <div className="w-full h-full relative bg-background overflow-hidden group">
       {mode === 'preview' && (
         <div
-          onClick={() => router.push('/detail/map')}
+          onClick={() => onExpand?.()}
           className="absolute inset-0 z-10 cursor-pointer bg-transparent"
         />
       )}
@@ -57,6 +50,10 @@ export default function DetailMap({ data, center, mode = 'full' }: Props) {
         onCardClick={mode === 'full' ? undefined : () => {}}
         onMapLoad={(loadedMap) => {
           setMap(loadedMap)
+          if (mode === 'preview' && loadedMap) {
+            loadedMap.setDraggable(false)
+            loadedMap.setZoomable(false)
+          }
         }}
       />
 
@@ -66,10 +63,7 @@ export default function DetailMap({ data, center, mode = 'full' }: Props) {
         aria-label={mode === 'preview' ? '지도 확대' : '지도 축소'}
       >
         <Image
-          // 모드에 따라 아이콘 변경
-          src={
-            mode === 'preview' ? '/images/icons/map/maximize.svg' : '/images/icons/map/minimize.svg'
-          }
+          src={mode === 'preview' ? '/images/icons/maximize.svg' : '/images/icons/minimize.svg'}
           alt={mode === 'preview' ? '확대' : '축소'}
           width={24}
           height={24}
