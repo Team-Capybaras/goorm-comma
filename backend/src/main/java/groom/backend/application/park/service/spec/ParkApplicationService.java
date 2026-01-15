@@ -13,16 +13,20 @@ public interface ParkApplicationService {
      *
      * @param cursor 커서 (areaCode), 첫 페이지는 null
      * @param size 페이지 크기 (기본값: 10, 최대값: 100)
+     * @param longitude 현재 위치 경도 (거리 계산용, 선택)
+     * @param latitude 현재 위치 위도 (거리 계산용, 선택)
      * @return 공원 리스트 및 다음 페이지 정보
      */
-    GetAllParksResponse getParks(String cursor, Integer size);
+    GetAllParksResponse getParks(String cursor, Integer size, Double longitude, Double latitude);
 
     /**
      * areaCode로 특정 공원을 조회합니다.
      *
      * @param areaCode 지역 코드
+     * @param longitude 현재 위치 경도 (거리 계산용, 선택)
+     * @param latitude 현재 위치 위도 (거리 계산용, 선택)
      * @return 공원 정보
      */
-    GetParkResponse getParkByAreaCode(String areaCode);
+    GetParkResponse getParkByAreaCode(String areaCode, Double longitude, Double latitude);
 }
 
