@@ -1,18 +1,27 @@
-import axios from 'axios'
+import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
 
-export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || '', // 기본은 same-origin
+export const api: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true
+  withCredentials: true,
 })
+
+api.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    return config
+  },
+  (error: AxiosError) => {
+    return Promise.reject(error)
+  }
+)
 
 // 요청/응답 인터셉터(옵션)
 api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    console.error('API Error:', err.response?.data || err.message)
-    return Promise.reject(err)
+  (response: AxiosResponse) => response,
+  (error: AxiosError) => {
+    console.error('API Error:', error.response?.data || error.message)
+    return Promise.reject(error)
   }
 )

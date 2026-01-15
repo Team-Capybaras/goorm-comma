@@ -42,15 +42,19 @@ export const congestionLineOptions: ChartOptions<'line'> = {
       },
     },
   },
-
   scales: {
     x: {
+      type: 'linear',
+      min: 6,
+      max: 24,
       ticks: {
         font: {
           size: 8,
           weight: 500,
         },
         color: '#D6D6D6',
+        stepSize: 2,
+        callback: (value) => value,
       },
       grid: {
         display: false,

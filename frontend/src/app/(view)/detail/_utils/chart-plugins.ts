@@ -1,4 +1,4 @@
-import { Plugin } from 'chart.js'
+import {Plugin} from 'chart.js'
 
 /* 차트와 범례 사이의 간격 Plugin */
 export const legendMarginPlugin = (
@@ -17,27 +17,23 @@ export const legendMarginPlugin = (
 
 /* 임의 Tooltip Plugin */
 type TooltipBubbleOptions = {
-  labels: string[]
   hour: number
   text: (hour: number) => string
 }
 
 export const tooltipBubblePlugin = ({
-    labels,
     hour,
     text,
   }: TooltipBubbleOptions): Plugin<'line'> => ({
   id: 'tooltipBubble',
   afterDraw(chart) {
-    const { ctx, scales } = chart
+    const { ctx, scales, chartArea  } = chart
 
-    const leftIndex = labels.findIndex(l => Number(l) === hour - 1)
-    const rightIndex = labels.findIndex(l => Number(l) === hour + 1)
-    if (leftIndex === -1 || rightIndex === -1) return
+    if (!chartArea) return
 
-    const xLeft = scales.x.getPixelForTick(leftIndex)
-    const xRight = scales.x.getPixelForTick(rightIndex)
-    const x = (xLeft + xRight) / 2
+    const xScale = scales.x
+
+    let x = xScale.getPixelForValue(hour)
 
     const topY = scales.y.top - 35
     const message = text(hour)
@@ -49,12 +45,19 @@ export const tooltipBubblePlugin = ({
     const bubbleWidth = textWidth + padding * 2
     const bubbleHeight = 28
 
+    const half = bubbleWidth / 2
+    const minX = chartArea.left + half
+    const maxX = chartArea.right - half
+
+    if (x < minX) x = minX
+    if (x > maxX) x = maxX
+
     ctx.save()
 
     ctx.fillStyle = '#3B82F6'
     ctx.beginPath()
     ctx.roundRect(
-      x - bubbleWidth / 2,
+      x - half,
       topY,
       bubbleWidth,
       bubbleHeight,
@@ -73,13 +76,11 @@ export const tooltipBubblePlugin = ({
 
 /* 임의 vertical line plugin */
 type VerticalLineOptions = {
-  labels: string[]
   hour: number
   color?: string
 }
 
 export const verticalLinePlugin = ({
-    labels,
     hour,
     color = '#0C4596',
   }: VerticalLineOptions): Plugin<'line'> => ({
@@ -91,14 +92,7 @@ export const verticalLinePlugin = ({
     const xScale = scales.x
     const yScale = scales.y
 
-    const leftIndex = labels.findIndex(l => Number(l) === hour-1)
-    const rightIndex = labels.findIndex(l => Number(l) === hour+1)
-
-    if (leftIndex === -1 || rightIndex === -1) return
-
-    const xLeft = xScale.getPixelForTick(leftIndex)
-    const xRight = xScale.getPixelForTick(rightIndex)
-    const x = (xLeft + xRight) / 2
+    const x = xScale.getPixelForValue(hour)
 
     ctx.save()
 

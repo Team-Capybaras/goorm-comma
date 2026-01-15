@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import AlternativeParkClient from "@/app/(view)/detail/_components/AlternativeParkClient";
 
 interface AlternativeParkDashboardProps {
   data?: [
@@ -19,9 +20,9 @@ export default function AlternativeParkDashboard({data}: AlternativeParkDashboar
 
   return (
     <div className="mt s-5 pb-8">
-      <div className="flex gap s-1">
+      <div className="flex gap s-1 relative">
         <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
-        <Image src={"/images/icons/info.svg"} width={18} height={18} alt={"안내"}/>
+        <AlternativeParkClient />
       </div>
       <div className="embla mt s-4">
         {/* viewport */}
