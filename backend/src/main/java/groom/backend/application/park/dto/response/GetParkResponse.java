@@ -113,6 +113,12 @@ public class GetParkResponse {
                 nullable = true
         )
         private List<String> tags;
+
+        @Schema(
+                description = "지번 주소",
+                example = "서울특별시 종로구 청와대로 1"
+        )
+        private String addr;
     }
 }
 
