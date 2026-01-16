@@ -47,32 +47,13 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
 
   @Override
   @Transactional(readOnly = true)
-  public GetAllParksResponse recommendTop5Parks(Double longitude, Double latitude) {
+  public GetAllParksResponse recommendTop5Parks(double longitude, double latitude) {
 
-    if (longitude == null || latitude == null) {
-      throw new IllegalArgumentException("추천을 위해서는 longitude와 latitude가 필수입니다.");
-    }
+    log.info("대체지 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
 
-    log.info("공원 추천 시작 - longitude: {}, latitude: {}", longitude, latitude);
-
-    // 1. 전체 공원 조회
-    List<Park> parks = parkRepository.findAll();
-
-    // 2. ParkInfo 조립
-    List<GetAllParksResponse.ParkInfo> parkInfos = parks.stream()
-            .map(park -> toParkInfo(park, longitude, latitude))
-            .collect(Collectors.toList());
-
-    // 3. 혼합 정렬 (혼잡도 → 거리 → areaCode)
-    List<GetAllParksResponse.ParkInfo> sorted = parkInfos.stream()
-            // 1. 혼잡도 "여유"만 필터링
-            .filter(p -> ("여유".equals(p.getAreaCongestLevel()) || ("보통".equals(p.getAreaCongestLevel()))) )
-            // 2. 혼합 정렬
-            .sorted(mixedRecommendComparator())
-            // 3. Top 5 제한
-            .limit(RECOMMEND_LIMIT)
-            .collect(Collectors.toList());
-
+    List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude).stream()
+            // Top K 제한
+            .limit(RECOMMEND_LIMIT).toList();
 
     log.info("공원 추천 완료 - 추천 개수: {}", sorted.size());
 
@@ -82,6 +63,108 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
             .nextCursor(null)
             .size(sorted.size())
             .build();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetAllParksResponse recommendTop5Parks(double longitude, double latitude, int limitDistance) {
+
+    log.info("실시간 사용자 주변 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+
+    List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude).stream()
+            // 거리 제한
+            .filter(p -> p.getDistance() < limitDistance)
+            // Top K 제한
+            .limit(RECOMMEND_LIMIT).toList();
+
+
+    return GetAllParksResponse.builder()
+            .parks(sorted)
+            .hasNext(false)
+            .nextCursor(null)
+            .size(sorted.size())
+            .build();
+  }
+
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetAllParksResponse recommendTop5Parks(double longitude, double latitude, String baseAreaCode) {
+
+    int order = getBaseCongestionOrder(baseAreaCode);
+
+    log.info("실시간 사용자 주변 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+
+    List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude, order).stream()
+            // 거리 제한
+//            .filter(p -> p.getDistance() < limitDistance)
+            // Top K 제한
+            .limit(RECOMMEND_LIMIT).toList();
+
+
+    return GetAllParksResponse.builder()
+            .parks(sorted)
+            .hasNext(false)
+            .nextCursor(null)
+            .size(sorted.size())
+            .build();
+  }
+
+  private int getBaseCongestionOrder(String baseAreaCode) {
+    return livePopStatusRepository.findLatestByAreaCode(baseAreaCode)
+            .map(p -> getCongestionLevelOrder(p.getAreaCongestLevel()))
+            .orElse(999);
+  }
+
+
+  private List<GetAllParksResponse.ParkInfo> getSortedParkList(double longitude, double latitude) {
+
+    log.info("공원 추천 시작 - longitude: {}, latitude: {}", longitude, latitude);
+
+    // 1. 전체 공원 조회
+    List<Park> parks = parkRepository.findAll();
+
+    // 2. ParkInfo 조립
+    List<GetAllParksResponse.ParkInfo> parkInfos = parks.stream()
+            .map(park -> toParkInfo(park, longitude, latitude))
+            .toList();
+
+    List<GetAllParksResponse.ParkInfo> sorted = parkInfos.stream()
+            // 1. 혼잡도 여유 및 보통만 필터링
+            .filter(p -> ("여유".equals(p.getAreaCongestLevel()) || ("보통".equals(p.getAreaCongestLevel()))) )
+            // 2. 혼합 정렬
+            .sorted(recommendComparator())
+            .toList();
+
+    log.info("공원 추천 완료 - 추천 개수: {}", sorted.size());
+
+    // 3. 혼합 정렬 (혼잡도 → 거리 → areaCode)
+    return sorted;
+  }
+
+  private List<GetAllParksResponse.ParkInfo> getSortedParkList(double longitude, double latitude, int congestionOrder) {
+
+    log.info("공원 추천 시작 - longitude: {}, latitude: {}", longitude, latitude);
+
+    // 1. 전체 공원 조회
+    List<Park> parks = parkRepository.findAll();
+
+    // 2. ParkInfo 조립
+    List<GetAllParksResponse.ParkInfo> parkInfos = parks.stream()
+            .map(park -> toParkInfo(park, longitude, latitude))
+            .toList();
+
+    List<GetAllParksResponse.ParkInfo> sorted = parkInfos.stream()
+            // 1. 혼잡도 여유 및 보통만 필터링
+            .filter(p -> ("여유".equals(p.getAreaCongestLevel()) || ("보통".equals(p.getAreaCongestLevel()))) )
+            // 2. 혼합 정렬
+            .sorted(congestionGapRecommendComparator(congestionOrder))
+            .toList();
+
+    log.info("공원 추천 완료 - 추천 개수: {}", sorted.size());
+
+    // 3. 혼합 정렬 (혼잡도 → 거리 → areaCode)
+    return sorted;
   }
 
   /**
@@ -140,15 +223,22 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
   }
 
   /**
-   * 혼잡도 + 거리 혼합 추천 Comparator
+   * 거리 추천 Comparator
    */
-  private Comparator<GetAllParksResponse.ParkInfo> mixedRecommendComparator() {
-    return Comparator.<GetAllParksResponse.ParkInfo>comparingInt(p -> getCongestionLevelOrder(p.getAreaCongestLevel()))
-            .thenComparing(
-                    GetAllParksResponse.ParkInfo::getDistance,
-                    Comparator.nullsLast(Double::compareTo)
-            )
-            .thenComparing(GetAllParksResponse.ParkInfo::getAreaCode);
+  private Comparator<GetAllParksResponse.ParkInfo> recommendComparator() {
+    return Comparator.comparingDouble(
+                    GetAllParksResponse.ParkInfo::getDistance);
+//    안정 정렬을 위한 areaCode 비교였으나 우선순위 망가져서 보류
+//            .thenComparing(GetAllParksResponse.ParkInfo::getAreaCode);
+  }
+
+  private Comparator<GetAllParksResponse.ParkInfo> congestionGapRecommendComparator(int baseCongestionOrder) {
+    return Comparator.<GetAllParksResponse.ParkInfo>comparingInt(
+                    // 혼잡도 차이가 클 수록 우선순위 높음
+            p -> baseCongestionOrder - getCongestionLevelOrder(p.getAreaCongestLevel())
+            ).reversed()
+
+            .thenComparingDouble((GetAllParksResponse.ParkInfo::getDistance));
   }
 
   /**
