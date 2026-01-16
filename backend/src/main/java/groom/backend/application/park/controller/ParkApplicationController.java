@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 공원 정보 조회 애플리케이션 컨트롤러
  * 여러 도메인을 조합하여 공원 정보를 제공합니다.
@@ -217,6 +219,64 @@ public class ParkApplicationController {
     ) {
         GetAllParksResponse response = parkApplicationService.getParksByDistance(cursor, size, longitude, latitude);
         return ApiResponse.success(200, "거리 가까운 순 공원 리스트 조회 성공", response);
+    }
+
+    @GetMapping("/by-tags")
+    @Operation(
+            summary = "태그 기반 공원 리스트 조회 (커서 기반 페이지네이션)",
+            description = "태그명으로 공원 리스트를 조회합니다. " +
+                    "여러 태그명을 제공할 경우, 모든 태그를 모두 가지고 있는 공원만 조회됩니다 (AND 조건). " +
+                    "커서 기반 페이지네이션을 사용하며, 첫 페이지는 cursor를 생략하고, " +
+                    "다음 페이지는 이전 응답의 nextCursor 값을 사용합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 (tag_names가 없음)"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류"
+            )
+    })
+    public ApiResponse<GetAllParksResponse> getParksByTags(
+            @Parameter(
+                    description = "태그명 리스트 (여러 개 가능, AND 조건 - 모든 태그를 가진 공원만 조회)",
+                    required = true,
+                    example = "산책로,운동"
+            )
+            @RequestParam(name = "tag_names") List<String> tagNames,
+            @Parameter(
+                    description = "커서 (areaCode), 첫 페이지는 생략 가능",
+                    required = false,
+                    example = "POI093"
+            )
+            @RequestParam(required = false) String cursor,
+            @Parameter(
+                    description = "페이지 크기 (기본값: 10, 최대값: 100)",
+                    required = false,
+                    example = "10"
+            )
+            @RequestParam(required = false) Integer size,
+            @Parameter(
+                    description = "현재 위치 경도 (거리 계산용, 선택)",
+                    required = false,
+                    example = "127.069903"
+            )
+            @RequestParam(required = false) Double longitude,
+            @Parameter(
+                    description = "현재 위치 위도 (거리 계산용, 선택)",
+                    required = false,
+                    example = "37.529546"
+            )
+            @RequestParam(required = false) Double latitude
+    ) {
+        GetAllParksResponse response = parkApplicationService.getParksByTags(tagNames, cursor, size, longitude, latitude);
+        return ApiResponse.success(200, "태그 기반 공원 리스트 조회 성공", response);
     }
 }
 

@@ -34,4 +34,15 @@ public interface ParkTagRepository extends JpaRepository<ParkTag, String> {
      * @param areaCode 지역 코드
      */
     void deleteByAreaCode(String areaCode);
+
+    /**
+     * 태그명 리스트로 공원의 areaCode를 조회합니다.
+     * 제공된 모든 태그명을 모두 가지고 있는 공원만 조회됩니다 (AND 조건).
+     *
+     * @param tagNames 태그명 리스트
+     * @param tagCount 태그명 개수
+     * @return areaCode 리스트
+     */
+    @Query("SELECT pt.areaCode FROM ParkTag pt JOIN pt.tag t WHERE t.tagName IN :tagNames GROUP BY pt.areaCode HAVING COUNT(DISTINCT t.tagName) = :tagCount ORDER BY pt.areaCode ASC")
+    List<String> findAreaCodesByTagNames(@Param("tagNames") List<String> tagNames, @Param("tagCount") Long tagCount);
 }
