@@ -122,9 +122,8 @@ public class GetParkResponse {
         private String recommendedVisitHour;
 
         @Schema(
-                description = "주소",
-                example = "null",
-                nullable = true
+                description = "지번 주소",
+                example = "서울특별시 종로구 청와대로 1"
         )
         private String address;
     }

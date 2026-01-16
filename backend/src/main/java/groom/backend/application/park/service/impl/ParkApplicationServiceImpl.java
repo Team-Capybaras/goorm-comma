@@ -223,7 +223,8 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 .latitude(park.getLatitude())
                 .distance(distance)
                 .images(park.getImageUrls() != null && !park.getImageUrls().isEmpty() ? park.getImageUrls() : null)
-                .tags(tags.isEmpty() ? null : tags);
+                .tags(tags.isEmpty() ? null : tags)
+                .address(park.getParkAddr());
 
         // 날씨 정보 설정
         if (weatherStatusOptional.isPresent()) {

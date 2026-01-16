@@ -76,8 +76,8 @@ public class ParkApplicationController {
 
     @GetMapping("/{areaCode}")
     @Operation(
-            summary = "특정 공원 조회 (공원 상세 정보 카드, 상세 페이지가 아닌 지도뷰에서 사용되는 API)",
-            description = "areaCode로 특정 공원의 상세 정보를 조회합니다. 지도뷰에서 사용되는 API입니다."
+            summary = "특정 공원 조회 (공원 상세 정보 카드)",
+            description = "areaCode로 특정 공원의 상세 정보를 조회합니다."
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(

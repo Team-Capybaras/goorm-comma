@@ -47,6 +47,9 @@ public class Park extends BaseEntity {
     @Column(name = "latitude")
     private Double latitude;
 
+    @Column(name = "park_addr", length = 100)
+    private String parkAddr;
+
     /**
      * 이미지 URL 리스트
      */
