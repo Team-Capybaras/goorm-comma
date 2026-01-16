@@ -1,20 +1,13 @@
 import Image from 'next/image'
-import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
 import Tag from "@/components/common/Tag";
+import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
 
-interface EnvironmentDashboardProps {
-  areaCode: string;
+interface ParkInfoProps {
+  data : ParkInfo
 }
 
-export default async function ParkInfoDashboard({areaCode}: EnvironmentDashboardProps) {
-  const fetchData = async () => {
-    const res = await api.get(`/v1/parks/${areaCode}`)
-    return res.data.data.park
-  }
-  const data:ParkInfo = await fetchData()
-
-  if (!data) return null
+export default async function ParkInfoDashboard({data}: ParkInfoProps) {
 
   return (
     <div className="px s-5">
@@ -23,7 +16,11 @@ export default async function ParkInfoDashboard({areaCode}: EnvironmentDashboard
         <p className="text-sub">{data?.distance ?? 0}Km</p>
       </div>
       <div className="flex items-center">
-        <p className="text-green-500 font-b font-sm">{data?.areaCongestLevel}</p>
+        <p
+          className={`font-b font-sm ${CONGESTION_COLOR_MAP[data?.areaCongestLevel]}`}
+        >
+          {data?.areaCongestLevel}
+        </p>
         <div className="w-[3px] h-[3px] rounded-full mx s-2 bg-deep"></div>
         <p className="text-sub-deep text-caption-1-m mr s-3">{data?.address}</p>
         <a href={`https://map.kakao.com/link/to/${data?.areaName},${data?.latitude},${data.longitude}`} className="flex items-center" target={"_blank"}>

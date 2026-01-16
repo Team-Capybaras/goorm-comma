@@ -19,26 +19,24 @@ export default function ParkThumbnail({
   layout = 'cover',
 }: ParkThumbnailProps) {
   const isPeek = layout === 'peek'
-
+  console.log(data)
   return (
     <EmblaCarousel
       showDots={showDots}
-      height={height}
       dotBottom={dotBottom}
-      slideClassName={
-        isPeek
-          ? 'flex-[0_0_80%] pr-3'
-          : 'flex-[0_0_100%]'
-      }
     >
       {data.map((src, i) => (
-        <div key={i} className={`relative w-full h-full
-          ${isPeek ? 'border rounded-8 overflow-hidden' : ''}`}
+        <div
+          key={i}
+          className={`relative w-full 
+          ${isPeek ? 'border rounded-8 overflow-hidden flex-[0_0_80%] pr-3' : 'flex-[0_0_100%]'}`}
+          style={{ height }}
         >
           <Image
             src={src}
             alt={`park-thumbnail-${i}`}
             fill
+            sizes="100vw"
             className="object-cover"
             priority={i === 0}
           />

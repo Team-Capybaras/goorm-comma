@@ -65,8 +65,8 @@ export default async function EnvironmentDashboard({areaCode}: Props) {
         <div className="w-full h-[1px] my-4 bg-gray-100"></div>
         <div className="flex justify-between">
           <div className="flex items-center">
-            <Image src={"/images/icons/weather/air.svg"} className="mr s-3" width={24} height={24} alt="대기환경지수" />
-            <p className="text-caption-1-m">대기환경지수</p>
+            <img src={"/images/icons/weather/air.svg"} width={24} height={24} alt="대기환경지수" />
+            <p className="text-caption-1-m ml s-3">대기환경지수</p>
           </div>
           <p className={`text-caption-1-sb ${
             grade ? AIR_INDEX_COLOR_MAP[grade] : ''

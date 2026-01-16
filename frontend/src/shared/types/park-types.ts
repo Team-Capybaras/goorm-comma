@@ -1,4 +1,3 @@
-
 export interface ParkInfo {
   areaName: string;
   images: string[];
@@ -7,6 +6,7 @@ export interface ParkInfo {
   distance: number;
   airIndex: string;
   areaCongestLevel: string;
+  recommendedVisitHor: string;
   tags: string[];
   longitude: number;
   latitude: number;

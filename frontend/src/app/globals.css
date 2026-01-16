@@ -647,6 +647,11 @@
 
   .text-inverse { color: rgb(var(--foreground-inverse-text)); }
 
+  .text-positive { color: rgb(var(--positive-pale)); }
+  .text-normal { color: rgb(var(--normal-pale)); }
+  .text-caution { color: rgb(var(--caution-pale)); }
+  .text-warning { color: rgb(var(--warning-pale)); }
+
   /* Status */
   .text-positive { color: rgb(var(--positive)); }
   .text-normal { color: rgb(var(--normal)); }
