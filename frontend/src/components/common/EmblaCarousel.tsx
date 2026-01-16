@@ -7,19 +7,17 @@ import cn from '@/shared/utils/cn'
 
 interface EmblaCarouselProps {
   children: ReactNode[]
-  height?: number | string
   showDots?: boolean
   dotBottom?: number | string
-  slideClassName?: string
+  containerClassName?: string
   viewportClassName?: string
 }
 
 export default function EmblaCarousel({
   children,
-  height = 400,
   showDots = false,
   dotBottom = 16,
-  slideClassName,
+  containerClassName,
   viewportClassName,
 }: EmblaCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel()
@@ -37,19 +35,8 @@ export default function EmblaCarousel({
         )}
       >
         {/* container */}
-        <div className="flex">
-          {children.map((child, i) => (
-            <div
-              key={i}
-              className={cn(
-                'min-w-0 flex-[0_0_100%]',
-                slideClassName
-              )}
-              style={{ height }}
-            >
-              {child}
-            </div>
-          ))}
+        <div className={cn(`flex`, containerClassName)}>
+          {children}
         </div>
 
         {/* dots (옵션) */}

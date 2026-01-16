@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {AIR_INDEX_COLOR_MAP, getAirIndexGrade} from "@/shared/utils/air-helpers";
 import {api} from "@/shared/libs/axios";
+import {formatDateTimePad} from "@/shared/utils/time-format";
 
 interface Props {
   areaCode: string;
@@ -37,7 +38,7 @@ export default async function EnvironmentDashboard({areaCode}: Props) {
       {/* sub title */}
       <div className="flex justify-between items-center">
         <h3 className="text-body-1-sb">날씨</h3>
-        <p className="text-caption-3-m text-gray-300">{data?.weatherTime}</p>
+        <p className="text-caption-3-m text-gray-300">{formatDateTimePad(data.weatherTime)} 기준</p>
       </div>
       {/* weather card */}
       <div className="border-1-line-default rounded-7 p s-4 mt s-4">
@@ -65,8 +66,8 @@ export default async function EnvironmentDashboard({areaCode}: Props) {
         <div className="w-full h-[1px] my-4 bg-gray-100"></div>
         <div className="flex justify-between">
           <div className="flex items-center">
-            <Image src={"/images/icons/weather/air.svg"} className="mr s-3" width={24} height={24} alt="대기환경지수" />
-            <p className="text-caption-1-m">대기환경지수</p>
+            <img src={"/images/icons/weather/air.svg"} width={24} height={24} alt="대기환경지수" />
+            <p className="text-caption-1-m ml s-3">대기환경지수</p>
           </div>
           <p className={`text-caption-1-sb ${
             grade ? AIR_INDEX_COLOR_MAP[grade] : ''

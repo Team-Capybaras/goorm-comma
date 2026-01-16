@@ -614,8 +614,22 @@
   }
 
   /* ==================================================
+   Line Height (단독 사용 가능)
+  ================================================== */
+  .font-line {
+    line-height: calc(var(--font-3xs) * var(--leading-md));
+  }
+
+  /* ==================================================
+    Letter-spacing (단독 사용 가능)
+   ================================================== */
+  .font-spacing {
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* ==================================================
    COLOR — TEXT
-================================================== */
+  ================================================== */
 
   /* Brand */
   .text-primary { color: rgb(var(--primary)); }
@@ -632,6 +646,11 @@
   .text-sub-deep { color: rgb(var(--foreground-sub-text-deep)); }
 
   .text-inverse { color: rgb(var(--foreground-inverse-text)); }
+
+  .text-positive { color: rgb(var(--positive-pale)); }
+  .text-normal { color: rgb(var(--normal-pale)); }
+  .text-caution { color: rgb(var(--caution-pale)); }
+  .text-warning { color: rgb(var(--warning-pale)); }
 
   /* Status */
   .text-positive { color: rgb(var(--positive)); }
