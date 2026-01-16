@@ -15,7 +15,7 @@ export default async function TransportDashboard({ areaCode }: TransportDashboar
         area_code: areaCode
       }
     })
-    
+
     return (res.data.data)
   }
   const data:FacilityItem[] = await fetchData()

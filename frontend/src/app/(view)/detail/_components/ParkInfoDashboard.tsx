@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
+import Tag from "@/components/common/Tag";
 
 interface EnvironmentDashboardProps {
   areaCode: string;
@@ -30,13 +31,13 @@ export default async function ParkInfoDashboard({areaCode}: EnvironmentDashboard
           <Image src={"/images/icons/arrow/right-gray.svg"} width={16} height={16} alt={"바로가기"}/>
         </a>
       </div>
-      {data?.tags ?
-       ( <div className="flex gap-2 mt s-3">
-          {data?.tags.map((tag, i) => (
-            <span className="rounded-sm bg-default px s-3 py-[1px] text-caption-1-sb text-sub-deep" key={i}>{tag}</span>
+      {data?.tags?.length > 0 && (
+        <div className="flex gap-2 mt s-3">
+          {data.tags.map((tag) => (
+            <Tag key={tag}>{tag}</Tag>
           ))}
-        </div>) : null
-      }
+        </div>
+      )}
     </div>
   )
 }
