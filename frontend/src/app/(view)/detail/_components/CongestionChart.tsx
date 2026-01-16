@@ -7,6 +7,7 @@ import {legendMarginPlugin, tooltipBubblePlugin, verticalLinePlugin} from "@/app
 import LineChart from "@/components/chart/LineChart";
 import {congestionLineOptions} from "@/app/(view)/detail/_utils/chart-option";
 import WeekdayTabs from "@/components/chart/WeekdayTabs";
+import {formatDateTimePad} from "@/shared/utils/time-format";
 
 interface Props {
   data : CongestionType
@@ -54,7 +55,7 @@ export default function CongestionChart({data}: Props) {
     <>
       <div className="flex justify-between items-center">
         <h3 className="text-body-1-sb">혼잡도</h3>
-        <p className="text-caption-3-m text-gray-300">{data?.refreshTime}</p>
+        <p className="text-caption-3-m text-gray-300">{formatDateTimePad(data.refreshTime)} 기준</p>
       </div>
       <div className="border-1-line-default p s-4 rounded-xl mt s-4">
         <div>
