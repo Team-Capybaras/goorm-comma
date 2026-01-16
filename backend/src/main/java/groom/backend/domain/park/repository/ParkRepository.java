@@ -51,5 +51,25 @@ public interface ParkRepository extends JpaRepository<Park, String> {
      * @return 전체 공원 리스트
      */
     List<Park> findAllByOrderByAreaCode();
+
+    /**
+     * 공원명으로 공원을 조회합니다 (이미지 포함).
+     * 공원명이 정확히 일치하는 공원을 조회합니다.
+     * 
+     * @param areaName 공원명
+     * @return 공원 정보 (이미지 포함)
+     */
+    @EntityGraph(attributePaths = {"imageUrls"})
+    Optional<Park> findByAreaName(String areaName);
+
+    /**
+     * 공원명에 검색어가 포함된 공원들을 조회합니다 (부분 일치).
+     * 공원명에 검색어가 포함된 모든 공원을 조회합니다.
+     * 
+     * @param searchKeyword 검색어
+     * @return 공원 리스트
+     */
+    @Query("SELECT p FROM Park p WHERE p.areaName LIKE %:searchKeyword% ORDER BY p.areaCode ASC")
+    List<Park> findByAreaNameContaining(@Param("searchKeyword") String searchKeyword);
 }
 
