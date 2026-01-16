@@ -1,6 +1,7 @@
 package groom.backend.domain.park.service.impl;
 
 import groom.backend.domain.park.dto.response.GetAllParksBasicResponse;
+import groom.backend.domain.park.dto.response.GetParkSearchResponse;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.mapper.ParkMapper;
 import groom.backend.domain.park.repository.ParkRepository;
@@ -48,5 +49,40 @@ public class ParkServiceImpl implements ParkService {
         log.info("전체 공원 기본 정보 조회 완료 - 조회된 공원 수: {}", parkBasicInfoList.size());
 
         return response;
+    }
+
+    /**
+     * 검색어로 공원을 검색합니다.
+     * 공원명에 검색어가 포함된 공원 중 첫 번째 공원의 areaCode와 공원명을 반환합니다.
+     * 상세 페이지로 이동하기 위한 정보를 제공합니다.
+     *
+     * @param searchKeyword 검색어
+     * @return 검색된 공원 정보 (areaCode, areaName만 포함, 없으면 null)
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public GetParkSearchResponse searchParkByAreaName(String searchKeyword) {
+        log.info("공원 검색 시작 - searchKeyword: {}", searchKeyword);
+
+        if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
+            log.warn("검색어가 제공되지 않았습니다.");
+            return null;
+        }
+
+        // 공원명에 검색어가 포함된 공원들 조회 (부분 일치)
+        List<Park> parks = parkRepository.findByAreaNameContaining(searchKeyword.trim());
+        
+        if (parks.isEmpty()) {
+            log.info("검색된 공원이 없습니다 - searchKeyword: {}", searchKeyword);
+            return null;
+        }
+
+        // 첫 번째 공원만 반환
+        Park firstPark = parks.get(0);
+        log.info("공원 검색 완료 - searchKeyword: {}, areaCode: {}, areaName: {}", 
+                searchKeyword, firstPark.getAreaCode(), firstPark.getAreaName());
+
+        // areaCode와 areaName만 포함하는 DTO로 변환
+        return parkMapper.toParkSearchDto(firstPark);
     }
 }
