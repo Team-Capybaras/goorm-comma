@@ -65,9 +65,14 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
 
     // 3. 혼합 정렬 (혼잡도 → 거리 → areaCode)
     List<GetAllParksResponse.ParkInfo> sorted = parkInfos.stream()
+            // 1. 혼잡도 "여유"만 필터링
+            .filter(p -> "여유".equals(p.getAreaCongestLevel()))
+            // 2. 혼합 정렬
             .sorted(mixedRecommendComparator())
+            // 3. Top 5 제한
             .limit(RECOMMEND_LIMIT)
             .collect(Collectors.toList());
+
 
     log.info("공원 추천 완료 - 추천 개수: {}", sorted.size());
 
