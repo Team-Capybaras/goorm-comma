@@ -31,7 +31,13 @@ export interface ParkItem extends BaseMapItem {
 
 export interface FacilityItem extends BaseMapItem {
   category: FacilityCategory
-  detailInfo: string
+  address?: string
+  totalSpots?: number
+  availableSpots?: number
+  updatedAt?: string
+
+  //디자인의 무료 뱃지 부분
+  tags?: string[]
 }
 // 실제 사용 통합 타입
 export type MapDataType = ParkItem | FacilityItem

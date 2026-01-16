@@ -1,3 +1,4 @@
+import FloatingBar from '@/components/common/FloatingBar'
 import MainMap from '@/components/map/MainMap'
 import type { ParkItem } from '@/shared/types/map-types'
 

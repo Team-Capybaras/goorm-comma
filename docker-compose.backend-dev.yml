@@ -14,6 +14,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      TZ: Asia/Seoul
     ports:
       - "5432:5432"
     volumes:
@@ -34,6 +35,8 @@ services:
 #      - WATCHPACK_POLLING=true
     networks:
       - goorm
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -45,6 +48,8 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    environment:
+      - TZ=Asia/Seoul
     networks:
       - goorm
 
@@ -53,6 +58,8 @@ services:
     image: nginx:latest
     ports:
       - "80:80"
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - ./nginx/nginx.backend.conf:/etc/nginx/nginx.conf:ro
     depends_on:

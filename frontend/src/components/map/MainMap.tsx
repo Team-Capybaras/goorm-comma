@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import KakaoMap from '@/components/common/KakaoMap'
 import ParkMapCard from '@/components/map/ParkMapCard'
+import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
 
@@ -17,6 +18,7 @@ export default function MainMap({ data, center }: Props) {
   const router = useRouter()
   const [map, setMap] = useState<any>(null)
   const [isLocLoading, setIsLocLoading] = useState(false)
+  const [selectedPark, setSelectedPark] = useState<ParkItem | null>(null)
 
   const handleCurrentLocation = () => {
     if (!map) return // 지도가 로드되지 않았으면 중단
@@ -43,7 +45,7 @@ export default function MainMap({ data, center }: Props) {
   }
 
   const handleCardClick = (item: ParkItem) => {
-    router.push(`/detail`)
+    router.push(`/detail/${item.id}`)
   }
 
   return (
@@ -52,9 +54,11 @@ export default function MainMap({ data, center }: Props) {
         data={data}
         center={center}
         level={7} // 구 단위가 보이는 적절한 줌 레벨
-        //혼잡도별 마커 이미지
-        getMarkerImage={(item) => getCongestionMarkerIcon(item.congestion)}
-        //카드 렌더링
+        getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
+        markerSize={{ width: 32, height: 32 }}
+        activeMarkerSize={{ width: 48, height: 48 }}
+        selectedItem={selectedPark}
+        setSelectedItem={setSelectedPark}
         renderCard={(item) => <ParkMapCard item={item} />}
         onMapLoad={(loadedMap) => setMap(loadedMap)}
         onCardClick={handleCardClick}
@@ -72,6 +76,13 @@ export default function MainMap({ data, center }: Props) {
           className={`object-cover scale-200 ${isLocLoading ? 'animate-spin' : ''}`}
         />
       </button>
+      {!selectedPark && (
+        <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center pointer-events-none">
+          <div className="pointer-events-auto">
+            <FloatingBar />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

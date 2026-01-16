@@ -1,4 +1,4 @@
-import { CongestionLevel } from '@/shared/types/map-types'
+import { CongestionLevel, FacilityCategory } from '@/shared/types/map-types'
 
 //날씨 상태 문자열에 따라 아이콘 경로 반환
 export const getWeatherIconPath = (status: string): string => {
@@ -60,4 +60,57 @@ export const getCongestionMarkerIcon = (level: CongestionLevel): string => {
   }
 
   return '/images/icons/map/state=normal.svg'
+}
+
+const FACILITY_ICON_MAP: Record<FacilityCategory, string> = {
+  PARKING: 'parking',
+  SUBWAY: 'subway',
+  BIKE: 'bicycle',
+  BUS: 'bus',
+  EV_CHARGER: 'charge',
+}
+
+export const getFacilityMarkerIcon = (category: FacilityCategory, isSelected: boolean): string => {
+  const typeStr = FACILITY_ICON_MAP[category] || 'bus'
+
+  const stateStr = isSelected ? 'focused' : 'Default'
+
+  return `/images/icons/map/state=${stateStr}, type=${typeStr}.svg`
+}
+
+//지하철 노선별 색상 매핑
+const SUBWAY_COLORS: Record<string, string> = {
+  '1호선': '#004A85',
+  '2호선': '#00A23F',
+  '3호선': '#ED6C00',
+  '4호선': '#009BCE',
+  '5호선': '#794698',
+  '6호선': '#7C4932',
+  '7호선': '#6E7E31',
+  '8호선': '#D11D70',
+  '9호선': '#A49D87',
+  우이신설선: '#BACC50',
+  신림선: '#5E7DBB',
+  수인분당: '#ECA300',
+  신분당: '#B81B30',
+  공항철도: '#0079AC',
+}
+
+// 기본 색상
+const DEFAULT_SUBWAY_COLOR = '#999A98'
+
+export const getSubwayColor = (tags: string[] = []): string => {
+  if (!tags || tags.length === 0) return DEFAULT_SUBWAY_COLOR
+
+  // 태그 중 '호선'이나 '선'이 포함된 문자열 찾기
+  const lineName = tags.find((t) => t.includes('호선') || t.includes('선'))
+
+  if (!lineName) return DEFAULT_SUBWAY_COLOR
+
+  // 정확한 매칭 확인
+  for (const [key, color] of Object.entries(SUBWAY_COLORS)) {
+    if (lineName.includes(key)) return color
+  }
+
+  return DEFAULT_SUBWAY_COLOR
 }
