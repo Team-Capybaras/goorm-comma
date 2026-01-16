@@ -16,7 +16,6 @@ interface Props {
   onClose?: () => void
   onExpand?: () => void
 }
-
 export default function DetailMap({ data, center, mode = 'full', onClose, onExpand }: Props) {
   const [map, setMap] = useState<any>(null)
 

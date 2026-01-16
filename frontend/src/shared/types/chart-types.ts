@@ -1,15 +1,27 @@
-export type TransitionSet = {
-  past: string[]
-  now: string[]
-  future: string[]
+export type Weekday =
+  | 'MON'
+  | 'TUE'
+  | 'WED'
+  | 'THU'
+  | 'FRI'
+  | 'SAT'
+  | 'SUN'
+
+export interface CongestionHour {
+  hour: number
+  past: number
+  now: number | null
+  future: number
 }
 
-export type Weekday =
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday'
-  | 'sunday'
+export interface CongestionWeekday {
+  weekday: Weekday
+  today: boolean
+  recommendedVisitHour: number
+  hours: CongestionHour[]
+}
 
+export interface CongestionType {
+  refreshTime: string
+  weekdays: CongestionWeekday[]
+}

@@ -1,11 +1,10 @@
-import {api} from "@/shared/libs/axios";
+
 import ParkThumbnail from "@/components/common/ParkThumbnail";
 import ParkInfoDashboard from "@/app/(view)/detail/_components/ParkInfoDashboard";
 import EnvironmentDashboard from "@/app/(view)/detail/_components/EnvironmentDashboard";
 import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionInfoDashboard";
 import TransportDashboard from "@/app/(view)/detail/_components/TransportDashboard";
 import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
-import {MapDataType} from "@/shared/types/map-types";
 
 const data = {
   park : {
@@ -28,56 +27,7 @@ const data = {
       "태그3",
     ],
   },
-  weather : {
-    today: "맑음",
-    temp : "3.6",
-    air : "51 ~ 100",
-    air_ms : "좋음",
-    precipitation : "25",
-    humidity : "40",
-    weather_time : "2025.12.30 18:30",
-  },
-  congestion: {
-    refresh_time: "2025.12.30 18:30",
-    predict: "17",
-    transition: {
-      monday: {
-        past: ['1', '2', '12', '15', '10', '10', '15', '8', '10'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      tuesday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      wednesday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      thursday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      friday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      saturday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-      sunday: {
-        past: ['10', '20', '50', '60', '30', '20', '50', '80', '20'],
-        now: ['15', '25', '45', '55', '35', '25', '45', '70', '30'],
-        future: ['30', '40', '60', '70', '50', '40', '60', '85', '45'],
-      },
-    }
-  },
+
   alternative : [
     {
       thumbnail : "/test.jpg",
@@ -118,8 +68,7 @@ const data = {
   ]
 }
 
-export default async function page () {
-
+export default async function Page ({params}: {params: Promise<{id : string}>}) {
   ////////////////////////////
   /* TODO: 추후 API 작성 필요 */
   ///////////////////////////
@@ -129,22 +78,23 @@ export default async function page () {
   );*/
 
   /*const cityData = res.data?.CITYDATA;*/
+  const {id} = await params
 
   return (
     <div className="relative">
       <ParkThumbnail data={data.park.thumbnail}/>
       <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
         {/* 공원 종합 정보 */}
-        <ParkInfoDashboard data={data.park}/>
+        <ParkInfoDashboard areaCode={id}/>
 
         {/* bar */}
         <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>
 
         {/* 날씨/혼잡도/대중교통 및 편의시설 */}
         <div className="px s-5 flex flex-col gap-xs rounded-xl">
-          <EnvironmentDashboard data={data.weather}/>
-          <CongestionInfoDashboard data={data.congestion}/>
-          <TransportDashboard/>
+          <EnvironmentDashboard areaCode={id}/>
+          <CongestionInfoDashboard areaCode={id}/>
+          <TransportDashboard areaCode={id}/>
         </div>
       </div>
 

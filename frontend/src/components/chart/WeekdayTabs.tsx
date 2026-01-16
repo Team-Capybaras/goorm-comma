@@ -1,13 +1,13 @@
 import {Weekday} from "@/shared/types/chart-types";
 
 const DAY_LABEL: Record<Weekday, string> = {
-  monday: '월',
-  tuesday: '화',
-  wednesday: '수',
-  thursday: '목',
-  friday: '금',
-  saturday: '토',
-  sunday: '일',
+  MON: '월',
+  TUE: '화',
+  WED: '수',
+  THU: '목',
+  FRI: '금',
+  SAT: '토',
+  SUN: '일',
 }
 
 type WeekdayTabsProps = {

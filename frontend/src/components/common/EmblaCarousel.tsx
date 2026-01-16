@@ -3,12 +3,15 @@
 import useEmblaCarousel from 'embla-carousel-react'
 import { DotButton, useDotButton } from '@/components/common/EmblaDot'
 import { ReactNode } from 'react'
+import cn from '@/shared/utils/cn'
 
 interface EmblaCarouselProps {
   children: ReactNode[]
   height?: number | string
   showDots?: boolean
   dotBottom?: number | string
+  slideClassName?: string
+  viewportClassName?: string
 }
 
 export default function EmblaCarousel({
@@ -16,6 +19,8 @@ export default function EmblaCarousel({
   height = 400,
   showDots = false,
   dotBottom = 16,
+  slideClassName,
+  viewportClassName,
 }: EmblaCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel()
 
@@ -24,13 +29,22 @@ export default function EmblaCarousel({
   return (
     <div className="embla">
       {/* viewport */}
-      <div className="overflow-hidden relative" ref={emblaRef}>
+      <div
+        ref={emblaRef}
+        className={cn(
+          'relative overflow-hidden',
+          viewportClassName
+        )}
+      >
         {/* container */}
         <div className="flex">
           {children.map((child, i) => (
             <div
               key={i}
-              className="flex-[0_0_100%] min-w-0"
+              className={cn(
+                'min-w-0 flex-[0_0_100%]',
+                slideClassName
+              )}
               style={{ height }}
             >
               {child}
@@ -48,12 +62,12 @@ export default function EmblaCarousel({
               <DotButton
                 key={index}
                 onClick={() => dotState.onDotButtonClick(index)}
-                className={[
+                className={cn(
                   'w-[8px] h-[8px] rounded-full',
                   index === dotState.selectedIndex
                     ? 'bg-white'
                     : 'bg-white opacity-50',
-                ].join(' ')}
+                )}
               />
             ))}
           </div>
