@@ -155,6 +155,7 @@ export default function KakaoMap<T extends BaseMapItem>({
         image: markerImage,
         zIndex: 1,
       })
+
       if (showLabel) {
         const content = `
         <div style="transform: translateY(4px);"> 
