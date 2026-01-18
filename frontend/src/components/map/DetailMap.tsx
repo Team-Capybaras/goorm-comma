@@ -37,8 +37,8 @@ export default function DetailMap({ data, center, mode = 'full', onClose, onExpa
         center={center}
         level={mode === 'preview' ? 4 : 3}
         getMarkerImage={(item, isSelected) => getFacilityMarkerIcon(item.category, isSelected)}
-        markerSize={{ width: 24, height: 24 }}
-        activeMarkerSize={{ width: 32, height: 32 }}
+        markerSize={{ width: 64, height: 64 }}
+        activeMarkerSize={{ width: 80, height: 80 }}
         renderCard={(item) => (mode === 'full' ? <DetailMapCard item={item} /> : null)}
         showLabel={false}
         onCardClick={mode === 'full' ? undefined : () => {}}

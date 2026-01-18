@@ -32,7 +32,7 @@ export default async function Page ({params}: {params: Promise<{id : string}>}) 
         <div className="px s-5 flex flex-col gap-xs rounded-xl">
           <EnvironmentDashboard areaCode={id}/>
           <CongestionInfoDashboard areaCode={id}/>
-          <TransportDashboard areaCode={id}/>
+          <TransportDashboard areaCode={id} center={{lat: data.latitude, lng: data.longitude}}/>
         </div>
       </div>
 

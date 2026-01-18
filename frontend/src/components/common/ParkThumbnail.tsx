@@ -19,7 +19,7 @@ export default function ParkThumbnail({
   layout = 'cover',
 }: ParkThumbnailProps) {
   const isPeek = layout === 'peek'
-  console.log(data)
+
   return (
     <EmblaCarousel
       showDots={showDots}

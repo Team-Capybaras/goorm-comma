@@ -36,10 +36,9 @@ export default function KakaoMap<T extends BaseMapItem>({
 }: KakaoMapProps<T>) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const [mapInstance, setMapInstance] = useState<any>(null)
-
   const markersMapRef = useRef<Map<string | number, any>>(new Map())
   const overlaysMapRef = useRef<Map<string | number, any>>(new Map())
-
+  const myLocationMarkerRef = useRef<any>(null)
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
 
   useEffect(() => {
@@ -52,6 +51,7 @@ export default function KakaoMap<T extends BaseMapItem>({
     setSelectedItem(item)
     cardSetSelectedItem?.(item)
   }
+
   //지도 그리기 및 마커 표시
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -77,6 +77,62 @@ export default function KakaoMap<T extends BaseMapItem>({
     })
   }, []) // 의존성 배열 비움
 
+  // 현재 위치
+  useEffect(() => {
+    if (!mapInstance || !window.kakao) return
+    if (!navigator.geolocation) return
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords
+        const myPosition = new window.kakao.maps.LatLng(latitude, longitude)
+
+        // 기존 마커 제거
+        if (myLocationMarkerRef.current) {
+          myLocationMarkerRef.current.setMap(null)
+        }
+
+        // 내 위치 마커 이미지 (카카오 기본)
+        const imageSrc =
+          '/images/icons/map/current-location-dot.svg'
+        const imageSize = new window.kakao.maps.Size(48, 48)
+
+        const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
+
+        const marker = new window.kakao.maps.Marker({
+          position: myPosition,
+          image: markerImage,
+          zIndex: 20,
+          map: mapInstance,
+        })
+
+        myLocationMarkerRef.current = marker
+      },
+      (err) => {
+        console.error('현재 위치 가져오기 실패', err)
+      },
+      {
+        enableHighAccuracy: true,
+      }
+    )
+  }, [mapInstance])
+
+  // 실시간 위치 추적
+  useEffect(() => {
+    if (!mapInstance || !navigator.geolocation) return
+
+    const watchId = navigator.geolocation.watchPosition((pos) => {
+      const { latitude, longitude } = pos.coords
+      const latlng = new window.kakao.maps.LatLng(latitude, longitude)
+
+      if (myLocationMarkerRef.current) {
+        myLocationMarkerRef.current.setPosition(latlng)
+      }
+    })
+
+    return () => navigator.geolocation.clearWatch(watchId)
+  }, [mapInstance])
+
   // 데이터가 바뀌면 마커만 새로 그리기
   useEffect(() => {
     if (!mapInstance || !window.kakao) return
@@ -91,10 +147,8 @@ export default function KakaoMap<T extends BaseMapItem>({
     data.forEach((item) => {
       const imageSrc = getMarkerImage(item, false)
       const markerPosition = new window.kakao.maps.LatLng(item.lat, item.lng)
-
       const imageSize = new window.kakao.maps.Size(markerSize.width, markerSize.height)
       const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
-
       const marker = new window.kakao.maps.Marker({
         position: markerPosition,
         title: item.name,
