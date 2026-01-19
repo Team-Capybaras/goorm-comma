@@ -33,7 +33,11 @@ public class PopulationController {
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "잘못된 요청"
+                    description = "잘못된 요청 (areaCode 누락 또는 형식 오류)"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "지역 코드에 해당하는 공원 정보를 찾을 수 없음"
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "500",
