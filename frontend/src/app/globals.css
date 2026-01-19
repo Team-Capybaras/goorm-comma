@@ -902,6 +902,7 @@
 
 @layer base {
   html {
+    background-color: var(--background-bright);
     font-family: var(--font-sans);
     font-weight: var(--font-medium);
   }

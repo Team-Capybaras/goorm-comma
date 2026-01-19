@@ -1,3 +1,10 @@
+export interface ParkList {
+  areaName: string
+  areaCode: string
+  latitude: number
+  longitude: number
+}
+
 export interface ParkInfo {
   areaName: string;
   images: string[];

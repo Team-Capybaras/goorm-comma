@@ -1,26 +1,24 @@
-import Input from '@/components/common/Input'
-import Image from 'next/image'
+import {api} from "@/shared/libs/axios";
+import SearchClient from "@/app/(view)/_component/SearchClient";
+import {ParkList} from "@/shared/types/park-types";
 
-export default function SearchPark() {
+export default async function SearchPark() {
+  const fetchData = async () => {
+    const res = await api.get('/v1/parks/all')
+
+    return res.data.data.parks
+  }
+
+  const data:ParkList = await fetchData()
+
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-title-1-b">
-        어디서 쉬고 싶으세요?
-      </p>
-      {/* 검색 컨테이너 */}
-      <div className="relative w-full"> 
-        <Image
-          src="/images/icons/search.svg"
-          alt="검색"
-          width={26}
-          height={26}
-          className="absolute left-6 top-1/2 -translate-y-1/2 text-sub"
-        />
-        <Input
-          placeholder="공원을 검색해보세요"
-          className="pl-15 h-12 rounded-full border-default"
-        />
+    <>
+      <div className="flex flex-col gap-3 relative">
+        <p className="text-title-1-b">
+          어디서 쉬고 싶으세요?
+        </p>
+        <SearchClient data={data}/>
       </div>
-    </div>
+    </>
   )
 }
