@@ -36,7 +36,6 @@ export default function CongestionChart({data}: Props) {
     if (recommendedHour < 9) return base
     if (recommendedHour > 22) return base
 
-
     return [
       ...base,
       tooltipBubblePlugin({
