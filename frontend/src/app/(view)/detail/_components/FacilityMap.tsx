@@ -9,12 +9,12 @@ export interface MapCenter {
   lng: number
 }
 
-interface TransportMapProps {
+interface FacilityMapProps {
   data: FacilityItem[]
   center: MapCenter
 }
 
-export default function TransportMap ({ data, center }: TransportMapProps) {
+export default function FacilityMap ({ data, center }: FacilityMapProps) {
   const [isFullMapOpen, setIsFullMapOpen] = useState(false)
 
   return (

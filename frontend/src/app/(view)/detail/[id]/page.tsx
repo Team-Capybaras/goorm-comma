@@ -3,7 +3,7 @@ import ParkThumbnail from "@/components/common/ParkThumbnail";
 import ParkInfoDashboard from "@/app/(view)/detail/_components/ParkInfoDashboard";
 import EnvironmentDashboard from "@/app/(view)/detail/_components/EnvironmentDashboard";
 import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionInfoDashboard";
-import TransportDashboard from "@/app/(view)/detail/_components/TransportDashboard";
+import FacilityDashboard from "@/app/(view)/detail/_components/FacilityDashboard";
 import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
@@ -32,7 +32,7 @@ export default async function Page ({params}: {params: Promise<{id : string}>}) 
         <div className="px s-5 flex flex-col gap-xs rounded-xl">
           <EnvironmentDashboard areaCode={id}/>
           <CongestionInfoDashboard areaCode={id}/>
-          <TransportDashboard areaCode={id} center={{lat: data.latitude, lng: data.longitude}}/>
+          <FacilityDashboard areaCode={id} center={{lat: data.latitude, lng: data.longitude}}/>
         </div>
       </div>
 
