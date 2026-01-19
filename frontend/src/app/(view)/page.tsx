@@ -1,11 +1,12 @@
 import ListView from './_component/ListView'
 import FloatingBar from '@/components/common/FloatingBar'
+import { LocationProvider } from '@/providers/LocationProvider'
 
 export default function page() {
   return (
-    <>
-      <ListView></ListView>
-      <FloatingBar></FloatingBar>
-    </>
+    <LocationProvider>
+      <ListView />
+      <FloatingBar />
+    </LocationProvider>
   )
 }
