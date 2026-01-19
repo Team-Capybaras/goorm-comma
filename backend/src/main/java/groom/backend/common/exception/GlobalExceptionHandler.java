@@ -2,7 +2,9 @@ package groom.backend.common.exception;
 
 import groom.backend.common.response.ApiResponse;
 import groom.backend.common.response.StatusCodeMessage;
+
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,37 +51,39 @@ public class GlobalExceptionHandler {
         }
 
         ApiResponse<Void> response = ApiResponse.error(
-            code,
-            message,
-            errors
+                code,
+                message,
+                errors
         );
 
         return ResponseEntity
-            .status(code)
-            .body(response);
+                .status(code)
+                .body(response);
     }
 
     /**
      * 비즈니스 예외 처리
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
+    public ResponseEntity<ApiResponse<Object>> handleBusinessException(BusinessException e) {
         ErrorCode errorCode = e.getErrorCode();
-        
-        ApiResponse<Void> response = ApiResponse.error(
-            errorCode.getStatus(),
-            errorCode.getMessage(),
-            List.of(new ErrorDetail(
-                null,
-                null,
-                e.getMessage(),
-                errorCode.getCode()
-            ))
+
+        ApiResponse<Object> response = ApiResponse.error(
+                errorCode.getStatus(),
+                errorCode.getMessage(),
+                List.of(new ErrorDetail(
+                        null,
+                        null,
+                        e.getMessage(),
+                        errorCode.getCode()
+                )),
+                e.getData()
         );
 
+
         return ResponseEntity
-            .status(errorCode.getStatus())
-            .body(response);
+                .status(errorCode.getStatus())
+                .body(response);
     }
 
     /**
@@ -88,18 +92,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         ApiResponse<Void> response = ApiResponse.error(
-            StatusCodeMessage.INTERNAL_SERVER_ERROR.getCode(),
-            StatusCodeMessage.INTERNAL_SERVER_ERROR.getMessage(),
-            List.of(new ErrorDetail(
-                null,
-                null,
-                e.getMessage(),
-                "S_001"
-            ))
+                StatusCodeMessage.INTERNAL_SERVER_ERROR.getCode(),
+                StatusCodeMessage.INTERNAL_SERVER_ERROR.getMessage(),
+                List.of(new ErrorDetail(
+                        null,
+                        null,
+                        e.getMessage(),
+                        "S_001"
+                ))
         );
 
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(response);
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 }
