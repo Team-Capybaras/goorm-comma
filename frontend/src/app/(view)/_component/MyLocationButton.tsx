@@ -1,14 +1,14 @@
 'use client'
 
 import Image from 'next/image'
-import { useLocation } from '@/providers/LocationProvider'
+import {useLocationStore} from "@/store/location.store";
 
 export default function MyLocationButton() {
-  const { locationName, loading, getCurrentLocation } = useLocation()
+  const { loading, locationName, fetchCurrentLocation } = useLocationStore()
 
   return (
     <button
-      onClick={getCurrentLocation}
+      onClick={fetchCurrentLocation}
       disabled={loading}
       className="inline-flex items-center gap-1 text-caption-1-m text-sub"
     >

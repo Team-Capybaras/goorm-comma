@@ -14,6 +14,13 @@ export interface ParkFeatures {
   description: string
 }
 
+export interface ParkListWithPage {
+  hasNext: boolean
+  nextCursor: string
+  size: number
+  parks: ParkInfo[]
+}
+
 export interface ParkInfo {
   areaName: string;
   images: string[];

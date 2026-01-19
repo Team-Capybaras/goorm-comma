@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("*") // 모든 Origin 허용 (프로덕션에서는 특정 도메인으로 제한 권장)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(false) // 모든 Origin 허용 시 false로 설정
+                .allowCredentials(true) // 모든 Origin 허용 시 false로 설정
                 .maxAge(3600); // preflight 요청 캐시 시간 (1시간)
     }
 }

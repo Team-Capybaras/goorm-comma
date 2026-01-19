@@ -41,7 +41,7 @@ export default async function ParkInfoDashboard({data}: ParkInfoProps) {
         <h3 className="text-sub-deep text-body-2-sb">공원 둘러보기</h3>
         <div className="flex flex-col gap-1.5 mt s-3">
           {data.features.map((feature) => (
-            <div className="flex items-center justify-start gap-3">
+            <div key={feature.type} className="flex items-center justify-start gap-3">
               <img src={PARK_IMAGE_MAP[feature.type]} className="w-3.5 h-3.5" alt="아이콘"/>
               <p className="text-caption-1-m">{feature.description}</p>
             </div>

@@ -814,6 +814,10 @@
     border: 1px solid rgb(var(--color-blue-100))
   }
 
+  .border-1-line-positive {
+    border: 1px solid rgb(var(--positive-bright))
+  }
+
   /* ==================================================
      RADIUS
   ================================================== */

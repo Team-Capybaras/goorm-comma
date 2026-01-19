@@ -4,6 +4,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { DotButton, useDotButton } from '@/components/common/EmblaDot'
 import { ReactNode } from 'react'
 import cn from '@/shared/utils/cn'
+import {EmblaOptionsType} from "embla-carousel";
 
 interface EmblaCarouselProps {
   children: ReactNode
@@ -11,6 +12,7 @@ interface EmblaCarouselProps {
   dotBottom?: number | string
   containerClassName?: string
   viewportClassName?: string
+  options?: EmblaOptionsType
 }
 
 export default function EmblaCarousel({
@@ -19,8 +21,9 @@ export default function EmblaCarousel({
   dotBottom = 16,
   containerClassName,
   viewportClassName,
+  options
 }: EmblaCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel()
+  const [emblaRef, emblaApi] = useEmblaCarousel(options)
 
   const dotState = showDots ? useDotButton(emblaApi) : null
 
