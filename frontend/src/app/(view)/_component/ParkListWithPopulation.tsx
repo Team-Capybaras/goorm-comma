@@ -1,3 +1,5 @@
+'use client'
+
 import { Card } from '@/components/common/Card'
 import Image from 'next/image'
 import ParkThumbnail from '@/components/common/ParkThumbnail'
