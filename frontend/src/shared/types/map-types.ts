@@ -27,6 +27,7 @@ export interface ParkItem extends BaseMapItem {
   image?: string
   forecast?: string
   tags?: string[]
+  isDetail?: boolean
 }
 
 export interface FacilityItem extends BaseMapItem {
@@ -38,7 +39,7 @@ export interface FacilityItem extends BaseMapItem {
   updatedAt?: string
   lat: number
   lng: number
-  line? : string
+  line?: string
   //디자인의 무료 뱃지 부분
   tags?: string[]
 }
