@@ -29,6 +29,9 @@ public enum ErrorCode {
   RESOURCE_NOT_FOUND(404, "B_001", "요청한 리소스를 찾을 수 없습니다"),
   RESOURCE_CONFLICT(409, "B_002", "리소스 충돌이 발생했습니다"),
 
+  // Weather 도메인 에러 (W_xxx)
+  WEATHER_NOT_FOUND(404, "W_001", "해당 지역코드 또는 지역코드에 대한 날씨 데이터를 찾을 수 없습니다."),
+
   // Transit 도메인 에러 (T_xxx)
   TRANSIT_AREA_CODE_NOT_FOUND(404, "T_001", "대중교통 정보를 조회할 수 있는 지역 코드를 찾을 수 없습니다"),
 
