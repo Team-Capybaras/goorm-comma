@@ -13,7 +13,7 @@ export default async function Page ({params}: {params: Promise<{id : string}>}) 
 
   const fetchData = async () => {
     const res = await api.get(`/v1/parks/${id}`)
-
+    console.log(res)
     return res.data.data.park
   }
   const data:ParkInfo = await fetchData()

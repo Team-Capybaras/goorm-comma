@@ -7,7 +7,7 @@ import {useState} from "react";
 import {ParkList} from "@/shared/types/park-types";
 
 interface SearchClientProps {
-  data: ParkList
+  data: ParkList[]
 }
 
 export default function SearchClient ({data}: SearchClientProps) {

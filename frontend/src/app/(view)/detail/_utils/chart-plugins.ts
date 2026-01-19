@@ -5,11 +5,14 @@ export const legendMarginPlugin = (
   spacing: number = 46
 ): Plugin<'line'> => ({
   id: 'legendMargin',
-  beforeInit(chart, legend, options) {
-    const fitValue = chart.legend?.fit
+  beforeInit(chart, options) {
+    const legend = chart.legend
+    if (!legend) return
 
-    chart.legend.fit = function fit() {
-      fitValue.bind(chart.legend)()
+    const originalFit = legend.fit
+
+    legend.fit = function fit() {
+      originalFit.bind(legend)()
       return (this.height += spacing)
     }
   },

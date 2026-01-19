@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import {ParkInfo} from "@/shared/types/park-types";
 import Tag from "@/components/common/Tag";
 import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
@@ -27,6 +26,7 @@ export default async function ParkInfoDashboard({data}: ParkInfoProps) {
       </div>
       {data?.tags?.length > 0 && (
         <div className="flex gap-2 mt s-3">
+          <Tag variant="blue">{data.recommendedVisitHour}</Tag>
           {data.tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
           ))}

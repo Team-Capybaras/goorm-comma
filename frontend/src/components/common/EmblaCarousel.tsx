@@ -6,7 +6,7 @@ import { ReactNode } from 'react'
 import cn from '@/shared/utils/cn'
 
 interface EmblaCarouselProps {
-  children: ReactNode[]
+  children: ReactNode
   showDots?: boolean
   dotBottom?: number | string
   containerClassName?: string
