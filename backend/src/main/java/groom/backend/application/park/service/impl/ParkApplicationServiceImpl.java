@@ -258,9 +258,6 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         String recommendedVisitHour = calculateRecommendedVisitHour(park.getAreaCode());
         builder.recommendedVisitHour(recommendedVisitHour);
 
-        // 주소 필드 (null로 설정)
-        builder.address(null);
-
         GetParkResponse.ParkInfo parkInfo = builder.build();
 
         GetParkResponse response = GetParkResponse.builder()
