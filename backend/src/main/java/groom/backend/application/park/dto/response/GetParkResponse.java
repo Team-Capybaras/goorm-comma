@@ -1,5 +1,6 @@
 package groom.backend.application.park.dto.response;
 
+import groom.backend.domain.enums.FeatureType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -126,6 +127,29 @@ public class GetParkResponse {
                 example = "서울특별시 종로구 청와대로 1"
         )
         private String address;
+
+        @Schema(
+                description = "공원 설명",
+                example = """
+"features": [
+    {
+        "type": "COURSE",
+        "description": "한강 바람 맞으며 차박·피크닉하기 좋아요"
+    },
+    {
+        "type": "FACILITY",
+        "description": "텐트 치기 좋고, 습지 관찰 포인트도 있어요"
+    },
+    {
+        "type": "NEARBY",
+        "description": "강서구 한강변 드라이브 코스로 이어져요"
+    }
+]
+                        """
+        )
+        private List<Feature> features;
+
+        public record Feature(FeatureType type, String description) {}
     }
 }
 

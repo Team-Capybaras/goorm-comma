@@ -5,7 +5,9 @@ import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.common.utils.DistanceCalculator;
 import groom.backend.domain.park.entity.Park;
+import groom.backend.domain.park.entity.ParkFeature;
 import groom.backend.domain.park.entity.ParkTag;
+import groom.backend.domain.park.repository.ParkFeatureRepository;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.park.repository.ParkTagRepository;
 import groom.backend.domain.tag.entity.Tag;
@@ -40,6 +42,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
     private final WeatherStatusRepository weatherStatusRepository;
     private final LivePopStatusRepository livePopStatusRepository;
     private final CongestionRecommendService congestionRecommendService;
+    private final ParkFeatureRepository parkFeatureRepository;
 
     private static final int DEFAULT_SIZE = 10;
     private static final int MAX_SIZE = 100;
@@ -202,6 +205,16 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 .map(Tag::getTagName)
                 .collect(Collectors.toList());
 
+        // 설명 정보 조회
+        List<ParkFeature> parkFeatures = parkFeatureRepository.findByAreaCode(park.getAreaCode());
+        List<GetParkResponse.ParkInfo.Feature> features = parkFeatures.stream()
+                .map(pf -> new GetParkResponse.ParkInfo.Feature(
+                        pf.getType(),
+                        pf.getDescription()
+                ))
+                .toList();
+
+
         // 거리 계산 (현재 위치와 공원 좌표가 모두 있는 경우)
         Double distance = null;
         if (longitude != null && latitude != null
@@ -224,7 +237,8 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 .distance(distance)
                 .images(park.getImageUrls() != null && !park.getImageUrls().isEmpty() ? park.getImageUrls() : null)
                 .tags(tags.isEmpty() ? null : tags)
-                .address(park.getParkAddr());
+                .address(park.getParkAddr())
+                .features(features);
 
         // 날씨 정보 설정
         if (weatherStatusOptional.isPresent()) {
