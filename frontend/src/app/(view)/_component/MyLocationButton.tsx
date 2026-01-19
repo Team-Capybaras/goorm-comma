@@ -1,23 +1,14 @@
 'use client'
 
 import Image from 'next/image'
+import { useLocation } from '@/providers/LocationProvider'
 
-interface LocationButtonProps {
-  label: string
-  loading?: boolean
-  onClick: () => void
-}
+export default function MyLocationButton() {
+  const { locationName, loading, getCurrentLocation } = useLocation()
 
-export default function MyLocationButton({
-  label,
-  loading,
-  onClick,
-}: LocationButtonProps) {
   return (
-    // 버튼 클릭 시 현재 위치 불러오기
     <button
-      type="button"
-      onClick={onClick}
+      onClick={getCurrentLocation}
       disabled={loading}
       className="inline-flex items-center gap-1 text-caption-1-m text-sub"
     >
@@ -27,7 +18,7 @@ export default function MyLocationButton({
         width={18}
         height={18}
       />
-      {loading ? '위치 찾는 중…' : label}
+      {loading ? '위치 찾는 중…' : locationName ?? '현재 위치'}
     </button>
   )
 }
