@@ -50,10 +50,10 @@ public class WeatherController {
                   responseCode = "400",
                   description = "잘못된 요청 (area_code 누락 또는 형식 오류)"
           ),
-//          @ApiResponse(
-//                  responseCode = "404",
-//                  description = "해당 지역의 날씨 정보를 찾을 수 없음"
-//          ),
+          @ApiResponse(
+                  responseCode = "404",
+                  description = "해당 지역의 날씨 정보를 찾을 수 없음"
+          ),
           @ApiResponse(
                   responseCode = "500",
                   description = "서버 내부 오류"
