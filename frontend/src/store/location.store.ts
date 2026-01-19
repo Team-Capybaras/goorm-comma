@@ -53,6 +53,12 @@ export const useLocationStore = create<LocationStore>()(
             locationName: data.locationName,
             loading: false,
           })
+        },
+        (err) => {
+          console.error('현재 위치 가져오기 실패', err)
+        },
+        {
+          enableHighAccuracy: true,
         })
       },
       initLocation: () => {

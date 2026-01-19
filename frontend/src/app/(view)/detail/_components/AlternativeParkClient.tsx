@@ -9,7 +9,7 @@ export default function AlternativeParkClient() {
   return (
     <>
       <button onClick={() => setShow(!show)}>
-        <Image src={"/images/icons/info.svg"} width={18} height={18} alt={"안내"}/>
+        <img src={"/images/icons/info.svg"} width={18} height={18} alt={"안내"}/>
       </button>
       {show && <AlternativeInfoModal setShow={setShow} />}
     </>

@@ -1,5 +1,5 @@
 import {api} from "@/shared/libs/axios";
-import SearchClient from "@/app/(view)/_component/SearchClient";
+import SearchClient from "@/app/(view)/(main)/_component/SearchClient";
 import {ParkList} from "@/shared/types/park-types";
 
 export default async function SearchPark() {

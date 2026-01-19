@@ -10,7 +10,7 @@ export default function AlternativeInfoModal ({setShow}: AlternativeInfoModalPro
       <div className="flex justify-between items-center">
         <h4 className="text-body-2-sb">지금 갈만한 공원</h4>
         <button onClick={() => setShow(false)}>
-          <Image src={'/images/icons/close.svg'} width={16} height={16} alt={'닫기'}/>
+          <img src={'/images/icons/close.svg'} width={16} height={16} alt={'닫기'}/>
         </button>
       </div>
       <div className="mt-[10px] text-body-2-r w-[200px]">

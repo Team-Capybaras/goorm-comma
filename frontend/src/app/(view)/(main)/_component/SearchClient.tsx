@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Input from "@/components/common/Input";
-import SearchModal from "@/app/(view)/_component/SearchModal";
+import SearchModal from "@/app/(view)/(main)/_component/SearchModal";
 import {useState} from "react";
 import {ParkList} from "@/shared/types/park-types";
 
@@ -18,7 +18,7 @@ export default function SearchClient ({data}: SearchClientProps) {
     <>
       {/* 검색 Input */}
       <div className="relative w-full">
-        <Image
+        <img
           src="/images/icons/search.svg"
           alt="검색"
           width={26}

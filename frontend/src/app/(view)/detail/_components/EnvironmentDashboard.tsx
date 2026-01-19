@@ -44,7 +44,7 @@ export default async function EnvironmentDashboard({areaCode}: Props) {
       <div className="border-1-line-default rounded-7 p s-4 mt s-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Image src={"/images/icons/weather/sun.svg"} className="mr s-3" width={24} height={24} alt="해"/>
+            <img src={"/images/icons/weather/sun.svg"} className="mr s-3" width={24} height={24} alt="해"/>
             <p className="text-body-2-m mr s-2">{data?.precptType}</p>
             <div className="flex items-center">
               <p className="text-body-2-m mr s-1">{data?.temp}</p>

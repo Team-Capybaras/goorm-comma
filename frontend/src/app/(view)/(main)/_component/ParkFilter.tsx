@@ -10,7 +10,7 @@ interface ParkFilterProps {
 }
 
 export default function ParkFilter ({activeOptions, setActiveOptions}:ParkFilterProps) {
-  const filterOptions: string[] = ['한강뷰', '신/숲', '평지', '수변/폭포', '산책', '피크닉', '역사/문화', '랜드마크']
+  const filterOptions: string[] = ['한강뷰', '산/숲', '평지', '수변/폭포', '산책', '피크닉', '역사/문화', '랜드마크']
 
   const toggleOption = (option: string) => {
     setActiveOptions(prev =>
@@ -23,12 +23,12 @@ export default function ParkFilter ({activeOptions, setActiveOptions}:ParkFilter
   return (
     <div className="flex gap s-2">
       <Button variant={activeOptions.length > 0 ? "active" : "default"} className="shrink-0">
-        <img src="/images/icons/slider.svg" width={22}  alt={"아이콘"}/>
+        <img src="/images/icons/slider.svg" width={22} alt={"아이콘"}/>
       </Button>
 
       <Button
         className="shrink-0"
-        rightIcon={<img src="/images/icons/arrow/down.svg" width={16}  alt={"아이콘"}/>}
+        rightIcon={<img src="/images/icons/arrow/down.svg" width={16} alt={"아이콘"}/>}
       >
         <p className="text-body-2-m text-center pl-1">가까운 순</p>
       </Button>
