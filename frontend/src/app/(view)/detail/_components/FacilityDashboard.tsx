@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import {api} from "@/shared/libs/axios";
-import TransportMap from "@/app/(view)/detail/_components/TransportMap";
+import FacilityMap from "@/app/(view)/detail/_components/FacilityMap";
 import {mapParkingToFacilityItems, mapTransitToFacilityItems} from "@/shared/utils/map-mapper";
 
-interface TransportDashboardProps {
+interface FacilityDashboardProps {
   areaCode: string;
   center: {
     lat: number;
@@ -11,7 +11,7 @@ interface TransportDashboardProps {
   }
 }
 
-export default async function TransportDashboard({ areaCode,center }: TransportDashboardProps) {
+export default async function FacilityDashboard({ areaCode,center }: FacilityDashboardProps) {
   const [parkingRes, transitRes] = await Promise.all([
     api.get('/v1/parking', {
       params: { area_code: areaCode },
@@ -29,7 +29,7 @@ export default async function TransportDashboard({ areaCode,center }: TransportD
   return (
     <div className="mt s-6 mb-6">
       <h3 className="text-body-1-sb">주변 대중교통 및 편의시설</h3>
-      <TransportMap data={facilities} center={center} />
+      <FacilityMap data={facilities} center={center} />
       <div className="grid grid-cols-3 mt-3">
         <div className="flex items-center justify-start gap s-2">
           <Image src="/images/icons/facility/parking.svg" width={16} height={16} alt={'주차장'} />

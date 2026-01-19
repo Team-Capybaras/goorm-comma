@@ -7,6 +7,13 @@ export interface ParkList {
   longitude: number
 }
 
+export type ParkType = 'COURSE' | 'FACILITY' | 'NEARBY'
+
+export interface ParkFeatures {
+  type: ParkType
+  description: string
+}
+
 export interface ParkInfo {
   areaName: string;
   images: string[];
@@ -15,6 +22,7 @@ export interface ParkInfo {
   distance: number;
   airIndex: string;
   areaCongestLevel: CongestionLevel;
+  features: ParkFeatures[]
   recommendedVisitHour: string;
   tags: string[];
   longitude: number;
