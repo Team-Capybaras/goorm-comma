@@ -15,7 +15,7 @@ export default function ListView() {
   } = useCurrentLocation()
 
   return (
-    <div className="bg-default">
+    <>
       <div className="flex bg-bright justify-center mb-3">
         <div className="w-full max-w-2xl flex flex-col gap-4 p-5">
 
@@ -34,6 +34,6 @@ export default function ListView() {
       </div>
 
       <ParkListWithPopulation />
-    </div>
+    </>
   )
 }

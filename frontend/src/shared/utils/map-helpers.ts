@@ -75,7 +75,7 @@ export const getFacilityMarkerIcon = (category: FacilityCategory, isSelected: bo
 
   const stateStr = isSelected ? 'focused' : 'Default'
 
-  return `/images/icons/map/state=${stateStr}, type=${typeStr}.svg`
+  return `/images/icons/map/state=${stateStr}_type=${typeStr}.svg`
 }
 
 //지하철 노선별 색상 매핑

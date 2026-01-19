@@ -722,6 +722,7 @@
   .bg-bright { background-color: rgb(var(--background-bright)); }
   .bg-deep { background-color: rgb(var(--background-deep)); }
   .bg-inverse { background-color: rgba(var(--foreground-inverse-text)); }
+  .bg-overlay {background-color: rgba(255, 255, 255, 0.9)}
 
   /* Brand */
   .bg-primary { background-color: rgb(var(--primary)); }
@@ -901,6 +902,7 @@
 
 @layer base {
   html {
+    background-color: var(--background-bright);
     font-family: var(--font-sans);
     font-weight: var(--font-medium);
   }

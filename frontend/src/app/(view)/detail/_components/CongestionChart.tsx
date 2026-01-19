@@ -31,13 +31,10 @@ export default function CongestionChart({data}: Props) {
 
     const base = [legendMarginPlugin(46)]
 
-    console.log(recommendedHour)
 
     if (recommendedHour === undefined) return base
     if (recommendedHour < 9) return base
     if (recommendedHour > 22) return base
-
-    console.log(2)
 
     return [
       ...base,
