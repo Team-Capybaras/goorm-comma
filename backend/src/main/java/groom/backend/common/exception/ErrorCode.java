@@ -29,6 +29,12 @@ public enum ErrorCode {
   RESOURCE_NOT_FOUND(404, "B_001", "요청한 리소스를 찾을 수 없습니다"),
   RESOURCE_CONFLICT(409, "B_002", "리소스 충돌이 발생했습니다"),
 
+  // Transit 도메인 에러 (T_xxx)
+  TRANSIT_AREA_CODE_NOT_FOUND(404, "T_001", "대중교통 정보를 조회할 수 있는 지역 코드를 찾을 수 없습니다"),
+
+  // Population 도메인 에러 (P_xxx)
+  POPULATION_AREA_CODE_NOT_FOUND(404, "P_001", "인구 정보를 조회할 수 있는 지역 코드를 찾을 수 없습니다"),
+
   // Server 에러 (S_xxx)
   INTERNAL_SERVER_ERROR(500, "S_001", "서버 내부 오류가 발생했습니다"),
   DATABASE_ERROR(500, "S_002", "데이터베이스 오류가 발생했습니다");
