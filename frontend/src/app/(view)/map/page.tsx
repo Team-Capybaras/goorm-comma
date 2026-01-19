@@ -7,6 +7,8 @@ import type { ParkItem } from '@/shared/types/map-types'
 
 export default function MapPage() {
   const [parkData, setParkData] = useState<ParkItem[]>([])
+
+  // 1. 초기 중심 좌표 설정
   const [center, setCenter] = useState({ lat: 37.5284, lng: 126.9331 })
 
   const fetchParkList = async (lat: number, lng: number) => {
@@ -17,12 +19,12 @@ export default function MapPage() {
       console.error('공원 목록 로딩 실패:', error)
     }
   }
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          setCenter({ lat: latitude, lng: longitude })
           fetchParkList(latitude, longitude)
         },
         (err) => {

@@ -8,7 +8,6 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
-// import { getParkDetail } from '@/shared/libs/parkApi' // 이제 필요 없으므로 제거 또는 주석
 
 interface Props {
   data: ParkItem[]
