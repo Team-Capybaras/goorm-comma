@@ -18,7 +18,7 @@ export default function MyLocationButton() {
         width={18}
         height={18}
       />
-      {loading ? '위치 찾는 중…' : locationName ?? '현재 위치'}
+      {loading ? '위치 불러오는 중…' : locationName ?? '현재 위치'}
     </button>
   )
 }

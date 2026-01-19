@@ -47,12 +47,13 @@ export async function GET(req: Request) {
 
     const data = await res.json()
 
+    // 구/군까지 있으면 구/군까지 표시
     const address = data.documents?.[0]?.address
-    const locationName =
-      address?.region_3depth_name ||
-      address?.region_2depth_name ||
-      address?.region_1depth_name ||
-      null
+    const locationName = address
+      ? [address.region_1depth_name, address.region_2depth_name]
+        .filter(Boolean)
+        .join(' · ')
+      : null
 
     return NextResponse.json({ locationName })
   } catch (e) {
