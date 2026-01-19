@@ -4,7 +4,6 @@ import {useLocationStore} from "@/store/location.store";
 import ParkListContent from "@/app/(view)/(main)/_component/ParkListContent";
 
 export default function ParkListWithPopulation() {
-
   const { location } = useLocationStore()
 
   if (!location) {

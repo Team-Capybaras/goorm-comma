@@ -87,10 +87,12 @@ export default function ParkListContent({location} : ParkLocationProps) {
             <ParkCard key={`${park.areaName}-${idx}`} data={park} />
           ))}
 
+          {/* 다음 페이지(무한스크롤)이 있을 때 */}
           {hasNextPage && (
             <div ref={loadMoreRef} className="h-10" />
           )}
 
+          {/* 다음 페이지(무한스크롤)을 적용 중일 때 */}
           {isFetchingNextPage && (
             <p className="text-center text-caption-1-m text-sub">
               불러오는 중...
@@ -98,6 +100,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
           )}
         </>
       ) : (
+        /* list가 비어있을 때 */
         !isFetching && (
           <div className="flex justify-center items-center p-5 h-70">
             <p>조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요</p>
