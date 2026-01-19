@@ -1,4 +1,4 @@
-import { ChartDataset } from 'chart.js'
+import {ChartDataset, ChartType, ScriptableContext, ScriptableLineSegmentContext} from 'chart.js'
 import {CongestionWeekday} from "@/shared/types/chart-types";
 
 type BuildCongestionDatasetsParams = {
@@ -73,17 +73,17 @@ export function congestionDatasets({
       order:1,
       pointRadius: 0,
       fill: true,
-      backgroundColor: (context) => {
+      backgroundColor: (context: ScriptableContext<ChartType>) => {
         const { chart } = context
         if (!chart.chartArea) return undefined
         return createRealtimeGradient(chart.ctx, chart.chartArea)
       },
       segment: {
-        borderDash: ctx =>
+        borderDash: (ctx: ScriptableLineSegmentContext) =>
           Number(labels[ctx.p0DataIndex]) >= currentHour
             ? [6, 4]
             : undefined,
-        backgroundColor: ctx =>
+        backgroundColor: (ctx: ScriptableLineSegmentContext) =>
           Number(labels[ctx.p0DataIndex]) >= currentHour
             ? 'rgba(0,0,0,0)'
             : undefined,

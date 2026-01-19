@@ -1,3 +1,5 @@
+import {CongestionLevel} from "@/shared/utils/congestion-helper";
+
 export interface ParkList {
   areaName: string
   areaCode: string
@@ -12,8 +14,8 @@ export interface ParkInfo {
   address: string;
   distance: number;
   airIndex: string;
-  areaCongestLevel: string;
-  recommendedVisitHor: string;
+  areaCongestLevel: CongestionLevel;
+  recommendedVisitHour: string;
   tags: string[];
   longitude: number;
   latitude: number;

@@ -58,7 +58,6 @@ export const congestionLineOptions: ChartOptions<'line'> = {
       },
       grid: {
         display: false,
-        drawBorder: false,
       },
     },
     y: {

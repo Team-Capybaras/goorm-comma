@@ -46,7 +46,7 @@ export default function CongestionChart({data}: Props) {
         hour: recommendedHour,
       }),
     ]
-  })([])
+  })()
 
   return (
     <>

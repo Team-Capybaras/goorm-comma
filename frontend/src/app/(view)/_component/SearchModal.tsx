@@ -6,11 +6,10 @@ import {ParkList} from "@/shared/types/park-types";
 
 interface SearchModalProps {
   keyword: string
-  data: ParkList
+  data: ParkList[]
 }
 
 export default function SearchModal ({keyword, data} : SearchModalProps) {
-
   /* 검색 필터링 */
   const filteredDatas = useMemo(() => {
     if (!keyword.trim()) return []

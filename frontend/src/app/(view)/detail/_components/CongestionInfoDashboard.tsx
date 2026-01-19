@@ -14,6 +14,7 @@ export default async function CongestionInfoDashboard({areaCode} : CongestionInf
         area_code : areaCode
       }
     })
+
     return res.data.data
   }
 

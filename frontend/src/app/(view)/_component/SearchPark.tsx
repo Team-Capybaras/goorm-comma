@@ -9,7 +9,7 @@ export default async function SearchPark() {
     return res.data.data.parks
   }
 
-  const data:ParkList = await fetchData()
+  const data:ParkList[] = await fetchData()
 
   return (
     <>
