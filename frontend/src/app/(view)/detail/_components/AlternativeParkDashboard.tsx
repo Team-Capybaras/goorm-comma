@@ -19,7 +19,7 @@ export default async function AlternativeParkDashboard({areaCode}: AlternativePa
         latitude: 37.529546
       }
     })
-    console.log(res)
+
     return res.data.data.parks
   }
   const data:ParkInfo[] = await fetchData()
