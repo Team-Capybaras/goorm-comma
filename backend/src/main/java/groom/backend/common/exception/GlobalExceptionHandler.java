@@ -60,6 +60,29 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 비즈니스 예외 처리
+     */
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        
+        ApiResponse<Void> response = ApiResponse.error(
+            errorCode.getStatus(),
+            errorCode.getMessage(),
+            List.of(new ErrorDetail(
+                null,
+                null,
+                e.getMessage(),
+                errorCode.getCode()
+            ))
+        );
+
+        return ResponseEntity
+            .status(errorCode.getStatus())
+            .body(response);
+    }
+
+    /**
      * 모든 예외의 기본 처리
      */
     @ExceptionHandler(Exception.class)
