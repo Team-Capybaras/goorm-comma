@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import KakaoMap from '@/components/common/KakaoMap'
@@ -8,6 +8,7 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
+import { getParkDetail } from '@/shared/libs/parkApi'
 
 interface Props {
   data: ParkItem[]
@@ -19,6 +20,24 @@ export default function MainMap({ data, center }: Props) {
   const [map, setMap] = useState<any>(null)
   const [isLocLoading, setIsLocLoading] = useState(false)
   const [selectedPark, setSelectedPark] = useState<ParkItem | null>(null)
+
+  useEffect(() => {
+    if (selectedPark && selectedPark.isDetail === false) {
+      const fetchDetail = async () => {
+        try {
+          const detailData = await getParkDetail(
+            selectedPark.areaCode,
+            selectedPark.lat,
+            selectedPark.lng
+          )
+          setSelectedPark(detailData)
+        } catch (error) {
+          console.error('상세 정보 로딩 실패:', error)
+        }
+      }
+      fetchDetail()
+    }
+  }, [selectedPark])
 
   const handleCurrentLocation = () => {
     if (!map) return // 지도가 로드되지 않았으면 중단
