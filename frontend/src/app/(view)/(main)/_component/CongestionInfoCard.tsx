@@ -7,7 +7,7 @@ import cn from '@/shared/utils/cn'
 import { Bold } from 'lucide-react'
 
 interface CongestionInfoCardProps {
-  onClose?: (event: MouseEvent<HTMLButtonElement>) => void
+  onClose?: () => void
 }
 
 export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
@@ -20,14 +20,18 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
   }, [])
 
   return (
-    <Card className="w-full rounded-t-[20px] rounded-b-none bg-white shadow-xl border-none overflow-hidden animate-slide-up">
+    <>
       {/* 1. 헤더 */}
-      <CardHeader closable onClose={onClose} className="pb-2 pt-7 px-6">
-        <h2 className="text-subtitle-2-sb text-gray-900">혼잡도란?</h2>
-      </CardHeader>
+      <div className="flex justify-between ">
+        <p className="text-subtitle-2-sb">정렬 옵션</p>
+        <img src="/images/icons/close.svg"
+             className="w-[24px] h-[24px] cursor-pointer"
+             onClick={onClose}
+             alt="닫기"/>
+      </div>
 
       {/* 2. 본문 */}
-      <CardContent className="flex flex-col gap-8 px-6 pb-2">
+      <div className="flex flex-col gap-[26px] mt s-6">
         <div className="text-body-2-r text-gray-800 leading-[1.5]">
           <p>사람이 얼마나 모여 있는지 나타내는 지표예요.</p>
           <p>
@@ -60,15 +64,13 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
             <CongestionTagColorWrapper status="warning">붐빔</CongestionTagColorWrapper>
           </div>
         </div>
-      </CardContent>
+      </div>
 
       {/* 3. 푸터 */}
-      <CardFooter className="pt-4 pb-10 px-6">
-        <p className="text-caption-3-r text-gray-400 -tracking-[0.5px]">
-          * 통신사 인구 데이터를 가공해 제공해요. 실제 현장과 다를 수 있어요.
-        </p>
-      </CardFooter>
-    </Card>
+      <p className="text-caption-3-r text-gray-400 -tracking-[0.5px] mt s-4">
+        * 통신사 인구 데이터를 가공해 제공해요. 실제 현장과 다를 수 있어요.
+      </p>
+    </>
   )
 }
 function CongestionTagColorWrapper({

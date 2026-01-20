@@ -4,6 +4,8 @@ import { useState } from 'react' // 1. useState 불러오기
 import { useLocationStore } from '@/store/location.store'
 import ParkListContent from '@/app/(view)/(main)/_component/ParkListContent'
 import { CongestionInfoCard } from './CongestionInfoCard'
+import ParkFilterModal from "@/app/(view)/(main)/_component/ParkFilterModal";
+import {Modal} from "@/components/ui/Modal";
 
 export default function ParkListWithPopulation() {
   const { location } = useLocationStore()
@@ -38,18 +40,9 @@ export default function ParkListWithPopulation() {
         </div>
       </div>
 
-      {isInfoOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end justify-center px-0">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
-            onClick={handleCloseInfo}
-          />
-
-          <div className="relative z-10 w-full max-w-[480px]">
-            <CongestionInfoCard onClose={handleCloseInfo} />
-          </div>
-        </div>
-      )}
+      <Modal open={isInfoOpen} onClose={handleCloseInfo} size={"full"} >
+        <CongestionInfoCard onClose={handleCloseInfo} />
+      </Modal>
     </>
   )
 }
