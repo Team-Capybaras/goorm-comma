@@ -72,13 +72,6 @@ export function Modal({
 
   if (!open || !mounted) return null
 
-  // 배경 클릭 시에 닫힘 설정 로직
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (closeOnBackdrop && e.target === e.currentTarget) {
-      onClose()
-    }
-  }
-
   // 사이즈 정의
   const sizeClasses = {
     sm: 'max-w-sm',
@@ -87,39 +80,38 @@ export function Modal({
     xl: 'max-w-xl',
     '2xl': 'max-w-2xl',
     '3xl': 'max-w-3xl',
-    full: 'max-w-full mx-4',
+    full: 'max-w-full',
   }
 
   const modalContent = (
     <>
-      {/* 배경 어둡게 설정 */}
-      <div
-        style={{ zIndex: zIndex }}
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={handleBackdropClick}
-      />
-
       {/* 배경보다 zindex 10 높게 설정 후, 카드를 감쌈. */}
       <div
         style={{ zIndex: zIndex + 10 }}
-        className="fixed inset-0 flex items-center justify-center pointer-events-none"
+        className="fixed bottom-0 left-0 z-99 w-full pt-8 px s-5 py-12 rounded-t-xl bg-bright"
         // 접근성 관련 설정
         role="dialog"
         aria-modal="true"
       >
         {/* Card 컴포넌트 재사용 */}
-        <Card
+        <div
           ref={modalRef}
           className={cn(
-            'relative w-full mx-4 my-8 max-h-[90vh] pointer-events-auto p-6',
             sizeClasses[size],
             className
           )}
           {...props}
         >
           {children}
-        </Card>
+        </div>
       </div>
+
+      {/* 배경 어둡게 설정 */}
+      <div
+        style={{ zIndex: zIndex }}
+        className="fixed w-full h-full top-0 left-0 inset-0 bg-black/40"
+        onClick={() => onClose()}
+      />
     </>
   )
 

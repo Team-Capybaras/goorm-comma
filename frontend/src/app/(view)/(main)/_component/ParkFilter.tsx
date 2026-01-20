@@ -7,6 +7,8 @@ import ParkSortFilterModal from "@/app/(view)/(main)/_component/ParkSortFilterMo
 import {useState} from "react";
 import ParkFilterModal from "@/app/(view)/(main)/_component/ParkFilterModal";
 import {ParkInfo} from "@/shared/types/park-types";
+import ParkDirectionModal from "@/app/(view)/detail/_components/ParkDirectionModal";
+import {Modal} from "@/components/ui/Modal";
 
 const OPTIONS: EmblaOptionsType = { dragFree: true }
 
@@ -71,7 +73,7 @@ export default function ParkFilter ({
           ))}
         </EmblaCarousel>
       </div>
-      {showFilterModal &&
+      <Modal open={showFilterModal} onClose={() => setShowFilterModal(false)} size={"full"} >
         <ParkFilterModal
           parks={parks}
           data={activeOptions}
@@ -79,8 +81,13 @@ export default function ParkFilter ({
           setShow={setShowFilterModal}
           setActiveOptions={setActiveOptions}
         />
-      }
-      {showSortModal && <ParkSortFilterModal data={activeSort} setShow={setShowSortModal} setActiveSort={setActiveSort}/>}
+      </Modal>
+      <Modal open={showSortModal} onClose={() => setShowSortModal(false)} size={"full"} >
+        <ParkSortFilterModal
+          data={activeSort}
+          setShow={setShowSortModal}
+          setActiveSort={setActiveSort}/>
+      </Modal>
     </div>
   )
 }

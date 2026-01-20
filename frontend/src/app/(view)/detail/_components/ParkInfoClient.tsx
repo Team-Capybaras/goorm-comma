@@ -4,6 +4,7 @@ import Image from "next/image";
 import ParkDirectionModal from "@/app/(view)/detail/_components/ParkDirectionModal";
 import {ParkInfo} from "@/shared/types/park-types";
 import {useState} from "react";
+import {Modal} from "@/components/ui/Modal";
 
 interface ParkInfoClientProps {
   data : ParkInfo
@@ -19,7 +20,9 @@ export default function ParkInfoClient ({data}:ParkInfoClientProps) {
         <Image src={"/images/icons/arrow/right-gray.svg"} width={16} height={16} alt={"바로가기"}/>
       </div>
 
-      {show && <ParkDirectionModal data={data} setShow={setShow}/>}
+      <Modal open={show} onClose={() => setShow(false)} size={"full"} >
+        <ParkDirectionModal data={data} setShow={setShow}/>
+      </Modal>
     </>
   )
 }
