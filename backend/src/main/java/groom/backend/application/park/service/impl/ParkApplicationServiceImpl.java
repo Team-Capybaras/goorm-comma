@@ -154,15 +154,19 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 })
                 .collect(Collectors.toList());
 
+        // 전체 공원 수 조회
+        int totalCount = (int) parkRepository.count();
+
         GetAllParksResponse response = GetAllParksResponse.builder()
                 .parks(parkInfoList)
                 .nextCursor(nextCursor)
                 .hasNext(hasNext)
                 .size(parkInfoList.size())
+                .totalCount(totalCount)
                 .build();
 
-        log.info("공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
-                parkInfoList.size(), hasNext);
+        log.info("공원 리스트 조회 완료 - 조회된 공원 수: {}, 전체 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), totalCount, hasNext);
 
         return response;
     }
@@ -398,15 +402,19 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             nextCursor = parkInfoList.get(parkInfoList.size() - 1).getAreaCode();
         }
 
+        // 전체 공원 수 조회
+        int totalCount = (int) parkRepository.count();
+
         GetAllParksResponse response = GetAllParksResponse.builder()
                 .parks(parkInfoList)
                 .nextCursor(nextCursor)
                 .hasNext(hasNext)
                 .size(parkInfoList.size())
+                .totalCount(totalCount)
                 .build();
 
-        log.info("혼잡도 낮은 순 공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
-                parkInfoList.size(), hasNext);
+        log.info("혼잡도 낮은 순 공원 리스트 조회 완료 - 조회된 공원 수: {}, 전체 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), totalCount, hasNext);
 
         return response;
     }
@@ -558,15 +566,19 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             nextCursor = parkInfoList.get(parkInfoList.size() - 1).getAreaCode();
         }
 
+        // 전체 공원 수 조회
+        int totalCount = (int) parkRepository.count();
+
         GetAllParksResponse response = GetAllParksResponse.builder()
                 .parks(parkInfoList)
                 .nextCursor(nextCursor)
                 .hasNext(hasNext)
                 .size(parkInfoList.size())
+                .totalCount(totalCount)
                 .build();
 
-        log.info("거리 가까운 순 공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
-                parkInfoList.size(), hasNext);
+        log.info("거리 가까운 순 공원 리스트 조회 완료 - 조회된 공원 수: {}, 전체 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), totalCount, hasNext);
 
         return response;
     }
@@ -609,11 +621,14 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         // 태그명 검증
         if (tagNames == null || tagNames.isEmpty()) {
             log.warn("태그명이 제공되지 않았습니다.");
+            int totalCount = (int) parkRepository.count();
             return GetAllParksResponse.builder()
                     .parks(List.of())
                     .nextCursor(null)
                     .hasNext(false)
                     .size(0)
+                    .totalCount(totalCount)
+                    .count(0)
                     .build();
         }
 
@@ -623,16 +638,19 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         log.info("태그 기반 공원 리스트 조회 시작 - tagNames: {}, cursor: {}, size: {}", tagNames, cursor, pageSize);
 
         // 태그명으로 areaCode 리스트 조회 (AND 조건: 모든 태그를 가진 공원만)
-        long tagCount = tagNames.size();
-        List<String> areaCodes = parkTagRepository.findAreaCodesByTagNames(tagNames, tagCount);
+        long tagNameCount = tagNames.size();
+        List<String> areaCodes = parkTagRepository.findAreaCodesByTagNames(tagNames, tagNameCount);
         
         if (areaCodes.isEmpty()) {
             log.info("태그에 해당하는 공원이 없습니다 - tagNames: {}", tagNames);
+            int totalCount = (int) parkRepository.count();
             return GetAllParksResponse.builder()
                     .parks(List.of())
                     .nextCursor(null)
                     .hasNext(false)
                     .size(0)
+                    .totalCount(totalCount)
+                    .count(0)
                     .build();
         }
 
@@ -649,11 +667,15 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             if (cursorIndex == -1) {
                 // cursor가 리스트에 없으면 빈 결과 반환
                 log.warn("커서에 해당하는 공원을 찾을 수 없습니다 - cursor: {}", cursor);
+                int totalCount = (int) parkRepository.count();
+                int tagMatchCount = areaCodes.size();
                 return GetAllParksResponse.builder()
                         .parks(List.of())
                         .nextCursor(null)
                         .hasNext(false)
                         .size(0)
+                        .totalCount(totalCount)
+                        .count(tagMatchCount)
                         .build();
             }
             // cursor 다음부터
@@ -749,15 +771,22 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                 })
                 .collect(Collectors.toList());
 
+        // 전체 공원 수 조회
+        int totalCount = (int) parkRepository.count();
+        // 태그에 해당하는 전체 공원 개수
+        int tagMatchCount = areaCodes.size();
+
         GetAllParksResponse response = GetAllParksResponse.builder()
                 .parks(parkInfoList)
                 .nextCursor(nextCursor)
                 .hasNext(hasNext)
                 .size(parkInfoList.size())
+                .totalCount(totalCount)
+                .count(tagMatchCount)
                 .build();
 
-        log.info("태그 기반 공원 리스트 조회 완료 - 조회된 공원 수: {}, 다음 페이지 존재: {}", 
-                parkInfoList.size(), hasNext);
+        log.info("태그 기반 공원 리스트 조회 완료 - 조회된 공원 수: {}, 전체 공원 수: {}, 태그에 해당하는 공원 수: {}, 다음 페이지 존재: {}", 
+                parkInfoList.size(), totalCount, tagMatchCount, hasNext);
 
         return response;
     }

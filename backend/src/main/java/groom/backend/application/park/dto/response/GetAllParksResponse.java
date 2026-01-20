@@ -47,6 +47,19 @@ public class GetAllParksResponse {
     )
     private Integer size;
 
+    @Schema(
+            description = "전체 공원 수",
+            example = "34"
+    )
+    private Integer totalCount;
+
+    @Schema(
+            description = "태그에 해당하는 전체 공원 수 (by-tags API 전용)",
+            example = "15",
+            nullable = true
+    )
+    private Integer count;
+
     /**
      * 공원 정보
      */
