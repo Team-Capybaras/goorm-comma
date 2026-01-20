@@ -12,20 +12,14 @@ export const fetchParks = async ({
   activeSort: string
   location: { lat: number; lng: number }
 }): Promise<ParkListWithPage> => {
-  const tagUrl = '/v1/parks/by-tags'
-  const distanceUrl = '/v1/parks/by-distance'
-  const congestionUrl = '/v1/parks/low-congestion'
-
-  const isSort= activeSort === 'distance'
-
-  const url = activeOptions.length > 0 ? tagUrl
-    : isSort ? distanceUrl : congestionUrl
+  const url = '/v1/parks'
 
   const res = await api.get(url, {
     params: {
       tag_names: activeOptions,
       size: 10,
       cursor: pageParam,
+      sort: activeSort,
       latitude: location.lat,
       longitude: location.lng,
     },

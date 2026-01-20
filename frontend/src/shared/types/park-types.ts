@@ -19,6 +19,7 @@ export interface ParkListWithPage {
   nextCursor: string
   size: number
   parks: ParkInfo[]
+  totalCount: number
 }
 
 export interface ParkInfo {
