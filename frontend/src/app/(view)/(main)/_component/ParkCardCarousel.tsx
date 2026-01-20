@@ -13,13 +13,13 @@ interface ParkCardCarouselProps {
 
 export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
   return (
-    <EmblaCarousel showDots={false}>
+    <EmblaCarousel showDots={false} containerClassName={'mr-5'}>
       {/* ParkInfo를 API에서 불러올 데이터로 셋 */}
-      {data.map((park) => (
+      {data.map((park,i) => (
         // key 값에 따른 공원 정보 생성
         <div
           key={park.areaName}
-          className="relative mx-1 flex-[0_0_80%] rounded-8 overflow-hidden"
+          className={`relative mx-1 flex-[0_0_80%] rounded-8 overflow-hidden ${(i ===0) && 'ml-5'}`}
           style={{ height: 362 }}
         >
           {/* 공원 이미지 */}
