@@ -4,14 +4,18 @@ import EmblaCarousel from "@/components/common/EmblaCarousel";
 import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
+import ErrorComponent from "@/components/ui/ErrorComponent";
 
 interface AlternativeParkDashboardProps {
   areaCode: string;
 }
 
 export default async function AlternativeParkDashboard({areaCode}: AlternativeParkDashboardProps) {
-  const fetchData = async () => {
-    const res = await api.get(`/v1/parks/low-congestion`, {
+  let data: ParkInfo[] = []
+  let error: boolean = false
+
+  try {
+    const res =await api.get(`/v1/parks/low-congestion`, {
       params: {
         cursor: areaCode,
         size: 10,
@@ -20,9 +24,24 @@ export default async function AlternativeParkDashboard({areaCode}: AlternativePa
       }
     })
 
-    return res.data.data.parks
+    data = Array.isArray(res.data.data.parks) ? res.data.data.parks : []
+    console.log(res)
+  } catch (err) {
+    console.error(err)
+    error = true
   }
-  const data:ParkInfo[] = await fetchData()
+
+  if (error || data.length === 0) {
+    return (
+      <div className="mt s-5 pb-8">
+        <div className="flex gap s-1 relative">
+          <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
+          <AlternativeParkClient />
+        </div>
+        <ErrorComponent className={"bg-white"} />
+      </div>
+    )
+  }
 
   return (
     <div className="mt s-5 pb-8">
@@ -49,7 +68,7 @@ export default async function AlternativeParkDashboard({areaCode}: AlternativePa
                 <div className="flex items-center mt s-3">
                   <p className="text-body-2-sb">{item.areaName}</p>
                   <div className="w-[3px] h-[3px] rounded-full bg-gray-300 mx s-2"/>
-                  <p className="text-body-2-m text-gray-500">{item.distance}</p>
+                  <p className="text-body-2-m text-gray-500">{item.distance}km</p>
                 </div>
 
                 <p className={`text-caption-1-sb ${CONGESTION_COLOR_MAP[item.areaCongestLevel]}`}>
