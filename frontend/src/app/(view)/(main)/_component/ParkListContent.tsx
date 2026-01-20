@@ -6,6 +6,8 @@ import {useEffect, useRef, useState} from "react";
 import {ParkInfo, ParkListWithPage} from "@/shared/types/park-types";
 import {InfiniteData, useInfiniteQuery} from "@tanstack/react-query";
 import {fetchParks} from "@/shared/libs/park-list-api";
+import ParkListCardSkeleton from "@/app/(view)/(main)/_status/ParkListCardSkeleton";
+import ErrorComponent from "@/components/ui/ErrorComponent";
 
 type ParksQueryKey = [
   'parks',
@@ -25,6 +27,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
   const [activeOptions, setActiveOptions] = useState<string[]>([])
   const [activeSort, setActiveSort] = useState<string>("distance")
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const SKELETON_COUNT = 3
 
   // react-qeury fetch
   const {
@@ -33,6 +36,8 @@ export default function ParkListContent({location} : ParkLocationProps) {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    isError,
+    error
   } = useInfiniteQuery<
     ParkListWithPage,
     Error,
@@ -74,6 +79,10 @@ export default function ParkListContent({location} : ParkLocationProps) {
     return () => observer.disconnect()
   }, [fetchNextPage, hasNextPage])
 
+  if (isError) {
+    return <ErrorComponent className={"bg-white"} />
+  }
+
   return (
     <div className="mt-[10px]">
       {/* filter */}
@@ -86,6 +95,16 @@ export default function ParkListContent({location} : ParkLocationProps) {
           setActiveOptions={setActiveOptions}
         />
       </div>
+
+      {/* 초기 로딩 Skeleton */}
+      {isFetching && parks.length === 0 && (
+        <div className="px s-5 mt s-5 flex flex-col gap-8">
+          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <ParkListCardSkeleton key={i} />
+          ))}
+        </div>
+      )}
+
       {/* list */}
       {parks.length > 0 ? (
         <div className="px s-5">
@@ -107,9 +126,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
 
           {/* 다음 페이지(무한스크롤)을 적용 중일 때 */}
           {isFetchingNextPage && (
-            <p className="text-center text-caption-1-m text-sub">
-              불러오는 중...
-            </p>
+            <ParkListCardSkeleton />
           )}
         </div>
       ) : (

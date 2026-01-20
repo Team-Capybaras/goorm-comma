@@ -48,11 +48,11 @@ export default function ParkIn5km() {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-subtitle-1-sb">
+      <p className="text-subtitle-1-sb px-5">
         지금 <span className="text-primary">한적한 5km</span> 이내 공원
       </p>
 
-      <Card className="w-full border-0 rounded-[0]">
+      <Card className="w-full border-0 rounded-[0] mb s-6">
         <ParkCardCarousel data={parks} />
       </Card>
     </div>

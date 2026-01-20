@@ -50,7 +50,7 @@ export default async function AlternativeParkDashboard({areaCode}: AlternativePa
         <AlternativeParkClient />
       </div>
       <div className="mt s-4">
-        <EmblaCarousel containerClassName={'gap-x-3'}>
+        <EmblaCarousel containerClassName={'gap-x-3 mr-6'}>
           <>
             {data?.map((item, i) => (
               <div className={`flex-[0_0_40%] ${i == 0 ? 'ml s-6' : ''}`} key={i}>
