@@ -2,10 +2,13 @@ package groom.backend.application.park.controller;
 
 import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.dto.response.GetParkResponse;
+import groom.backend.application.park.enums.ParkSortType;
 import groom.backend.application.park.service.spec.ParkApplicationService;
 import groom.backend.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,10 @@ public class ParkApplicationController {
     @Operation(
             summary = "공원 리스트 조회 (커서 기반 페이지네이션)",
             description = "커서 기반 페이지네이션으로 공원 리스트를 조회합니다. " +
-                    "첫 페이지는 cursor를 생략하고, 다음 페이지는 이전 응답의 nextCursor 값을 사용합니다."
+                    "첫 페이지는 cursor를 생략하고, 다음 페이지는 이전 응답의 nextCursor 값을 사용합니다. " +
+                    "필터(tag_names)와 정렬(sort)을 함께 사용할 수 있습니다. " +
+                    "sort 옵션: DEFAULT(기본), LOW_CONGESTION(혼잡도 낮은 순), BY_DISTANCE(거리 가까운 순). " +
+                    "BY_DISTANCE 정렬 시 longitude와 latitude가 필수입니다."
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -37,7 +43,7 @@ public class ParkApplicationController {
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "잘못된 요청"
+                    description = "잘못된 요청 (BY_DISTANCE 정렬 시 longitude/latitude 누락 등)"
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "500",
@@ -58,19 +64,42 @@ public class ParkApplicationController {
             )
             @RequestParam(required = false) Integer size,
             @Parameter(
-                    description = "현재 위치 경도",
+                    description = "정렬 타입 (DEFAULT, LOW_CONGESTION, BY_DISTANCE)",
+                    required = false,
+                    example = "LOW_CONGESTION"
+            )
+            @RequestParam(required = false) ParkSortType sort,
+            @Parameter(
+                    description = "태그명 리스트 (선택사항, null 가능). 여러 개 가능, AND 조건 - 모든 태그를 가진 공원만 조회. " +
+                            "Swagger UI에서는 배열 형태로 입력하거나 쉼표로 구분하여 입력할 수 있습니다. " +
+                            "태그 필터를 사용하지 않으려면 이 필드를 비워두거나 null로 설정하세요.",
+                    required = false,
+                    array = @ArraySchema(schema = @Schema(type = "string", example = "한강뷰", nullable = true)),
+                    example = "[\"한강뷰\", \"평지\"]",
+                    schema = @Schema(nullable = true)
+            )
+            @RequestParam(name = "tag_names", required = false) List<String> tagNames,
+            @Parameter(
+                    description = "현재 위치 경도 (거리 계산 및 BY_DISTANCE 정렬용, BY_DISTANCE 정렬 시 필수)",
                     required = false,
                     example = "127.069903"
             )
             @RequestParam(required = false) Double longitude,
             @Parameter(
-                    description = "현재 위치 위도",
+                    description = "현재 위치 위도 (거리 계산 및 BY_DISTANCE 정렬용, BY_DISTANCE 정렬 시 필수)",
                     required = false,
                     example = "37.529546"
             )
             @RequestParam(required = false) Double latitude
     ) {
-        GetAllParksResponse response = parkApplicationService.getParks(cursor, size, longitude, latitude);
+        // 기본값 설정
+        if (sort == null) {
+            sort = ParkSortType.DEFAULT;
+        }
+        
+        GetAllParksResponse response = parkApplicationService.getParks(
+                cursor, size, sort, tagNames, longitude, latitude
+        );
         return ApiResponse.success(200, "공원 리스트 조회 성공", response);
     }
 
@@ -115,168 +144,6 @@ public class ParkApplicationController {
     ) {
         GetParkResponse response = parkApplicationService.getParkByAreaCode(areaCode, longitude, latitude);
         return ApiResponse.success(200, "공원 조회 성공", response);
-    }
-
-    @GetMapping("/low-congestion")
-    @Operation(
-            summary = "혼잡도 낮은 순 공원 리스트 조회 (커서 기반 페이지네이션)",
-            description = "혼잡도가 낮은 순으로 공원 리스트를 조회합니다. " +
-                    "커서 기반 페이지네이션을 사용하며, 첫 페이지는 cursor를 생략하고, " +
-                    "다음 페이지는 이전 응답의 nextCursor 값을 사용합니다. " +
-                    "혼잡도 순서: 여유 < 보통 < 붐빔 < 매우붐빔"
-    )
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 요청"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "500",
-                    description = "서버 오류"
-            )
-    })
-    public ApiResponse<GetAllParksResponse> getParksByLowCongestion(
-            @Parameter(
-                    description = "커서 (areaCode), 첫 페이지는 생략 가능",
-                    required = false,
-                    example = "POI093"
-            )
-            @RequestParam(required = false) String cursor,
-            @Parameter(
-                    description = "페이지 크기 (기본값: 10, 최대값: 100)",
-                    required = false,
-                    example = "10"
-            )
-            @RequestParam(required = false) Integer size,
-            @Parameter(
-                    description = "현재 위치 경도",
-                    required = false,
-                    example = "127.069903"
-            )
-            @RequestParam(required = false) Double longitude,
-            @Parameter(
-                    description = "현재 위치 위도",
-                    required = false,
-                    example = "37.529546"
-            )
-            @RequestParam(required = false) Double latitude
-    ) {
-        GetAllParksResponse response = parkApplicationService.getParksByLowCongestion(cursor, size, longitude, latitude);
-        return ApiResponse.success(200, "혼잡도 낮은 순 공원 리스트 조회 성공", response);
-    }
-
-    @GetMapping("/by-distance")
-    @Operation(
-            summary = "거리 가까운 순 공원 리스트 조회 (커서 기반 페이지네이션)",
-            description = "현재 위치로부터 거리가 가까운 순으로 공원 리스트를 조회합니다. " +
-                    "커서 기반 페이지네이션을 사용하며, 첫 페이지는 cursor를 생략하고, " +
-                    "다음 페이지는 이전 응답의 nextCursor 값을 사용합니다. " +
-                    "longitude와 latitude는 필수 파라미터입니다."
-    )
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 요청 (longitude 또는 latitude가 없음)"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "500",
-                    description = "서버 오류"
-            )
-    })
-    public ApiResponse<GetAllParksResponse> getParksByDistance(
-            @Parameter(
-                    description = "커서 (areaCode), 첫 페이지는 생략 가능",
-                    required = false,
-                    example = "POI093"
-            )
-            @RequestParam(required = false) String cursor,
-            @Parameter(
-                    description = "페이지 크기 (기본값: 10, 최대값: 100)",
-                    required = false,
-                    example = "10"
-            )
-            @RequestParam(required = false) Integer size,
-            @Parameter(
-                    description = "현재 위치 경도 (필수)",
-                    required = true,
-                    example = "127.069903"
-            )
-            @RequestParam(required = true) Double longitude,
-            @Parameter(
-                    description = "현재 위치 위도 (필수)",
-                    required = true,
-                    example = "37.529546"
-            )
-            @RequestParam(required = true) Double latitude
-    ) {
-        GetAllParksResponse response = parkApplicationService.getParksByDistance(cursor, size, longitude, latitude);
-        return ApiResponse.success(200, "거리 가까운 순 공원 리스트 조회 성공", response);
-    }
-
-    @GetMapping("/by-tags")
-    @Operation(
-            summary = "태그 기반 공원 리스트 조회 (커서 기반 페이지네이션)",
-            description = "태그명으로 공원 리스트를 조회합니다. " +
-                    "여러 태그명을 제공할 경우, 모든 태그를 모두 가지고 있는 공원만 조회됩니다 (AND 조건). " +
-                    "커서 기반 페이지네이션을 사용하며, 첫 페이지는 cursor를 생략하고, " +
-                    "다음 페이지는 이전 응답의 nextCursor 값을 사용합니다."
-    )
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "조회 성공"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 요청 (tag_names가 없음)"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "500",
-                    description = "서버 오류"
-            )
-    })
-    public ApiResponse<GetAllParksResponse> getParksByTags(
-            @Parameter(
-                    description = "태그명 리스트 (여러 개 가능, AND 조건 - 모든 태그를 가진 공원만 조회)",
-                    required = true,
-                    example = "산책로,운동"
-            )
-            @RequestParam(name = "tag_names") List<String> tagNames,
-            @Parameter(
-                    description = "커서 (areaCode), 첫 페이지는 생략 가능",
-                    required = false,
-                    example = "POI093"
-            )
-            @RequestParam(required = false) String cursor,
-            @Parameter(
-                    description = "페이지 크기 (기본값: 10, 최대값: 100)",
-                    required = false,
-                    example = "10"
-            )
-            @RequestParam(required = false) Integer size,
-            @Parameter(
-                    description = "현재 위치 경도 (거리 계산용, 선택)",
-                    required = false,
-                    example = "127.069903"
-            )
-            @RequestParam(required = false) Double longitude,
-            @Parameter(
-                    description = "현재 위치 위도 (거리 계산용, 선택)",
-                    required = false,
-                    example = "37.529546"
-            )
-            @RequestParam(required = false) Double latitude
-    ) {
-        GetAllParksResponse response = parkApplicationService.getParksByTags(tagNames, cursor, size, longitude, latitude);
-        return ApiResponse.success(200, "태그 기반 공원 리스트 조회 성공", response);
     }
 }
 

@@ -33,5 +33,15 @@ public interface LivePopStatusRepository extends JpaRepository<LivePopStatus, Li
             LocalDateTime start,
             LocalDateTime end
     );
+
+    /**
+     * 여러 areaCode에 대해 각각의 가장 최근 인구 현황을 배치로 조회합니다.
+     * @param areaCodes 지역 코드 리스트
+     * @return areaCode별 최신 인구 현황 리스트
+     */
+    @Query("SELECT l FROM LivePopStatus l WHERE l.areaCode IN :areaCodes " +
+           "AND (l.areaCode, l.dataGetTime) IN " +
+           "(SELECT l2.areaCode, MAX(l2.dataGetTime) FROM LivePopStatus l2 WHERE l2.areaCode IN :areaCodes GROUP BY l2.areaCode)")
+    List<LivePopStatus> findLatestByAreaCodes(@Param("areaCodes") List<String> areaCodes);
 }
 
