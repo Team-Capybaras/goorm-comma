@@ -14,7 +14,6 @@ const PARK_IMAGE_MAP: Record<ParkType, string> = {
 }
 
 export default async function ParkInfoDashboard({data}: ParkInfoProps) {
-  console.log(data)
 
   return (
     <div className="px s-5">
