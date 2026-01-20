@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/common/Card'
 import ParkThumbnail from '@/components/common/ParkThumbnail'
-import { useLocation } from '@/providers/LocationProvider'
+import {useLocationStore} from '@/store/location.store'
 
 export default function ParkIn5km() {
   return (
