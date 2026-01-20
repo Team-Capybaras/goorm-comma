@@ -13,12 +13,15 @@ export default function ParkIn5km() {
   const [parks, setParks] = useState<ParkInfo[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchData = async (): Promise<ParkInfo[]> => {
+  const fetchData = async (
+    lat: number,
+    lng: number
+  ): Promise<ParkInfo[]> => {
     const res = await api.get('/v1/parks/recommend', {
       params: {
         limit_distance: 5,
-        latitude: location!.lat,
-        longitude: location!.lng,
+        latitude: lat,
+        longitude: lng,
       },
     })
 
@@ -31,7 +34,7 @@ export default function ParkIn5km() {
 
     setLoading(true)
 
-    fetchData()
+    fetchData(location.lat, location.lng)
       .then(setParks)
       .catch((err) => {
         console.error('공원 조회 실패', err)

@@ -5,6 +5,7 @@ import {api} from "@/shared/libs/axios";
 import {formatDateTimePad} from "@/shared/utils/time-format";
 import ErrorComponent from "@/components/ui/ErrorComponent";
 import {useEffect, useState} from "react";
+import EnvironmentSkeleton from "@/app/(view)/detail/_status/EnvironmentSkeleton";
 
 interface Props {
   areaCode: string;
@@ -50,7 +51,7 @@ export default function EnvironmentDashboard({areaCode}: Props) {
     return (
       <div className="mt s-6">
         <h3 className="text-body-1-sb">날씨</h3>
-        {/* 필요하면 Skeleton */}
+        <EnvironmentSkeleton />
       </div>
     )
   }

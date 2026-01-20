@@ -5,6 +5,7 @@ import CongestionChart from "@/app/(view)/detail/_components/CongestionChart";
 import { CongestionType } from "@/shared/types/chart-types";
 import ErrorComponent from "@/components/ui/ErrorComponent";
 import { useEffect, useState } from "react";
+import CongestionInfoDashboardSkeleton from "@/app/(view)/detail/_status/CongestionInfoDashboardSkeleton";
 
 interface CongestionInfoDashboardProps {
   areaCode: string;
@@ -44,7 +45,7 @@ export default function CongestionInfoDashboard({
     return (
       <div className="mt s-6">
         <h3 className="text-body-1-sb">혼잡도</h3>
-        {/* 필요하면 Skeleton */}
+        <CongestionInfoDashboardSkeleton />
       </div>
     )
   }

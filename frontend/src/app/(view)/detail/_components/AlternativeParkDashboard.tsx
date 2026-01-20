@@ -9,6 +9,7 @@ import {ParkInfo} from "@/shared/types/park-types";
 import ErrorComponent from "@/components/ui/ErrorComponent";
 import {useLocationStore} from "@/store/location.store";
 import {useEffect, useState} from "react";
+import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
 
 interface AlternativeParkDashboardProps {
   areaCode: string;
@@ -52,6 +53,12 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
         setLoading(false)
       })
   }, [location])
+
+  if(loading) {
+    return (
+      <AlternativeSkeleton />
+    )
+  }
 
   if (error || data.length === 0) {
     return (
