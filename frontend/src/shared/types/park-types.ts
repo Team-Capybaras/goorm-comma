@@ -27,6 +27,7 @@ export interface ParkInfo {
   temp: number;
   address: string;
   distance: number;
+  precptMsg?: string;
   airIndex: string;
   areaCongestLevel: CongestionLevel;
   features: ParkFeatures[]

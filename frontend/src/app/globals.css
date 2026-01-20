@@ -476,6 +476,13 @@
     letter-spacing: var(--tracking-normal);
   }
 
+  .text-body-2-b {
+    font-size: var(--font-sm);
+    font-weight: var(--font-bold);
+    line-height: calc(var(--font-sm) * var(--leading-md));
+    letter-spacing: var(--tracking-normal);
+  }
+
   .text-body-2-sb {
     font-size: var(--font-sm);
     font-weight: var(--font-semibold);

@@ -72,20 +72,22 @@ export default function ParkListContent({location} : ParkLocationProps) {
   }, [fetchNextPage, hasNextPage])
 
   return (
-    <>
+    <div className="mt-[10px]">
       {/* filter */}
       <ParkFilter activeOptions={activeOptions} setActiveOptions={setActiveOptions}/>
       {/* list */}
       {parks.length > 0 ? (
         <>
-          <p className="pb-5">
+          <p className="mt s-4">
             <span className="text-body-2-sb">총 {parks.length}개</span>
             <span className="text-body-2-m text-sub-bright">의 공원</span>
           </p>
 
-          {parks.map((park, idx) => (
-            <ParkCard key={`${park.areaName}-${idx}`} data={park} />
-          ))}
+          <div className="flex flex-col gap-8 mt s-5">
+            {parks.map((park, idx) => (
+              <ParkCard key={`${park.areaName}-${idx}`} data={park} />
+            ))}
+          </div>
 
           {/* 다음 페이지(무한스크롤)이 있을 때 */}
           {hasNextPage && (
@@ -107,6 +109,6 @@ export default function ParkListContent({location} : ParkLocationProps) {
           </div>
         )
       )}
-    </>
+    </div>
   )
 }
