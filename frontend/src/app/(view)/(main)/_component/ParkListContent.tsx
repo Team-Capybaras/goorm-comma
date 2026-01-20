@@ -10,6 +10,7 @@ import {fetchParks} from "@/shared/libs/park-list-api";
 type ParksQueryKey = [
   'parks',
   string[],
+  string,
   { lat: number; lng: number }
 ]
 
@@ -39,12 +40,13 @@ export default function ParkListContent({location} : ParkLocationProps) {
     ParksQueryKey,
     string | null
   >({
-    queryKey: ['parks', activeOptions, {lat: location.lat, lng: location.lng}],
+    queryKey: ['parks', activeOptions, activeSort, {lat: location.lat, lng: location.lng}],
     enabled: !!location?.lat && !!location?.lng,
     queryFn: ({ pageParam }) =>
       fetchParks({
         pageParam,
         activeOptions,
+        activeSort,
         location: location!,
       }),
     getNextPageParam: (lastPage) =>
@@ -75,15 +77,18 @@ export default function ParkListContent({location} : ParkLocationProps) {
   return (
     <div className="mt-[10px]">
       {/* filter */}
-      <ParkFilter
-        activeSort={activeSort}
-        setActiveSort={setActiveSort}
-        activeOptions={activeOptions}
-        setActiveOptions={setActiveOptions}
-      />
+      <div className="pl s-5">
+        <ParkFilter
+          parks={parks}
+          activeSort={activeSort}
+          setActiveSort={setActiveSort}
+          activeOptions={activeOptions}
+          setActiveOptions={setActiveOptions}
+        />
+      </div>
       {/* list */}
       {parks.length > 0 ? (
-        <>
+        <div className="px s-5">
           <p className="mt s-4">
             <span className="text-body-2-sb">총 {parks.length}개</span>
             <span className="text-body-2-m text-sub-bright">의 공원</span>
@@ -106,7 +111,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
               불러오는 중...
             </p>
           )}
-        </>
+        </div>
       ) : (
         /* list가 비어있을 때 */
         !isFetching && (

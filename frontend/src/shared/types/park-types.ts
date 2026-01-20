@@ -22,17 +22,18 @@ export interface ParkListWithPage {
 }
 
 export interface ParkInfo {
-  areaName: string;
-  images: string[];
-  temp: number;
-  address: string;
-  distance: number;
-  precptMsg?: string;
-  airIndex: string;
-  areaCongestLevel: CongestionLevel;
+  areaCode: string
+  areaName: string
+  images: string[]
+  temp: number
+  address: string
+  distance: number
+  precptMsg?: string
+  airIndex: string
+  areaCongestLevel: CongestionLevel
   features: ParkFeatures[]
-  recommendedVisitHour: string;
-  tags: string[];
-  longitude: number;
-  latitude: number;
+  recommendedVisitHour: string
+  tags: string[]
+  longitude: number
+  latitude: number
 }
