@@ -36,7 +36,7 @@ export default function ParkThumbnail({
             src={src}
             alt={`park-thumbnail-${i}`}
             fill
-            sizes="100vw"
+            sizes="100%"
             className="object-cover"
             priority={i === 0}
           />

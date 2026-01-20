@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { BaseMapItem } from '@/shared/types/map-types'
+import {useLocationStore} from "@/store/location.store";
 
 interface KakaoMapProps<T extends BaseMapItem> {
   data: T[]
@@ -40,6 +41,7 @@ export default function KakaoMap<T extends BaseMapItem>({
   const overlaysMapRef = useRef<Map<string | number, any>>(new Map())
   const myLocationMarkerRef = useRef<any>(null)
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
+  const {location} = useLocationStore()
 
   useEffect(() => {
     if (cardSelectedItem !== undefined) {
@@ -79,35 +81,31 @@ export default function KakaoMap<T extends BaseMapItem>({
   // 2. 현재 위치 표시
   useEffect(() => {
     if (!mapInstance || !window.kakao) return
-    if (!navigator.geolocation) return
+    if (!location) return
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords
-        const myPosition = new window.kakao.maps.LatLng(latitude, longitude)
+    const myPosition = new window.kakao.maps.LatLng(
+      location.lat,
+      location.lng
 
-        if (myLocationMarkerRef.current) {
-          myLocationMarkerRef.current.setMap(null)
-        }
+    if (myLocationMarkerRef.current) {
+      myLocationMarkerRef.current.setMap(null)
+    }
 
-        const imageSrc = '/images/icons/map/current-location-dot.svg'
-        const imageSize = new window.kakao.maps.Size(48, 48)
-        const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize)
-
-        const marker = new window.kakao.maps.Marker({
-          position: myPosition,
-          image: markerImage,
-          zIndex: 20,
-          map: mapInstance,
-        })
-
-        myLocationMarkerRef.current = marker
-      },
-      (err) => {
-        console.error('현재 위치 가져오기 실패', err)
-      },
-      { enableHighAccuracy: true }
+    const imageSrc = '/images/icons/map/current-location-dot.svg'
+    const imageSize = new window.kakao.maps.Size(48, 48)
+    const markerImage = new window.kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize
     )
+
+    const marker = new window.kakao.maps.Marker({
+      position: myPosition,
+      image: markerImage,
+      zIndex: 20,
+      map: mapInstance,
+    })
+
+    myLocationMarkerRef.current = marker
   }, [mapInstance])
 
   // 3. 실시간 위치 추적

@@ -40,7 +40,7 @@ export default async function AlternativeParkDashboard({areaCode}: AlternativePa
                     src={item.images[0]}
                     alt={`park-thumbnail-${i}`}
                     fill
-                    sizes="80vw"
+                    sizes="100%"
                     className="object-cover rounded-6"
                     priority={i === 0}
                   />
