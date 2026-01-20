@@ -115,8 +115,10 @@ export default function ParkListContent({location} : ParkLocationProps) {
       ) : (
         /* list가 비어있을 때 */
         !isFetching && (
-          <div className="flex justify-center items-center p-5 h-70">
-            <p>조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요</p>
+          <div className="flex flex-col justify-center items-center p-5 h-70">
+            <img src="/images/icons/caution.svg" width={24} height={24} alt="주의"/>
+            <p className="text-sub text-body-2-m mt s-3">조건에 맞는 공원이 없어요.</p>
+            <p className="text-sub text-body-2-m">필터를 다시 설정해보세요.</p>
           </div>
         )
       )}
