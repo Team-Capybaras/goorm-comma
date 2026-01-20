@@ -30,7 +30,7 @@ export default function ParkFilterModal({
   // 공원이 없는 경우 Toast
   useEffect(() => {
     if (parks.length === 0) {
-      showToast("조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요.", 'default', 100000)
+      showToast("조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요.", 'default', 2000)
     }
   }, [parks, showToast])
 
