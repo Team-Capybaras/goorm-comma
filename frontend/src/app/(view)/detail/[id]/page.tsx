@@ -9,6 +9,7 @@ import ParkInfoDashboardError from "@/app/(view)/detail/_status/ParkInfoDashboar
 import ErrorComponent from "@/components/ui/ErrorComponent";
 import {ParkInfo} from "@/shared/types/park-types";
 import FacilityInfo from "@/app/(view)/detail/_components/FacilityInfo";
+import Back from "@/components/common/Back";
 
 export default async function Page ({params}: {params: Promise<{id : string}>}) {
   const {id} = await params
@@ -56,6 +57,7 @@ export default async function Page ({params}: {params: Promise<{id : string}>}) 
 
       {/* 대체 공원 */}
       <AlternativeParkDashboard areaCode={id}/>
+      <Back />
     </div>
   )
 }
