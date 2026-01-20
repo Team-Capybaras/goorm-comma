@@ -1,3 +1,5 @@
+'use client'
+
 import { MouseEvent, useEffect } from 'react'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 import Tag from '@/components/common/Tag'
