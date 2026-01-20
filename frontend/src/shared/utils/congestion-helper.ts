@@ -14,3 +14,10 @@ export const CONGESTION_COLOR_MAP: Record<CongestionLevel, string> = {
   [CONGESTION_LEVEL.SLIGHT]: 'text-caution',
   [CONGESTION_LEVEL.BUSY]: 'text-warning',
 }
+
+export const CONGESTION_BG_COLOR_MAP: Record<CongestionLevel, string> = {
+  [CONGESTION_LEVEL.FREE]: 'bg-positive',
+  [CONGESTION_LEVEL.NORMAL]: 'bg-normal',
+  [CONGESTION_LEVEL.SLIGHT]: 'bg-caution',
+  [CONGESTION_LEVEL.BUSY]: 'bg-warning',
+}
