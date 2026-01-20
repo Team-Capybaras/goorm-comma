@@ -22,6 +22,7 @@ interface ParkLocationProps {
 
 export default function ParkListContent({location} : ParkLocationProps) {
   const [activeOptions, setActiveOptions] = useState<string[]>([])
+  const [activeSort, setActiveSort] = useState<string>("distance")
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   // react-qeury fetch
@@ -74,7 +75,12 @@ export default function ParkListContent({location} : ParkLocationProps) {
   return (
     <div className="mt-[10px]">
       {/* filter */}
-      <ParkFilter activeOptions={activeOptions} setActiveOptions={setActiveOptions}/>
+      <ParkFilter
+        activeSort={activeSort}
+        setActiveSort={setActiveSort}
+        activeOptions={activeOptions}
+        setActiveOptions={setActiveOptions}
+      />
       {/* list */}
       {parks.length > 0 ? (
         <>
