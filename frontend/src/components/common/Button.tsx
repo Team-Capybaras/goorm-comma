@@ -8,10 +8,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?:
     | 'default' // 기본
     | 'active' // 활성화
+    | 'primary' // 브랜드 버튼
     | 'destructive' // 취소 등의 버튼
+    | 'destructive-outline' // 삭제하기 버튼용
     | 'leftIcon' // 좌측에 아이콘이 올 때
     | 'rightIcon' // 우측에 아이콘이 올 때
-    | 'destructive-outline' // 삭제하기 버튼용
   size?: 'default' | 'sm' | 'lg' | 'icon' // 버튼 사이즈 지정
   as?: React.ElementType
 
@@ -47,7 +48,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant === 'default' &&
         'border-bright',
       variant === 'active' &&
-        'bg-positive border-1-line-positive text-positive cursor-pointer',
+        'bg-positive border-1-line-positive text-positive',
+      variant === 'primary' &&
+        'bg-primary text-white',
       variant === 'destructive-outline' &&
         'border border-destructive bg-background text-destructive hover:text-black hover:bg-destructive/10 cursor-pointer',
 

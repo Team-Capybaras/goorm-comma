@@ -7,6 +7,7 @@ import FacilityDashboard from "@/app/(view)/detail/_components/FacilityDashboard
 import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
+import Back from "@/components/common/Back";
 
 export default async function Page ({params}: {params: Promise<{id : string}>}) {
   const {id} = await params
@@ -41,6 +42,7 @@ export default async function Page ({params}: {params: Promise<{id : string}>}) 
 
       {/* 대체 공원 */}
       <AlternativeParkDashboard areaCode={id}/>
+      <Back />
     </div>
   )
 }

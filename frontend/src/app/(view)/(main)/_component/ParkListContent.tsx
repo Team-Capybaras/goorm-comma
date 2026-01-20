@@ -10,6 +10,7 @@ import {fetchParks} from "@/shared/libs/park-list-api";
 type ParksQueryKey = [
   'parks',
   string[],
+  string,
   { lat: number; lng: number }
 ]
 
@@ -22,6 +23,7 @@ interface ParkLocationProps {
 
 export default function ParkListContent({location} : ParkLocationProps) {
   const [activeOptions, setActiveOptions] = useState<string[]>([])
+  const [activeSort, setActiveSort] = useState<string>("distance")
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   // react-qeury fetch
@@ -38,12 +40,13 @@ export default function ParkListContent({location} : ParkLocationProps) {
     ParksQueryKey,
     string | null
   >({
-    queryKey: ['parks', activeOptions, {lat: location.lat, lng: location.lng}],
+    queryKey: ['parks', activeOptions, activeSort, {lat: location.lat, lng: location.lng}],
     enabled: !!location?.lat && !!location?.lng,
     queryFn: ({ pageParam }) =>
       fetchParks({
         pageParam,
         activeOptions,
+        activeSort,
         location: location!,
       }),
     getNextPageParam: (lastPage) =>
@@ -72,20 +75,30 @@ export default function ParkListContent({location} : ParkLocationProps) {
   }, [fetchNextPage, hasNextPage])
 
   return (
-    <>
+    <div className="mt-[10px]">
       {/* filter */}
-      <ParkFilter activeOptions={activeOptions} setActiveOptions={setActiveOptions}/>
+      <div className="pl s-5">
+        <ParkFilter
+          parks={parks}
+          activeSort={activeSort}
+          setActiveSort={setActiveSort}
+          activeOptions={activeOptions}
+          setActiveOptions={setActiveOptions}
+        />
+      </div>
       {/* list */}
       {parks.length > 0 ? (
-        <>
-          <p className="pb-5">
+        <div className="px s-5">
+          <p className="mt s-4">
             <span className="text-body-2-sb">총 {parks.length}개</span>
             <span className="text-body-2-m text-sub-bright">의 공원</span>
           </p>
 
-          {parks.map((park, idx) => (
-            <ParkCard key={`${park.areaName}-${idx}`} data={park} />
-          ))}
+          <div className="flex flex-col gap-8 mt s-5">
+            {parks.map((park, idx) => (
+              <ParkCard key={`${park.areaName}-${idx}`} data={park} />
+            ))}
+          </div>
 
           {/* 다음 페이지(무한스크롤)이 있을 때 */}
           {hasNextPage && (
@@ -98,15 +111,17 @@ export default function ParkListContent({location} : ParkLocationProps) {
               불러오는 중...
             </p>
           )}
-        </>
+        </div>
       ) : (
         /* list가 비어있을 때 */
         !isFetching && (
-          <div className="flex justify-center items-center p-5 h-70">
-            <p>조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요</p>
+          <div className="flex flex-col justify-center items-center p-5 h-70">
+            <img src="/images/icons/caution.svg" width={24} height={24} alt="주의"/>
+            <p className="text-sub text-body-2-m mt s-3">조건에 맞는 공원이 없어요.</p>
+            <p className="text-sub text-body-2-m">필터를 다시 설정해보세요.</p>
           </div>
         )
       )}
-    </>
+    </div>
   )
 }
