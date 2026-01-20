@@ -152,6 +152,13 @@ public class GetAllParksResponse {
                 nullable = true
         )
         private String recommendedVisitHour;
+
+        @Schema(
+                description = "맞춤형 대체지 추천 시 태그 유사도 기준 비교를 위해 사용되는 필드입니다. 사용하지 않아도 무관합니다.",
+                example = "1.0",
+                nullable = true
+        )
+        private Double tagSimilarity;
     }
 }
 
