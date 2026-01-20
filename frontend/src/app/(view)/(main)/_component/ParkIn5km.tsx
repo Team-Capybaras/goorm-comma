@@ -12,7 +12,7 @@ export default function ParkIn5km() {
 
   const [parks, setParks] = useState<ParkInfo[]>([])
   const [loading, setLoading] = useState(true)
-  
+
   const fetchData = async (): Promise<ParkInfo[]> => {
     const res = await api.get('/v1/parks/recommend', {
       params: {
