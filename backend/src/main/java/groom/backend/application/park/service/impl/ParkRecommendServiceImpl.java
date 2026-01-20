@@ -49,7 +49,7 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
   @Transactional(readOnly = true)
   public GetAllParksResponse recommendTop5Parks(double longitude, double latitude) {
 
-    log.info("대체지 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+    log.info("실시간 사용자 위치 기반 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude).stream()
             // Top K 제한
@@ -69,7 +69,7 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
   @Transactional(readOnly = true)
   public GetAllParksResponse recommendTop5Parks(double longitude, double latitude, int limitDistance) {
 
-    log.info("실시간 사용자 주변 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+    log.info("실시간 사용자 주변 거리 필터링 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude).stream()
             // 거리 제한
@@ -93,7 +93,7 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
 
     int order = getBaseCongestionOrder(baseAreaCode);
 
-    log.info("실시간 사용자 주변 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+    log.info("공원 주변 대체지 추천 - longitude: {}, latitude: {}", longitude, latitude);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude, order).stream()
             // 거리 제한
@@ -278,4 +278,41 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
     return null;
   }
 
+  /**
+   * 태그 기반 정렬 기준 태그 가져오기
+   * @param baseAreaCode 정렬 기준 공원 코드
+   * @return
+   */
+  private List<String> getBaseTags(String baseAreaCode) {
+    return parkTagRepository.findByAreaCodeWithTag(baseAreaCode).stream()
+            .map(ParkTag::getTag)
+            .filter(tag -> tag != null)
+            .map(Tag::getTagName)
+            .toList();
+  }
+
+  /**
+   * Jaccard Similarity = |A ∩ B| / |A ∪ B|
+   */
+  private double calculateTagSimilarity(List<String> baseTags, List<String> targetTags) {
+    if (baseTags == null || targetTags == null ||
+            baseTags.isEmpty() || targetTags.isEmpty()) {
+      return 0.0;
+    }
+
+    long intersection =
+            baseTags.stream()
+                    .filter(targetTags::contains)
+                    .count();
+
+    long union =
+            baseTags.stream()
+                    .distinct()
+                    .count()
+                    + targetTags.stream()
+                    .filter(t -> !baseTags.contains(t))
+                    .count();
+
+    return (double) intersection / union;
+  }
 }
