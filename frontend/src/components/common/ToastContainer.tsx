@@ -1,0 +1,33 @@
+'use client'
+
+import { useState, useCallback } from 'react'
+import Toast, { ToastType } from './Toast'
+
+export default function useToast() {
+  const [toasts, setToasts] = useState<{ id: string; children: React.ReactNode; variant?: ToastType; duration?: number }[]>([])
+
+  const showToast = useCallback((children: React.ReactNode, variant: ToastType = 'default', duration: number = 2000) => {
+    const id = crypto.randomUUID()
+    setToasts(prev => [...prev, { id, children, variant, duration }])
+  }, [])
+
+  const removeToast = (id: string) => setToasts(prev => prev.filter(t => t.id !== id))
+
+  const ToastContainer = (
+    <div className="fixed bottom-25 right-5 z-[999] flex flex-col gap-2">
+      {toasts.map(t => (
+        <Toast
+          key={t.id}
+          id={t.id}
+          variant={t.variant}
+          duration={t.duration}
+          onClose={() => removeToast(t.id)}
+        >
+          {t.children}
+        </Toast>
+      ))}
+    </div>
+  )
+
+  return { showToast, ToastContainer }
+}

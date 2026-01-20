@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Input from "@/components/common/Input";
 import SearchModal from "@/app/(view)/(main)/_component/SearchModal";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ParkList} from "@/shared/types/park-types";
 
 interface SearchClientProps {
@@ -13,6 +13,12 @@ interface SearchClientProps {
 export default function SearchClient ({data}: SearchClientProps) {
   const [keyword, setKeyword] = useState<string>('')
   const [onfocus, setOnfocus] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    document.body.style.overflow = onfocus ? 'hidden' : '';
+  }, [onfocus])
 
   return (
     <>
