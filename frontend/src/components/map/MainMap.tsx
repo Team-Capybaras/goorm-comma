@@ -8,7 +8,6 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
-import { getParkDetail } from '@/shared/libs/parkApi'
 
 interface Props {
   data: ParkItem[]
@@ -21,40 +20,18 @@ export default function MainMap({ data, center }: Props) {
   const [isLocLoading, setIsLocLoading] = useState(false)
   const [selectedPark, setSelectedPark] = useState<ParkItem | null>(null)
 
-  useEffect(() => {
-    if (selectedPark && selectedPark.isDetail === false) {
-      const fetchDetail = async () => {
-        try {
-          const detailData = await getParkDetail(
-            selectedPark.areaCode,
-            selectedPark.lat,
-            selectedPark.lng
-          )
-          setSelectedPark(detailData)
-        } catch (error) {
-          console.error('상세 정보 로딩 실패:', error)
-        }
-      }
-      fetchDetail()
-    }
-  }, [selectedPark])
+  const [zoomLevel, setZoomLevel] = useState(7)
 
   const handleCurrentLocation = () => {
-    if (!map) return // 지도가 로드되지 않았으면 중단
-
-    setIsLocLoading(true) // 로딩 시작
-
-    // 브라우저 내장 API로 현재 좌표 가져오기
+    if (!map) return
+    setIsLocLoading(true)
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const lat = position.coords.latitude
         const lng = position.coords.longitude
-
-        // 카카오맵 좌표 객체 생성
         const locPosition = new window.kakao.maps.LatLng(lat, lng)
-
         map.panTo(locPosition)
-        setIsLocLoading(false) // 로딩 끝
+        setIsLocLoading(false)
       },
       (err) => {
         console.error(err)
@@ -67,20 +44,33 @@ export default function MainMap({ data, center }: Props) {
     router.push(`/detail/${item.id}`)
   }
 
+  const handleMapLoad = (loadedMap: any) => {
+    setMap(loadedMap)
+    setZoomLevel(loadedMap.getLevel()) // 초기 줌 레벨 저장
+
+    window.kakao.maps.event.addListener(loadedMap, 'zoom_changed', () => {
+      const level = loadedMap.getLevel()
+      setZoomLevel(level)
+    })
+  }
+
+  const showMarkerName = zoomLevel <= 6
+
   return (
     <div className="w-full h-full relative">
       <KakaoMap<ParkItem>
         data={data}
         center={center}
-        level={7} // 구 단위가 보이는 적절한 줌 레벨
+        level={7}
         getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
         markerSize={{ width: 32, height: 32 }}
         activeMarkerSize={{ width: 48, height: 48 }}
         selectedItem={selectedPark}
         setSelectedItem={setSelectedPark}
         renderCard={(item) => <ParkMapCard item={item} />}
-        onMapLoad={(loadedMap) => setMap(loadedMap)}
+        onMapLoad={handleMapLoad}
         onCardClick={handleCardClick}
+        showLabel={showMarkerName}
       />
 
       <button
@@ -95,6 +85,7 @@ export default function MainMap({ data, center }: Props) {
           className={`object-cover scale-200 ${isLocLoading ? 'animate-spin' : ''}`}
         />
       </button>
+
       {!selectedPark && (
         <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center pointer-events-none">
           <div className="pointer-events-auto">
