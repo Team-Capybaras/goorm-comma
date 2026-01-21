@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Card } from '@/components/common/Card'
 import ParkCardCarousel from '@/app/(view)/(main)/_component/ParkCardCarousel'
-import { fetchParks } from '@/shared/libs/park-list-api'
 import { ParkInfo } from '@/shared/types/park-types'
 import { useLocationStore } from '@/store/location.store'
-
+import {api} from "@/shared/libs/axios";
 
 export default function ParkIn5km() {
   const { location, loading: locationLoading } = useLocationStore()
@@ -14,29 +13,32 @@ export default function ParkIn5km() {
   const [parks, setParks] = useState<ParkInfo[]>([])
   const [loading, setLoading] = useState(true)
 
+  const fetchData = async (
+    lat: number,
+    lng: number
+  ): Promise<ParkInfo[]> => {
+    const res = await api.get('/v1/parks/recommend', {
+      params: {
+        limit_distance: 5,
+        latitude: lat,
+        longitude: lng,
+      },
+    })
+
+    return res.data.data.parks
+  }
+
+
   useEffect(() => {
     if (!location) return
 
     setLoading(true)
 
-    // 현재 위치를 백에 전달 후 거리 기준 정렬
-    fetchParks({
-      activeOptions: [],
-      activeSort: 'distance',
-      location: {
-        lat: location.lat,
-        lng: location.lng,
-      },
-    })
-      .then((res) => {
-        // 5km 이내 공원만 표시
-        const parksIn5km = res.parks.filter(
-          (park) => park.distance <= 5
-        )
-        setParks(parksIn5km)
-      })
+    fetchData(location.lat, location.lng)
+      .then(setParks)
       .catch((err) => {
         console.error('공원 조회 실패', err)
+        setParks([])
       })
       .finally(() => {
         setLoading(false)

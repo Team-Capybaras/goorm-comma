@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import AlternativeParkClient from "@/app/(view)/detail/_components/AlternativeParkClient";
 import EmblaCarousel from "@/components/common/EmblaCarousel";
@@ -5,30 +7,57 @@ import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
 import ErrorComponent from "@/components/ui/ErrorComponent";
+import {useLocationStore} from "@/store/location.store";
+import {useEffect, useState} from "react";
+import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
 
 interface AlternativeParkDashboardProps {
   areaCode: string;
 }
 
-export default async function AlternativeParkDashboard({areaCode}: AlternativeParkDashboardProps) {
-  let data: ParkInfo[] = []
-  let error: boolean = false
+export default function AlternativeParkDashboard({areaCode}: AlternativeParkDashboardProps) {
+  const { location, loading: locationLoading } = useLocationStore()
 
-  try {
-    const res =await api.get(`/v1/parks/low-congestion`, {
+  const [data, setData] = useState<ParkInfo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  const fetchData = async (
+    lat: number,
+    lng: number
+  ): Promise<ParkInfo[]> => {
+    const res = await api.get('/v1/parks/recommend', {
       params: {
-        cursor: areaCode,
-        size: 10,
-        longitude: 127.069903,
-        latitude: 37.529546
-      }
+        base_area_code: areaCode,
+        latitude: lat,
+        longitude: lng,
+      },
     })
 
-    data = Array.isArray(res.data.data.parks) ? res.data.data.parks : []
-    console.log(res)
-  } catch (err) {
-    console.error(err)
-    error = true
+    return res.data.data.parks
+  }
+
+  useEffect(() => {
+    if (!location) return
+
+    setLoading(true)
+
+    fetchData(location.lat, location.lng)
+      .then(setData)
+      .catch((err) => {
+        console.error('공원 조회 실패', err)
+        setError(true)
+        setData([])
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [location])
+
+  if(loading) {
+    return (
+      <AlternativeSkeleton />
+    )
   }
 
   if (error || data.length === 0) {
