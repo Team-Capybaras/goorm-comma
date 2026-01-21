@@ -12,8 +12,8 @@ export default function ParkSortFilterModal({
   setActiveSort
   }: ParkSortFilterModalProps) {
   const sortMap = {
-    distance: data === 'distance',
-    congestion: data === 'congestion',
+    distance: data === 'BY_DISTANCE',
+    congestion: data === 'LOW_CONGESTION',
   } as const
 
   const { distance: isDistance, congestion: isCongestion } = sortMap
@@ -29,14 +29,14 @@ export default function ParkSortFilterModal({
       </div>
       <ul className="mt s-6">
         <li className="py s-4">
-          <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('distance')}>
+          <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('BY_DISTANCE')}>
             <p className={`text-body-1-m ${isDistance && 'text-primary'}`}>가까운 순</p>
             {isDistance && <img src="/images/icons/check.svg" alt="선택"/>}
           </button>
 
         </li>
         <li className="py s-4">
-          <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('congestion')}>
+          <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('LOW_CONGESTION')}>
             <p className={`text-body-1-m ${isCongestion && 'text-primary'}`}>한적한 순</p>
             {isCongestion && <img src="/images/icons/check.svg" alt="선택"/>}
           </button>
