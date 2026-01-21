@@ -9,7 +9,7 @@ import groom.backend.application.avoidance.model.spec.adjust.ExternalFactorAdjus
 import groom.backend.application.avoidance.model.spec.baseline.BaselineEstimator;
 import groom.backend.application.avoidance.model.spec.post.PostProcessor;
 import groom.backend.application.avoidance.model.spec.uncertainty.UncertaintyModel;
-import groom.backend.application.avoidance.model.spec.weather.WeatherProvider;
+import groom.backend.application.avoidance.model.spec.provider.WeatherProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

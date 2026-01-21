@@ -1,4 +1,4 @@
-package groom.backend.application.avoidance.model.spec.weather;
+package groom.backend.application.avoidance.model.spec.provider;
 
 import groom.backend.application.avoidance.model.context.WeatherContext;
 import groom.backend.domain.avoidance.enums.Weekday;
