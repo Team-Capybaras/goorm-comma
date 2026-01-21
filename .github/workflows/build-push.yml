@@ -22,7 +22,6 @@ jobs:
       - name: Create .en
 
         run: |
-          mkdir -p backend/src/main/resources
           echo "${{ secrets.FE_APPLICATION_SECRET }}" > frontend/.env
         shell: bash
 
