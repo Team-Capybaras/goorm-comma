@@ -1,9 +1,11 @@
-import Image from "next/image";
+'use client'
+
 import {AIR_INDEX_COLOR_MAP, getAirIndexGrade} from "@/shared/utils/air-helpers";
 import {api} from "@/shared/libs/axios";
 import {formatDateTimePad} from "@/shared/utils/time-format";
-import {ParkInfo} from "@/shared/types/park-types";
 import ErrorComponent from "@/components/ui/ErrorComponent";
+import {useEffect, useState} from "react";
+import EnvironmentSkeleton from "@/app/(view)/detail/_status/EnvironmentSkeleton";
 
 interface Props {
   areaCode: string;
@@ -19,36 +21,51 @@ interface EnvironmentTypes {
   humidity: number;
 }
 
-export default async function EnvironmentDashboard({areaCode}: Props) {
-  let data: EnvironmentTypes | null = null
-  let error: boolean = false
+export default function EnvironmentDashboard({areaCode}: Props) {
+  const [data, setData] = useState<EnvironmentTypes | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  try {
-    const res = await api.get(`/v1/weather/current`, {
-      params: {
-        area_code : areaCode
+  useEffect(() => {
+    if (!areaCode) return
+
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        const res = await api.get(`/v1/weather/current`, {
+          params: { area_code: areaCode },
+        })
+        setData(res.data.data)
+      } catch (err) {
+        console.error(err)
+        setError(true)
+      } finally {
+        setLoading(false)
       }
-    })
+    }
 
-    data = res.data.data
-  } catch (err) {
-    console.error(err)
-    error = true
-  }
+    fetchData()
+  }, [areaCode])
 
-  const grade = getAirIndexGrade(data?.airIndexLevel)
-
-  if (error || !data) {
+  if (loading) {
     return (
-      <>
-        <div className="mt s-6">
-          <h3 className="text-body-1-sb">날씨</h3>
-          <ErrorComponent className={"mt s-4"}/>
-        </div>
-      </>
+      <div className="mt s-6">
+        <h3 className="text-body-1-sb">날씨</h3>
+        <EnvironmentSkeleton />
+      </div>
     )
   }
 
+  if (error || !data) {
+    return (
+      <div className="mt s-6">
+        <h3 className="text-body-1-sb">날씨</h3>
+        <ErrorComponent className="mt s-4" />
+      </div>
+    )
+  }
+
+  const grade = getAirIndexGrade(data.airIndexLevel)
 
   return (
     <>

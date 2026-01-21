@@ -25,7 +25,7 @@ interface ParkLocationProps {
 
 export default function ParkListContent({location} : ParkLocationProps) {
   const [activeOptions, setActiveOptions] = useState<string[]>([])
-  const [activeSort, setActiveSort] = useState<string>("distance")
+  const [activeSort, setActiveSort] = useState<string>("BY_DISTANCE")
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const SKELETON_COUNT = 3
 
@@ -58,6 +58,8 @@ export default function ParkListContent({location} : ParkLocationProps) {
       lastPage.hasNext ? lastPage.nextCursor : undefined,
     initialPageParam: null,
   })
+
+  const totalCount:number = data?.pages?.[0]?.totalCount ?? 0
 
   const parks: ParkInfo[] =
     data?.pages.flatMap((page) => page.parks) ?? []
@@ -109,7 +111,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
       {parks.length > 0 ? (
         <div className="px s-5">
           <p className="mt s-4">
-            <span className="text-body-2-sb">총 {parks.length}개</span>
+            <span className="text-body-2-sb">총 {totalCount}개</span>
             <span className="text-body-2-m text-sub-bright">의 공원</span>
           </p>
 

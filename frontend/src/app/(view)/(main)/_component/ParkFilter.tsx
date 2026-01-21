@@ -54,7 +54,7 @@ export default function ParkFilter ({
         rightIcon={<img src="/images/icons/arrow/down.svg" width={16} alt={"아이콘"}/>}
       >
         <p className="text-body-2-m text-center pl-1">
-          {activeSort === 'distance' ? '가까운 순' : '한적한 순'}
+          {activeSort === 'BY_DISTANCE' ? '가까운 순' : '한적한 순'}
         </p>
       </Button>
       <div className="flex-1 min-w-0">

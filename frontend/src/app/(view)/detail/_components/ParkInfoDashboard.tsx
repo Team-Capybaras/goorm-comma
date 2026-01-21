@@ -13,8 +13,7 @@ const PARK_IMAGE_MAP: Record<ParkType, string> = {
   NEARBY: '/images/icons/marker-small.svg',
 }
 
-export default async function ParkInfoDashboard({data}: ParkInfoProps) {
-
+export default function ParkInfoDashboard({data}: ParkInfoProps) {
   return (
     <div className="px s-5">
       {/* 공원 이름 및 거리 */}
