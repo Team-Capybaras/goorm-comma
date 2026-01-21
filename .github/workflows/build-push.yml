@@ -19,8 +19,7 @@ jobs:
           echo "${{ secrets.BE_APPLICATION_SECRET }}" > backend/src/main/resources/application-secret.yml
         shell: bash
 
-      - name: Create .en
-
+      - name: Create .env
         run: |
           echo "${{ secrets.FE_APPLICATION_SECRET }}" > frontend/.env
         shell: bash
