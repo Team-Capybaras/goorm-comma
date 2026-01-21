@@ -43,6 +43,19 @@ server:
     context-path: /api
   address: 0.0.0.0
 
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    groom.backend: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+    max-size: 10MB
+    max-history: 30
+
 ## Redis 설정
 #redis:
 #  host: localhost

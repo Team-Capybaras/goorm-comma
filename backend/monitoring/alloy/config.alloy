@@ -1,0 +1,52 @@
+// Alloy 설정 파일 - Backend 로그 수집 및 Loki 전송
+
+// Docker 컨테이너 로그 파일 직접 수집 (실제 경로 지정)
+loki.source.file "docker_logs" {
+  targets = [
+    {
+      __path__ = "/var/lib/docker/containers/661e1584a6fee2fb3b67fb9565ee08ffd2e6367505755fab636f7f1878f584b2/661e1584a6fee2fb3b67fb9565ee08ffd2e6367505755fab636f7f1878f584b2-json.log",
+      job      = "backend",
+    },
+    {
+      __path__ = "/var/lib/docker/containers/b7415f697fb355f8e786b7d50a5a95a526b5f5ca8b156962a53d31727e3727f3/b7415f697fb355f8e786b7d50a5a95a526b5f5ca8b156962a53d31727e3727f3-json.log",
+      job      = "postgres",
+    },
+    {
+      __path__ = "/var/lib/docker/containers/9b5c30a7c9b68a967ebc8a75afe02b5132eaf03e621ba1ce9c368cf78a54d8e6/9b5c30a7c9b68a967ebc8a75afe02b5132eaf03e621ba1ce9c368cf78a54d8e6-json.log",
+      job      = "redis",
+    },
+    {
+      __path__ = "/var/lib/docker/containers/648730e8cf1d08ffd7996eb7529e509c09f769cb4d3c45bd732c9a64270100e0/648730e8cf1d08ffd7996eb7529e509c09f769cb4d3c45bd732c9a64270100e0-json.log",
+      job      = "frontend",
+    },
+    {
+      __path__ = "/var/lib/docker/containers/d81659e48bcde218f9543050b411941cef8ea64b300cc953f03a48b5f828e74b/d81659e48bcde218f9543050b411941cef8ea64b300cc953f03a48b5f828e74b-json.log",
+      job      = "nginx",
+    },
+  ]
+  forward_to = [loki.relabel.docker_logs.receiver]
+}
+
+// 로그 레이블 변환
+loki.relabel "docker_logs" {
+  forward_to = [loki.write.loki.receiver]
+  
+  // 컨테이너 ID 추출
+  rule {
+    source_labels = ["__path__"]
+    target_label  = "container_id"
+    regex         = "/var/lib/docker/containers/([^/]+)/.*"
+    replacement   = "$$1"
+  }
+}
+
+// Loki 전송 설정
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+  external_labels = {
+    environment = "development",
+    cluster     = "goorm-comma",
+  }
+}

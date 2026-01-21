@@ -4,6 +4,8 @@ networks:
 
 volumes:
   db_data:
+  loki_data:
+  grafana_data:
 
 services:
   db:
@@ -67,3 +69,61 @@ services:
     networks:
       - goorm
 
+  # Loki - 로그 집계 시스템
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    environment:
+      - TZ=Asia/Seoul
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/loki
+    networks:
+      - goorm
+    restart: unless-stopped
+
+  # Grafana - 로그 시각화
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - TZ=Asia/Seoul
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./backend/monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+    networks:
+      - goorm
+    restart: unless-stopped
+
+  # Alloy - 로그 수집 에이전트
+  alloy:
+    container_name: alloy
+    image: grafana/alloy:latest
+    ports:
+      - "12345:12345" # Alloy UI
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - ./backend/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    depends_on:
+      - loki
+    networks:
+      - goorm
+    restart: unless-stopped
