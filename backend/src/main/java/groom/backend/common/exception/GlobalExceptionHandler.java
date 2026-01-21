@@ -2,10 +2,14 @@ package groom.backend.common.exception;
 
 import groom.backend.common.response.ApiResponse;
 import groom.backend.common.response.StatusCodeMessage;
+
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -49,14 +53,90 @@ public class GlobalExceptionHandler {
         }
 
         ApiResponse<Void> response = ApiResponse.error(
-            code,
-            message,
-            errors
+                code,
+                message,
+                errors
         );
 
         return ResponseEntity
-            .status(code)
-            .body(response);
+                .status(code)
+                .body(response);
+    }
+
+    /**
+     * 패러미터 입력이 오지 않음
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMissingParam(
+            MissingServletRequestParameterException e
+    ) {
+        ErrorDetail error = new ErrorDetail(
+                e.getParameterName(),   // 필드명
+                null,                   // 값 자체가 없음
+                ErrorCode.MISSING_PARAMETER.getMessage(),
+                ErrorCode.MISSING_PARAMETER.getCode()
+        );
+
+        return ResponseEntity
+                .badRequest()
+                .body(ApiResponse.error(
+                        ErrorCode.MISSING_PARAMETER.getStatus(),
+                        ErrorCode.MISSING_PARAMETER.getMessage(),
+                        List.of(error)
+                ));
+    }
+
+    /**
+     * 바인딩 오류
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBindException(BindException e) {
+
+        List<ErrorDetail> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> new ErrorDetail(
+                        error.getField(),
+                        error.getRejectedValue(),
+                        error.getDefaultMessage(),
+                        "C_001"
+                ))
+                .toList();
+
+        return ResponseEntity
+                .badRequest()
+                .body(ApiResponse.error(
+                        StatusCodeMessage.INPUT_ERROR.getCode(),
+                        StatusCodeMessage.INPUT_ERROR.getMessage(),
+                        errors
+                ));
+    }
+
+    /**
+     * 비즈니스 예외 처리
+     */
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBusinessException(BusinessException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        ApiResponse<Object> response = ApiResponse.error(
+                errorCode.getStatus(),
+                errorCode.getMessage(),
+                List.of(new ErrorDetail(
+                        null,
+                        null,
+                        e.getMessage(),
+                        errorCode.getCode()
+                )),
+                e.getData()
+        );
+
+
+        return ResponseEntity
+                .status(errorCode.getStatus())
+                .body(response);
     }
 
     /**
@@ -65,18 +145,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         ApiResponse<Void> response = ApiResponse.error(
-            StatusCodeMessage.INTERNAL_SERVER_ERROR.getCode(),
-            StatusCodeMessage.INTERNAL_SERVER_ERROR.getMessage(),
-            List.of(new ErrorDetail(
-                null,
-                null,
-                e.getMessage(),
-                "S_001"
-            ))
+                StatusCodeMessage.INTERNAL_SERVER_ERROR.getCode(),
+                StatusCodeMessage.INTERNAL_SERVER_ERROR.getMessage(),
+                List.of(new ErrorDetail(
+                        null,
+                        null,
+                        e.getMessage(),
+                        "S_001"
+                ))
         );
 
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(response);
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 }

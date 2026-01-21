@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "parking", description = "편의시설 정보 조회 관리")
 @RequiredArgsConstructor
 @RequestMapping("/v1/parking")
+@Validated
 public class ParkingStatusController {
   private final ParkingStatusService parkingStatusService;
 
@@ -45,7 +48,7 @@ public class ParkingStatusController {
   })
   public ApiResponse<ParkingStatusResponse> getParkingStatus(
           @Parameter(description = "지역 코드 (AREA_CODE)", required = true, example = "POI093")
-          @RequestParam(name = "area_code") String areaCode) {
+          @RequestParam(name = "area_code") @NotBlank String areaCode) {
     ParkingStatusResponse response = parkingStatusService.getParkingStatus(areaCode);
     return ApiResponse.success(200, "편의 시설 조회 성공", response);
   }

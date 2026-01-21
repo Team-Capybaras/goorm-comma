@@ -27,15 +27,19 @@ export interface ParkItem extends BaseMapItem {
   image?: string
   forecast?: string
   tags?: string[]
+  isDetail?: boolean
 }
 
 export interface FacilityItem extends BaseMapItem {
+  id: string
   category: FacilityCategory
   address?: string
   totalSpots?: number
   availableSpots?: number
   updatedAt?: string
-
+  lat: number
+  lng: number
+  line?: string
   //디자인의 무료 뱃지 부분
   tags?: string[]
 }

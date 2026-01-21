@@ -47,6 +47,19 @@ public class GetAllParksResponse {
     )
     private Integer size;
 
+    @Schema(
+            description = "전체 공원 수",
+            example = "34"
+    )
+    private Integer totalCount;
+
+    @Schema(
+            description = "태그에 해당하는 전체 공원 수 (by-tags API 전용)",
+            example = "15",
+            nullable = true
+    )
+    private Integer count;
+
     /**
      * 공원 정보
      */
@@ -139,6 +152,13 @@ public class GetAllParksResponse {
                 nullable = true
         )
         private String recommendedVisitHour;
+
+        @Schema(
+                description = "맞춤형 대체지 추천 시 태그 유사도 기준 비교를 위해 사용되는 필드입니다. 사용하지 않아도 무관합니다.",
+                example = "1.0",
+                nullable = true
+        )
+        private Double tagSimilarity;
     }
 }
 

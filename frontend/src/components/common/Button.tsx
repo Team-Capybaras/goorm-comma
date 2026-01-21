@@ -2,19 +2,17 @@ import React, { ReactNode } from 'react'
 import cn from '@/shared/utils/cn'
 
 const baseStyle =
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+  'inline-flex items-center border border-transparent justify-center gap-2 whitespace-nowrap rounded-full text-body-2-m cursor-pointer disabled:pointer-events-none disabled:opacity-50'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
     | 'default' // 기본
+    | 'active' // 활성화
+    | 'primary' // 브랜드 버튼
     | 'destructive' // 취소 등의 버튼
-    | 'outline' // 테두리 표시
-    | 'secondary' // 올려놓았을 때
+    | 'destructive-outline' // 삭제하기 버튼용
     | 'leftIcon' // 좌측에 아이콘이 올 때
     | 'rightIcon' // 우측에 아이콘이 올 때
-    | 'ghost' // 클릭 시
-    | 'link' // 링크용
-    | 'destructive-outline' // 삭제하기 버튼용
   size?: 'default' | 'sm' | 'lg' | 'icon' // 버튼 사이즈 지정
   as?: React.ElementType
 
@@ -48,20 +46,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       // 색상 설정 값
       variant === 'default' &&
-        'bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer',
-      variant === 'destructive' &&
-        'bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer',
-      variant === 'outline' &&
-        'border border-input bg-background hover:bg-accent hover:text-accent-foreground cursor-pointer',
-      variant === 'secondary' &&
-        'bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer',
-      variant === 'ghost' && 'hover:bg-accent hover:text-accent-foreground cursor-pointer',
-      variant === 'link' && 'text-primary underline-offset-4 hover:underline cursor-pointer',
+        'border-bright',
+      variant === 'active' &&
+        'bg-positive border-1-line-positive text-positive',
+      variant === 'primary' &&
+        'bg-primary text-white',
       variant === 'destructive-outline' &&
         'border border-destructive bg-background text-destructive hover:text-black hover:bg-destructive/10 cursor-pointer',
 
       // 사이즈 설정 값
-      size === 'default' && 'h-10 px-4 py-2',
+      size === 'default' && 'px s-4 py-2 ',
       size === 'sm' && 'h-9 px-3',
       size === 'lg' && 'h-11 px-8 text-base', // lg 사이즈만 폰트 크기 확대
       size === 'icon' && 'h-10 w-10',
@@ -83,22 +77,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading ? (
-          <>
-            <div
-              className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-              role="status"
-              aria-label="loading"
-            />
-            {children}
-          </>
-        ) : (
-          <>
-            {leftIcon && <span className="shrink-0">{leftIcon}</span>}
-            {children}
-            {rightIcon && <span className="shrink-0">{rightIcon}</span>}
-          </>
-        )}
+        <>
+          {leftIcon && <span className="shrink-0">{leftIcon}</span>}
+          {children}
+          {rightIcon && <span className="shrink-0">{rightIcon}</span>}
+        </>
       </Component>
     )
   }

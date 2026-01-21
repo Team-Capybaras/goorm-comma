@@ -45,4 +45,12 @@ public interface ParkTagRepository extends JpaRepository<ParkTag, String> {
      */
     @Query("SELECT pt.areaCode FROM ParkTag pt JOIN pt.tag t WHERE t.tagName IN :tagNames GROUP BY pt.areaCode HAVING COUNT(DISTINCT t.tagName) = :tagCount ORDER BY pt.areaCode ASC")
     List<String> findAreaCodesByTagNames(@Param("tagNames") List<String> tagNames, @Param("tagCount") Long tagCount);
+
+    /**
+     * 여러 areaCode에 대해 각각의 태그 정보를 배치로 조회합니다.
+     * @param areaCodes 지역 코드 리스트
+     * @return areaCode별 태그 정보 리스트
+     */
+    @Query("SELECT pt FROM ParkTag pt JOIN FETCH pt.tag WHERE pt.areaCode IN :areaCodes")
+    List<ParkTag> findByAreaCodesWithTag(@Param("areaCodes") List<String> areaCodes);
 }

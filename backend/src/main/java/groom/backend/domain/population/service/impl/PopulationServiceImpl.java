@@ -1,5 +1,7 @@
 package groom.backend.domain.population.service.impl;
 
+import groom.backend.common.exception.BusinessException;
+import groom.backend.common.exception.ErrorCode;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.repository.ParkRepository;
 import groom.backend.domain.population.dto.response.GetPopulationResponse;
@@ -29,19 +31,24 @@ public class PopulationServiceImpl implements PopulationService {
      *
      * @param areaCode 지역 코드
      * @return 인구 정보 (실시간 현황 및 예보)
+     * @throws BusinessException 지역 정보를 찾을 수 없을 때
      */
     @Override
     @Transactional(readOnly = true)
     public GetPopulationResponse getPopulationByAreaCode(String areaCode) {
         log.info("인구 정보 조회 시작 - AREA_CODE: {}", areaCode);
 
+        // 입력값 검증
+        if (areaCode == null || areaCode.trim().isEmpty()) {
+            log.warn("지역 코드가 제공되지 않았습니다");
+            throw new BusinessException(ErrorCode.MISSING_PARAMETER, "지역 코드(areaCode)는 필수입니다");
+        }
+
         // 1. 지역 정보 조회
-        Optional<Park> parkOptional = parkRepository.findByAreaCode(areaCode);
+        Optional<Park> parkOptional = parkRepository.findByAreaCode(areaCode.trim());
         if (parkOptional.isEmpty()) {
             log.warn("지역 정보를 찾을 수 없습니다 - AREA_CODE: {}", areaCode);
-            return GetPopulationResponse.builder()
-                    .areaCode(areaCode)
-                    .build();
+            throw new BusinessException(ErrorCode.POPULATION_AREA_CODE_NOT_FOUND);
         }
 
         Park park = parkOptional.get();

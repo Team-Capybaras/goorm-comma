@@ -7,11 +7,11 @@ export default function AlternativeParkClient() {
   const [show, setShow] = useState(false)
 
   return (
-    <div>
+    <>
       <button onClick={() => setShow(!show)}>
-        <Image src={"/images/icons/info.svg"} width={18} height={18} alt={"안내"}/>
+        <img src={"/images/icons/info.svg"} width={18} height={18} alt={"안내"}/>
       </button>
-      {show && <AlternativeInfoModal />}
-    </div>
+      {show && <AlternativeInfoModal setShow={setShow} />}
+    </>
   )
 }
