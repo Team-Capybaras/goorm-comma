@@ -67,6 +67,7 @@ public class ParkingStatusServiceImpl implements ParkingStatusService {
     log.debug("주차장 정적 정보 조회 완료 - AREA_CODE: {}, COUNT: {}", areaCode, lots.size());
 
     List<Long> prkCodes = lots.stream()
+            .filter(ParkingLot::getCurrentInfoYn)
             .map(ParkingLot::getPrkCode)
             .toList();
 
@@ -86,7 +87,12 @@ public class ParkingStatusServiceImpl implements ParkingStatusService {
             ));
 
     List<ParkingLotResponse> parkingLotResponses = lots.stream()
-            .map(lot -> parkingLotMapper.toParkingLotDto(lot, statusMap.get(lot.getPrkCode())))
+            .map(lot -> {
+              if (statusMap.containsKey(lot.getPrkCode())) {
+                return parkingLotMapper.toParkingLotDto(lot, statusMap.get(lot.getPrkCode()));
+              }
+              return parkingLotMapper.toParkingLotDto(lot);
+            })
             .toList();
 
     log.info(
