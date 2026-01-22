@@ -30,7 +30,14 @@ export default function ParkInfoDashboard({data}: ParkInfoProps) {
           {data?.areaCongestLevel}
         </p>
         <div className="w-0.75 h-0.75 rounded-full mx-2 bg-deep"></div>
-        <p className="text-sub-deep text-caption-1-m mr s-3">{data?.address}</p>
+        <p className="text-sub-deep text-caption-1-m mr s-3 cursor-pointer"
+           onClick={() => {
+             if (!data?.address) return
+             navigator.clipboard.writeText(data.address)
+           }}
+        >
+          {data?.address}
+        </p>
         <ParkInfoClient data={data}/>
       </div>
 
