@@ -2,84 +2,92 @@ package groom.backend.application.avoidance.model.impl;
 
 import groom.backend.application.avoidance.dto.response.CongestionPredResult;
 import groom.backend.application.avoidance.dto.response.CongestionStatistics;
+import groom.backend.application.avoidance.model.context.PredictionFactors;
+import groom.backend.application.avoidance.model.context.WeatherContext;
 import groom.backend.application.avoidance.model.spec.CongestionPredictModel;
+import groom.backend.application.avoidance.model.spec.adjust.ExternalFactorAdjuster;
+import groom.backend.application.avoidance.model.spec.baseline.BaselineEstimator;
+import groom.backend.application.avoidance.model.spec.post.PostProcessor;
+import groom.backend.application.avoidance.model.spec.uncertainty.UncertaintyModel;
+import groom.backend.application.avoidance.model.spec.provider.WeatherProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * 각 요일별 0시부터 23시까지의 유동인구 혼잡도를
+ * 통계 기반 파이프라인을 통해 추정하는 예측 컴포넌트.
+ * 과거 혼잡도와 일기예보를 통한 강수확률을 기반으로 휴리스틱한 혼잡도를 예측한다.
+ *
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class CongestionPredictModelImpl implements CongestionPredictModel {
 
+  private final BaselineEstimator baselineEstimator;
+  private final ExternalFactorAdjuster externalFactorAdjuster;
+  private final UncertaintyModel uncertaintyModel;
+  private final PostProcessor postProcessor;
+  private final WeatherProvider weatherProvider;
+
   @Override
-  public List<CongestionPredResult> predictCongestion(
-          List<CongestionStatistics> congestionStatistics
-  ) {
+  public List<CongestionPredResult> predictCongestion(List<CongestionStatistics> congestionStatistics, String areaCode) {
 
     if (congestionStatistics == null || congestionStatistics.isEmpty()) {
       log.warn("[CongestionPredict] input statistics is empty");
-      return null;
+      return List.of();
     }
 
-    // 임시 강수 확률
-    // TODO : Weather 도메인 연동
-    // TODO : 기상청 연계 및 API 캐싱이 되어있지 않을 시 작동 로직 설계
-    int rainProbability = 60;
+    return congestionStatistics.stream()
+            .map(stat -> predictOne(stat, congestionStatistics, areaCode))
+            .toList();
+  }
 
-    log.info("[CongestionPredict] start prediction, rainProbability={}%", rainProbability);
+  private CongestionPredResult predictOne(
+          CongestionStatistics stat,
+          List<CongestionStatistics> all,
+          String areaCode
+  ) {
 
-    return congestionStatistics.stream().map(stat -> { int baseCongestion = stat.popMeanMax();
-      log.debug("[CongestionPredict] baseCongestion={}", baseCongestion);
+    PredictionFactors factors = buildFactors(stat, areaCode);
 
-      // 1. 기본 혼잡도 100%
-      double predicted = baseCongestion;
+    double baseline = baselineEstimator.estimate(stat, all);
+    double adjusted = externalFactorAdjuster.adjust(baseline, stat, factors);
+    double finalValue = uncertaintyModel.apply(adjusted, stat, factors);
 
-      // 2. 강수 확률 가중치
-      if (rainProbability > 50) {
-        int excess = rainProbability - 50;
-        double decreaseRate = excess * 0.005; // 0.5%
-        predicted = predicted * (1 - decreaseRate);
+    int predictedCongestion =
+            postProcessor.finalizeToCongestionUnit(finalValue, factors);
 
-        log.debug(
-                "[CongestionPredict] rain effect applied, excess={}, decreaseRate={}%",
-                excess,
-                decreaseRate * 100
-        );
-      }
+    log.info(
+            "[CongestionPredict] result weekday={}, hour={}, predicted={}, weatherAvailable={}",
+            stat.weekday(),
+            stat.hour(),
+            predictedCongestion,
+            factors.isWeatherAvailable()
+    );
 
-      // 3. 노이즈 (±1~5%)
-      double noiseRate = (1 + (Math.random() * 4)) / 100.0; // 0.01 ~ 0.05
-      boolean plus = Math.random() < 0.5;
+    return CongestionPredResult.builder()
+            .weekday(stat.weekday())
+            .hour(stat.hour())
+            .predCongestions(predictedCongestion)
+            .build();
+  }
 
-      predicted = plus
-              ? predicted * (1 + noiseRate)
-              : predicted * (1 - noiseRate);
+  private PredictionFactors buildFactors(CongestionStatistics stat, String areaCode) {
 
-      log.debug(
-              "[CongestionPredict] noise applied, direction={}, rate={}%",
-              plus ? "+" : "-",
-              noiseRate * 100
-      );
+    Optional<WeatherContext> weatherOpt =
+            weatherProvider.getWeather(areaCode, stat.hour(), stat.weekday());
 
-      // 4. 혼잡도 100 단위 이하 절삭
-      Integer predictedCongestion = ((int) predicted / 100) * 100;
-
-      log.info(
-              "[CongestionPredict] result weekday={}, hour={}, predicted={}",
-              stat.weekday(),
-              stat.hour(),
-              predictedCongestion
-      );
-
-      return CongestionPredResult.builder()
-              .weekday(stat.weekday())
-              .hour(stat.hour())
-              .predCongestions(predictedCongestion)
-              .build();
-    }).toList();
+    return PredictionFactors.builder()
+            .weatherAvailable(weatherOpt.isPresent())
+            .weather(weatherOpt.orElse(null))
+            .holiday(false)
+            .eventNearby(false)
+            .build();
   }
 }
 
