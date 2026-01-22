@@ -50,7 +50,7 @@ public class CongestionRecommendServiceImpl implements CongestionRecommendServic
     );
 
     List<CongestionPredResult> predResults =
-            congestionPredictModel.predictCongestion(filtered);
+            congestionPredictModel.predictCongestion(filtered, areaCode);
 
     log.debug(
             "[CongestionRecommend] prediction completed. areaCode={}, weekday={}, predCount={}",
