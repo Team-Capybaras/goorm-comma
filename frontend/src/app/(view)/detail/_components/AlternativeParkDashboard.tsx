@@ -10,6 +10,7 @@ import ErrorComponent from "@/components/ui/ErrorComponent";
 import {useLocationStore} from "@/store/location.store";
 import {useEffect, useState} from "react";
 import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
+import Link from "next/link";
 
 interface AlternativeParkDashboardProps {
   areaCode: string;
@@ -82,7 +83,7 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
         <EmblaCarousel containerClassName={'gap-x-2 mr-6'}>
           <>
             {data?.map((item, i) => (
-              <div className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`} key={i}>
+              <Link href={`/detail/${item.areaCode}`} className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`} key={i}>
                 <div className="relative w-full h-[218px]">
                   <Image
                     src={item.images[0]}
@@ -103,7 +104,7 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
                 <p className={`text-caption-1-sb ${CONGESTION_COLOR_MAP[item.areaCongestLevel]}`}>
                   {item.areaCongestLevel}
                 </p>
-              </div>
+              </Link>
             ))}
           </>
         </EmblaCarousel>
