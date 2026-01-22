@@ -79,11 +79,11 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
         <AlternativeParkClient />
       </div>
       <div className="mt s-4">
-        <EmblaCarousel containerClassName={'gap-x-3 mr-6'}>
+        <EmblaCarousel containerClassName={'gap-x-2 mr-6'}>
           <>
             {data?.map((item, i) => (
-              <div className={`flex-[0_0_40%] ${i == 0 ? 'ml s-6' : ''}`} key={i}>
-                <div className="relative w-full h-[220px]">
+              <div className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`} key={i}>
+                <div className="relative w-full h-[218px]">
                   <Image
                     src={item.images[0]}
                     alt={`park-thumbnail-${i}`}
