@@ -7,6 +7,16 @@ export type Weekday =
   | 'SAT'
   | 'SUN'
 
+export const WEEKDAYS: Weekday[] = [
+  'SUN',
+  'MON',
+  'TUE',
+  'WED',
+  'THU',
+  'FRI',
+  'SAT',
+]
+
 export interface CongestionHour {
   hour: number
   past: number

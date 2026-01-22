@@ -7,14 +7,14 @@ import {legendMarginPlugin, tooltipBubblePlugin, verticalLinePlugin} from "@/app
 import LineChart from "@/components/chart/LineChart";
 import {congestionLineOptions} from "@/app/(view)/detail/_utils/chart-option";
 import WeekdayTabs from "@/components/chart/WeekdayTabs";
-import {formatDateTimePad} from "@/shared/utils/time-format";
+import {formatDateTimePad, getWeekday} from "@/shared/utils/time-format";
 
 interface Props {
   data : CongestionType
 }
 
 export default function CongestionChart({data}: Props) {
-  const [selectedDay, setSelectedDay] = useState<Weekday>('MON')
+  const [selectedDay, setSelectedDay] = useState<Weekday>(getWeekday())
   const labels = Array.from({ length: 10 }, (_, i) => String(6 + i * 2))
 
   const dataset = congestionDatasets({
