@@ -54,7 +54,7 @@ export default function CongestionChart({data}: Props) {
         <h3 className="text-body-1-sb">혼잡도</h3>
         <p className="text-caption-3-m text-gray-300">{formatDateTimePad(data.refreshTime)} 기준</p>
       </div>
-      <div className="border-1-line-default p s-4 rounded-xl mt s-4">
+      <div className="border-1-line-blue p s-4 rounded-2xl mt s-4">
         <div>
           <LineChart
             chartKey={selectedDay}
