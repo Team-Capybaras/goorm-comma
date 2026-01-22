@@ -16,11 +16,18 @@ export function congestionDatasets({
   const currentHour = new Date().getHours()
   const currentDay: Weekday = getWeekday()
 
+  // 0시를 24시로 표기
+  const normalizeHourForChart = (hour: number) =>
+    hour === 0 ? 24 : hour
+
   const targetDay = weekdays.find(w => w.weekday === day)
   if (!targetDay) return []
 
   const hourMap = new Map(
-    targetDay.hours.map(h => [h.hour, h])
+    targetDay.hours.map(h => [
+      normalizeHourForChart(h.hour),
+      h,
+    ])
   )
 
   /* ---------- 과거 ---------- */
