@@ -13,12 +13,12 @@ import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton
 import Link from "next/link";
 
 interface AlternativeParkDashboardProps {
-  areaCode: string;
+  areaCode: string
+  lat: number
+  lng: number
 }
 
-export default function AlternativeParkDashboard({areaCode}: AlternativeParkDashboardProps) {
-  const { location, loading: locationLoading } = useLocationStore()
-
+export default function AlternativeParkDashboard({areaCode, lat, lng}: AlternativeParkDashboardProps) {
   const [data, setData] = useState<ParkInfo[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -43,7 +43,7 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
 
     setLoading(true)
 
-    fetchData(location.lat, location.lng)
+    fetchData(lat, lng)
       .then(setData)
       .catch((err) => {
         console.error('공원 조회 실패', err)
@@ -54,24 +54,6 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
         setLoading(false)
       })
   }, [location])
-
-  if(loading) {
-    return (
-      <AlternativeSkeleton />
-    )
-  }
-
-  if (error || data.length === 0) {
-    return (
-      <div className="mt s-5 pb-8">
-        <div className="flex gap s-1 relative">
-          <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
-          <AlternativeParkClient />
-        </div>
-        <ErrorComponent className={"bg-white"} />
-      </div>
-    )
-  }
 
   return (
     <div className="mt s-5 pb-8">

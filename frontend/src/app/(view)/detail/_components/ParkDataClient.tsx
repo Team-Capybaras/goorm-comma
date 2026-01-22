@@ -15,6 +15,10 @@ import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionI
 import ParkThumbnailSkeleton from "@/app/(view)/detail/_status/ParkThumbnailSkeleton";
 import ParkInfoDashboardSkeleton from "@/app/(view)/detail/_status/ParkInfoDashboardSkeleton";
 import FacilityDashboardSkeleton from "@/app/(view)/detail/_status/FacilityDashboardSkeleton";
+import Back from "@/components/common/Back";
+import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
+import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
+import AlternativeParkClient from "@/app/(view)/detail/_components/AlternativeParkClient";
 
 export default function ParkDataClient({areaCode}:{areaCode: string} ) {
   const { location } = useLocationStore()
@@ -71,6 +75,21 @@ export default function ParkDataClient({areaCode}:{areaCode: string} ) {
           }
         </div>
       </div>
+      {/* bar */}
+      <div className="bg-gray-100 w-full h-[8px]"></div>
+      {/* 대체 공원 */}
+      {loading ? <AlternativeSkeleton /> : (!error && data) ?
+        <AlternativeParkDashboard areaCode={areaCode} lat={data.latitude} lng={data.longitude}/> :
+        (
+          <div className="mt s-5 pb-8">
+            <div className="flex gap s-1 relative">
+              <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
+              <AlternativeParkClient />
+            </div>
+            <ErrorComponent className={"bg-white"} />
+          </div>
+        )
+      }
     </>
   )
 }
