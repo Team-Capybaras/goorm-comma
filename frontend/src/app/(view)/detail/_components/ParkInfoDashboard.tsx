@@ -19,7 +19,7 @@ export default function ParkInfoDashboard({data}: ParkInfoProps) {
       {/* 공원 이름 및 거리 */}
       <div className="flex items-center mb s-2">
         <p className="text-title-2-sb mr s-2-sub">{data?.areaName}</p>
-        <p className="text-sub">{data?.distance ?? 0}Km</p>
+        <p className="text-sub">{data?.distance ?? 0}km</p>
       </div>
 
       {/* 혼잡도 요약, 주소, 길찾기 */}
