@@ -25,6 +25,7 @@ public class ParkingLotMapper {
   }
 
   public ParkingLotResponse toParkingLotDto(ParkingLot lot, ParkingLotStatus latestStatus) {
+    // 현재 정보 제공 현황이 false임에도 기존 DB에서 제공할 수 있음.
     Boolean currentInfoYn = latestStatus != null && lot.getCurrentInfoYn();
 
     return ParkingLotResponse.builder()
@@ -44,6 +45,21 @@ public class ParkingLotMapper {
             .currentPrkCnt(currentInfoYn ? null : latestStatus.getCurrentPrkCnt())
 
 
+            .build();
+  }
+
+  public ParkingLotResponse toParkingLotDto(ParkingLot lot) {
+    return ParkingLotResponse.builder()
+            .prkCode(lot.getPrkCode())
+            .prkName(lot.getPrkName())
+            .prkType(lot.getPrkType())
+            .capacity(lot.getCapacity())
+            .payYn(lot.getPayYn())
+            .addr(lot.getAddr())
+            .roadAddr(lot.getRoadAddr())
+            .prkX(lot.getPrkX())
+            .prkY(lot.getPrkY())
+            .currentInfoYn(lot.getCurrentInfoYn())
             .build();
   }
 }
