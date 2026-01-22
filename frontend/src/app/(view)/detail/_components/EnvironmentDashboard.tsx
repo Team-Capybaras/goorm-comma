@@ -80,7 +80,7 @@ export default function EnvironmentDashboard({areaCode}: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <img src={"/images/icons/weather/sun.svg"} className="mr s-3" width={24} height={24} alt="해"/>
-              <p className="text-body-2-m mr s-2">{data?.precptType}</p>
+              <p className="text-body-2-m mr s-2">{data?.precptType === '없음' ? '맑음' : data?.precptType}</p>
               <div className="flex items-center">
                 <p className="text-body-2-m mr s-1">{data?.temp}</p>
                 <p className="text-caption-3-m">℃</p>
