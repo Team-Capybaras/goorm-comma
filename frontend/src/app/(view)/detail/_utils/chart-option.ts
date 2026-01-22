@@ -54,7 +54,10 @@ export const congestionLineOptions: ChartOptions<'line'> = {
         },
         color: '#D6D6D6',
         stepSize: 2,
-        callback: (value) => value,
+        callback: (value) => {
+          if (value === 24) return '24'
+          return String(value)
+        },
       },
       grid: {
         display: false,

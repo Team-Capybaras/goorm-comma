@@ -6,10 +6,7 @@ import EmblaCarousel from "@/components/common/EmblaCarousel";
 import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
-import ErrorComponent from "@/components/ui/ErrorComponent";
-import {useLocationStore} from "@/store/location.store";
 import {useEffect, useState} from "react";
-import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
 import Link from "next/link";
 
 interface AlternativeParkDashboardProps {
@@ -20,8 +17,6 @@ interface AlternativeParkDashboardProps {
 
 export default function AlternativeParkDashboard({areaCode, lat, lng}: AlternativeParkDashboardProps) {
   const [data, setData] = useState<ParkInfo[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
 
   const fetchData = async (
     lat: number,
@@ -41,17 +36,11 @@ export default function AlternativeParkDashboard({areaCode, lat, lng}: Alternati
   useEffect(() => {
     if (!location) return
 
-    setLoading(true)
-
     fetchData(lat, lng)
       .then(setData)
       .catch((err) => {
         console.error('공원 조회 실패', err)
-        setError(true)
         setData([])
-      })
-      .finally(() => {
-        setLoading(false)
       })
   }, [location])
 

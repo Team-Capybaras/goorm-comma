@@ -15,7 +15,6 @@ import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionI
 import ParkThumbnailSkeleton from "@/app/(view)/detail/_status/ParkThumbnailSkeleton";
 import ParkInfoDashboardSkeleton from "@/app/(view)/detail/_status/ParkInfoDashboardSkeleton";
 import FacilityDashboardSkeleton from "@/app/(view)/detail/_status/FacilityDashboardSkeleton";
-import Back from "@/components/common/Back";
 import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
 import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
 import AlternativeParkClient from "@/app/(view)/detail/_components/AlternativeParkClient";

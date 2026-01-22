@@ -30,7 +30,7 @@ export default function CongestionChart({data}: Props) {
     const recommendedHour = selectedData?.recommendedVisitHour
 
     const base = [legendMarginPlugin(46)]
-
+    const today = getWeekday()
 
     if (recommendedHour === undefined) return base
     if (recommendedHour < 9) return base
@@ -40,7 +40,10 @@ export default function CongestionChart({data}: Props) {
       ...base,
       tooltipBubblePlugin({
         hour: recommendedHour,
-        text: (hour) => `오늘 ${hour}시대가 가장 한적해요`,
+        text: (hour: number) =>
+          selectedDay === today
+            ? `오늘 ${hour}시대가 방문하기 좋아요.`
+            : `${hour}시대가 방문하기 좋아요.`,
       }),
       verticalLinePlugin({
         hour: recommendedHour,
