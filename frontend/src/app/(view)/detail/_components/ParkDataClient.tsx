@@ -54,7 +54,7 @@ export default function ParkDataClient({areaCode}:{areaCode: string} ) {
     <>
       {loading ? <ParkThumbnailSkeleton /> : (error || !data) ? <ErrorComponent /> : <ParkThumbnail data={data.images}/> }
       {/* 공원 종합 정보 */}
-      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
+      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-3xl">
         {loading ? <ParkInfoDashboardSkeleton />: (error || !data) ? <ParkInfoDashboardError />  : <ParkInfoDashboard data={data}/> }
         <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>
         <div className="px s-5 flex flex-col gap-xs  rounded-xl">
