@@ -75,7 +75,7 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
   return (
     <div className="mt s-5 pb-8">
       <div className="flex gap s-1 relative">
-        <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
+        <h3 className="pl s-6 text-subtitle-2-sb">지금은 이 공원이 더 여유로워요</h3>
         <AlternativeParkClient />
       </div>
       <div className="mt s-4">
