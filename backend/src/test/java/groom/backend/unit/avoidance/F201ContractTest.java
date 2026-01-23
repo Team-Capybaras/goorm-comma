@@ -4,90 +4,77 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
+import groom.backend.application.avoidance.controller.CongestionAvoidanceController;
+import groom.backend.application.avoidance.service.spec.CongestionAvoidanceService;
+import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AvoidanceController.class)
+@WebMvcTest(CongestionAvoidanceController.class)
 class F201ContractTest {
 
   @Autowired
   MockMvc mockMvc;
 
-  @MockBean
+  @MockitoBean
   CongestionAvoidanceService congestionAvoidanceService;
 
+  @MockitoBean
+  ParkStatisticsService parkStatisticsService;
+
   private static final String ENDPOINT =
-          "/api/v1/parks/{areaCode}/avoidance";
+          "/api/v1/avoidance/statistics";
 
   @Test
   @DisplayName("F201-01 요일별 혼잡도 집계 데이터가 조회 가능하다")
-  void shouldReturnWeeklyAggregation() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  void shouldReturnWeekdayAggregates() throws Exception {
+    mockMvc.perform(get(ENDPOINT)
+                    .param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.chart.weekdays").exists())
-            .andExpect(jsonPath("$.data.chart.weekdays").isArray());
+            .andExpect(jsonPath("$.data.weekdays").exists())
+            .andExpect(jsonPath("$.data.weekdays").isArray());
   }
 
   @Test
-  @DisplayName("F201-02 시간대별 혼잡도 집계 데이터가 조회 가능하다")
-  void shouldReturnHourlyAggregation() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F201-02 각 요일 항목은 요일 식별자와 통계 값을 포함한다")
+  void weekdayAggregateShouldContainRequiredFields() throws Exception {
+    mockMvc.perform(get(ENDPOINT)
+                    .param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.chart.hours").exists())
-            .andExpect(jsonPath("$.data.chart.hours").isArray());
+            .andExpect(jsonPath("$.data.weekdays[*].weekday").exists())
+            .andExpect(jsonPath("$.data.weekdays[*].hours").exists());
   }
 
   @Test
-  @DisplayName("F201-03 차트 렌더링 가능한 포맷으로 데이터가 반환된다")
-  void shouldReturnChartRenderableFormat() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F201-03 응답에는 기준 시각(refreshTime)이 포함된다")
+  void shouldContainRefreshTime() throws Exception {
+    mockMvc.perform(get(ENDPOINT)
+                    .param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.chart.weekdays[*].label").exists())
-            .andExpect(jsonPath("$.data.chart.weekdays[*].value").exists())
-            .andExpect(jsonPath("$.data.chart.hours[*].hour").exists())
-            .andExpect(jsonPath("$.data.chart.hours[*].level").exists());
+            .andExpect(jsonPath("$.data.refreshTime").exists())
+            .andExpect(jsonPath("$.data.refreshTime").isString());
   }
 
   @Test
-  @DisplayName("F201-04 데이터가 없는 경우 빈 데이터로 반환된다")
-  void shouldReturnEmptyDataWhenNoHistory() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI999"))
+  @DisplayName("F201-04 데이터가 없는 경우 요일 목록은 빈 배열로 반환된다")
+  void shouldReturnEmptyWeekdaysWhenNoStatistics() throws Exception {
+    mockMvc.perform(get(ENDPOINT)
+                    .param("area_code", "POI999"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.chart.weekdays").isArray())
-            .andExpect(jsonPath("$.data.chart.weekdays", hasSize(0)))
-            .andExpect(jsonPath("$.data.chart.hours").isArray())
-            .andExpect(jsonPath("$.data.chart.hours", hasSize(0)));
+            .andExpect(jsonPath("$.data.weekdays").isArray())
+            .andExpect(jsonPath("$.data.weekdays").isEmpty());
   }
 
   @Test
-  @DisplayName("F201-05 최적 방문 시간 안내 문구가 조건에 따라 생성된다")
-  void shouldGenerateRecommendationMessage() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F201-05 응답은 요청한 area_code를 자기 식별 정보로 포함한다")
+  void shouldEchoAreaCode() throws Exception {
+    mockMvc.perform(get(ENDPOINT)
+                    .param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.recommendation.message").exists())
-            .andExpect(jsonPath("$.data.recommendation.message",
-                    anyOf(
-                            containsString("추천"),
-                            containsString("방문")
-                    )
-            ));
+            .andExpect(jsonPath("$.data.areaCode").value("POI001"));
   }
-
-  @Test
-  @DisplayName("F201-06 예측 미구현 시 대체 문구가 명확히 반환된다")
-  void shouldReturnFallbackMessageWhenPredictionDisabled() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.prediction.enabled").isBoolean())
-            .andExpect(jsonPath("$.data.prediction.enabled").value(false))
-            .andExpect(jsonPath("$.data.recommendation.message",
-                    containsString("예측")
-            ));
-  }
-
-
 }
