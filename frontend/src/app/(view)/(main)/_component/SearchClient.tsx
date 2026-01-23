@@ -37,7 +37,7 @@ export default function SearchClient ({data}: SearchClientProps) {
             setOnfocus(e.target.value !== "")
           }}
           value={keyword}
-          placeholder="공원을 검색해보세요"
+          placeholder="공원 이름이나 지역을 검색해요"
           className="pl-15 h-12 rounded-full border-default"
         />
         {onfocus &&

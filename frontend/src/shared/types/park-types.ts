@@ -5,6 +5,7 @@ export interface ParkList {
   areaCode: string
   latitude: number
   longitude: number
+  parkAddr: string
 }
 
 export type ParkType = 'COURSE' | 'FACILITY' | 'NEARBY'
