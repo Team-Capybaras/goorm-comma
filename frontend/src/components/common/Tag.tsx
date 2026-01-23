@@ -19,7 +19,7 @@ export default function Tag({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-sm px s-3 py-[1px] text-xs leading-[19.5px] font-sb ',
+        'inline-flex items-center rounded-md px s-3 text-xs h-[24px] font-sb ',
         variantStyles[variant],
         className
       )}

@@ -60,9 +60,12 @@ export default function ParkListContent({location} : ParkLocationProps) {
   })
 
   const totalCount:number = data?.pages?.[0]?.totalCount ?? 0
+  const count:number = data?.pages?.[0]?.count ?? 0
 
   const parks: ParkInfo[] =
     data?.pages.flatMap((page) => page.parks) ?? []
+
+  console.log(data)
 
   // 무한스크롤 observer
   useEffect(() => {
@@ -88,15 +91,13 @@ export default function ParkListContent({location} : ParkLocationProps) {
   return (
     <div className="mt-[10px]">
       {/* filter */}
-      <div className="pl s-5">
-        <ParkFilter
-          parks={parks}
-          activeSort={activeSort}
-          setActiveSort={setActiveSort}
-          activeOptions={activeOptions}
-          setActiveOptions={setActiveOptions}
-        />
-      </div>
+      <ParkFilter
+        parks={parks}
+        activeSort={activeSort}
+        setActiveSort={setActiveSort}
+        activeOptions={activeOptions}
+        setActiveOptions={setActiveOptions}
+      />
 
       {/* 초기 로딩 Skeleton */}
       {isFetching && parks.length === 0 && (
@@ -111,7 +112,7 @@ export default function ParkListContent({location} : ParkLocationProps) {
       {parks.length > 0 ? (
         <div className="px s-5">
           <p className="mt s-4">
-            <span className="text-body-2-sb">총 {totalCount}개</span>
+            <span className="text-body-2-sb">총 {activeOptions.length !== 0 ? count : totalCount}개</span>
             <span className="text-body-2-m text-sub-bright">의 공원</span>
           </p>
 
