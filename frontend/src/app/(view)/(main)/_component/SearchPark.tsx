@@ -15,7 +15,7 @@ export default async function SearchPark() {
     <>
       <div className="flex flex-col gap-3 relative">
         <p className="text-title-1-b">
-          어디서 쉬고 싶으세요?
+          쉬기 좋은 공원을 찾아볼까요?
         </p>
         <SearchClient data={data}/>
       </div>

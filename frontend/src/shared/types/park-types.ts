@@ -5,6 +5,7 @@ export interface ParkList {
   areaCode: string
   latitude: number
   longitude: number
+  parkAddr: string
 }
 
 export type ParkType = 'COURSE' | 'FACILITY' | 'NEARBY'
@@ -20,6 +21,7 @@ export interface ParkListWithPage {
   size: number
   parks: ParkInfo[]
   totalCount: number
+  count: number
 }
 
 export interface ParkInfo {

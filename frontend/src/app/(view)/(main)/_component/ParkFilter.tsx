@@ -41,30 +41,30 @@ export default function ParkFilter ({
 
   return (
     <div className="flex gap s-2">
-      <Button
-        variant={activeOptions.length > 0 ? "active" : "default"}
-        onClick={() => setShowFilterModal(true)}
-        className="shrink-0">
-        <img src="/images/icons/slider.svg" width={22} alt={"아이콘"}/>
-      </Button>
-
-      <Button
-        className="shrink-0"
-        onClick={() => setShowSortModal(true)}
-        rightIcon={<img src="/images/icons/arrow/down.svg" width={16} alt={"아이콘"}/>}
-      >
-        <p className="text-body-2-m text-center pl-1">
-          {activeSort === 'BY_DISTANCE' ? '가까운 순' : '한적한 순'}
-        </p>
-      </Button>
       <div className="flex-1 min-w-0">
         <EmblaCarousel
           options={OPTIONS}
           containerClassName="gap s-2"
           viewportClassName="flex-1"
         >
-          {filterOptions.map(option => (
-            <div key={option} className="shrink-0">
+          <Button
+            variant={activeOptions.length > 0 ? "active" : "default"}
+            onClick={() => setShowFilterModal(true)}
+            className="shrink-0 ml s-5">
+            <img src="/images/icons/slider.svg" width={22} alt={"아이콘"}/>
+          </Button>
+
+          <Button
+            className="shrink-0"
+            onClick={() => setShowSortModal(true)}
+            rightIcon={<img src="/images/icons/arrow/down.svg" width={16} alt={"아이콘"}/>}
+          >
+            <p className="text-body-2-m text-center pl-1">
+              {activeSort === 'BY_DISTANCE' ? '가까운 순' : '한적한 순'}
+            </p>
+          </Button>
+          {filterOptions.map((option, i) => (
+            <div key={option} className={`shrink-0 ${i=== filterOptions.length - 1 ? 'mr s-5' : ''}`}>
               <Button variant={activeOptions.includes(option) ? 'active' : 'default'}
                       onClick={() => toggleOption(option)}>
                 <span className="text-body-2-m">{option}</span>

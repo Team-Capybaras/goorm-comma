@@ -8,14 +8,14 @@ const navItems = [
   {
     href: '/',
     label: '홈',
-    iconOn: '/images/icons/home/Vector.svg',
-    iconOff: '/images/icons/home/line.svg',
+    iconOn: '/images/icons/home/home-icon-fill.svg',
+    iconOff: '/images/icons/home/home-icon.svg',
   },
   {
     href: '/map',
     label: '지도',
-    iconOn: '/images/icons/map/Vector.svg',
-    iconOff: '/images/icons/map/line.svg',
+    iconOn: '/images/icons/map/map-icon-fill.svg',
+    iconOff: '/images/icons/map/map-icon.svg',
   },
 ]
 
@@ -33,15 +33,20 @@ export default function FloatingBar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex-1 h-[40px] flex items-center justify-center gap-1.5 rounded-full transition-all duration-200 ${isActive ? 'bg-positive-pale text-primary font-semibold' : 'bg-transparent text-sub font-medium hover:bg-gray-50'}`}
+              className={`
+                flex-1 h-[40px] flex items-center justify-center gap-1.5 
+                rounded-full transition-all duration-200 
+                ${isActive ? 'bg-positive text-primary font-semibold' : 
+                'bg-transparent text-sub font-medium hover:bg-gray-50'}
+              `}
             >
               <div className="relative w-5 h-5">
-                <Image
+                <img
                   src={isActive ? item.iconOn : item.iconOff}
                   alt={item.label}
-                  fill
+                  width={20}
+                  height={20}
                   className="object-contain"
-                  priority
                 />
               </div>
               <span className="text-[16px] leading-none pt-[1px]">{item.label}</span>
