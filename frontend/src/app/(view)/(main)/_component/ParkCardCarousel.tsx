@@ -53,7 +53,7 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
               {/* 혼잡도 */}
               <Card
                 className={cn(
-                  'border-none px-2 py-0.5 rounded-8 font-2xs font-semibold',
+                  'border-none flex items-center justify-center px-[8px] h-[26px] rounded-8 font-2xs font-semibold',
                   CONGESTION_COLOR_MAP[park.areaCongestLevel],
                   CONGESTION_BG_COLOR_MAP[park.areaCongestLevel],
                 )}
@@ -63,14 +63,14 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
             </div>
             <div className="flex items-end gap-2 my-1">
               {/* 공원 이름 */}
-              <span className="text-title-2-sb">
+              <p className="text-title-2-sb">
                 {park.areaName}
-              </span>
+              </p>
 
               {/* 현재 위치에서 거리 */}
-              <span className="text-body-2-m">
+              <p className="text-body-2-m mb-[2px]">
                 {park.distance}km
-              </span>
+              </p>
             </div>
 
             {/* 태그 */}
