@@ -1,4 +1,4 @@
-package groom.backend.unit.park.list;
+package groom.backend.intergration;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
