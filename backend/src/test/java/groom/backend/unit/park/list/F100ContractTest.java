@@ -57,7 +57,7 @@ class F100ContractTest {
             )
     ).willReturn(sampleResponse(null));
 
-    mockMvc.perform(get("/api/v1/parks"))
+    mockMvc.perform(get("/v1/parks"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.parks").isArray());
   }
@@ -69,9 +69,9 @@ class F100ContractTest {
             null, null, ParkSortType.DEFAULT, null, null, null
     )).willReturn(sampleResponse(null));
 
-    mockMvc.perform(get("/api/v1/parks"))
-            .andExpect(jsonPath("$.data.parks[*].areaName").exists())
-            .andExpect(jsonPath("$.data.parks[*].areaName").isNotEmpty());
+    mockMvc.perform(get("/v1/parks"))
+            .andExpect(jsonPath("$.data.parks[0].areaName").exists())
+            .andExpect(jsonPath("$.data.parks[0].areaName").isNotEmpty());
   }
 
   @Test
@@ -81,9 +81,9 @@ class F100ContractTest {
             null, null, ParkSortType.DEFAULT, null, null, null
     )).willReturn(sampleResponse(null));
 
-    mockMvc.perform(get("/api/v1/parks"))
-            .andExpect(jsonPath("$.data.parks[*].images").exists())
-            .andExpect(jsonPath("$.data.parks[*].images").isArray());
+    mockMvc.perform(get("/v1/parks"))
+            .andExpect(jsonPath("$.data.parks[0].images").exists())
+            .andExpect(jsonPath("$.data.parks[0].images").isArray());
   }
 
   @Test
@@ -93,8 +93,8 @@ class F100ContractTest {
             null, null, ParkSortType.DEFAULT, null, null, null
     )).willReturn(sampleResponse(null));
 
-    mockMvc.perform(get("/api/v1/parks"))
-            .andExpect(jsonPath("$.data.parks[*].areaCongestLevel").exists());
+    mockMvc.perform(get("/v1/parks"))
+            .andExpect(jsonPath("$.data.parks[0].areaCongestLevel").exists());
   }
 
   @Test
@@ -105,13 +105,13 @@ class F100ContractTest {
     )).willReturn(sampleResponse(2.5));
 
     mockMvc.perform(
-                    get("/api/v1/parks")
+                    get("/v1/parks")
                             .param("sort", "BY_DISTANCE")
                             .param("longitude", "127.0")
                             .param("latitude", "37.0")
             )
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.parks[*].distance").isNumber());
+            .andExpect(jsonPath("$.data.parks[0].distance").isNumber());
   }
 
   @Test
@@ -121,7 +121,7 @@ class F100ContractTest {
             null, null, ParkSortType.DEFAULT, null, null, null
     )).willReturn(sampleResponse(null));
 
-    mockMvc.perform(get("/api/v1/parks"))
-            .andExpect(jsonPath("$.data.parks[*].distance").value(org.hamcrest.Matchers.everyItem(org.hamcrest.Matchers.nullValue())));
+    mockMvc.perform(get("/v1/parks"))
+            .andExpect(jsonPath("$.data.parks[0].distance").value(org.hamcrest.Matchers.nullValue()));
   }
 }
