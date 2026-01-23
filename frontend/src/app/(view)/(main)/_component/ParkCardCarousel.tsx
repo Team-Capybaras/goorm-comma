@@ -6,6 +6,7 @@ import EmblaCarousel from '@/components/common/EmblaCarousel'
 import cn from '@/shared/utils/cn'
 import { ParkInfo } from '@/shared/types/park-types'
 import { CONGESTION_COLOR_MAP, CONGESTION_BG_COLOR_MAP } from '@/shared/utils/congestion-helper'
+import Link from "next/link";
 
 interface ParkCardCarouselProps {
   data: ParkInfo[]
@@ -17,8 +18,9 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
       {/* ParkInfo를 API에서 불러올 데이터로 셋 */}
       {data.map((park,i) => (
         // key 값에 따른 공원 정보 생성
-        <div
+        <Link
           key={park.areaName}
+          href={`/detail/${park.areaCode}`}
           className={`relative mx-1 flex-[0_0_80%] rounded-8 overflow-hidden ${(i ===0) && 'ml-5'}`}
           style={{ height: 362 }}
         >
@@ -80,7 +82,7 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
               ))}
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </EmblaCarousel>
   )
