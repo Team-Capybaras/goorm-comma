@@ -46,7 +46,7 @@ const getWeatherIconStatus = (msg: string | null) => {
   const message = msg || ''
   if (message.includes('눈') && !message.includes('없')) return '눈'
   if (message.includes('비') && !message.includes('없')) return '비'
-  return '맑음'
+  return '비'
 }
 
 export const getParkList = async (lat: number, lng: number): Promise<ParkItem[]> => {
@@ -80,7 +80,7 @@ export const getParkList = async (lat: number, lng: number): Promise<ParkItem[]>
 
       weather: {
         iconStatus: iconStatus,
-        text: `${park.temp}℃`,
+        text: park.precptMsg,
       },
       airQuality: park.airIndex || '-',
       image: park.images?.[0] || '',
@@ -133,7 +133,7 @@ export const getParkDetail = async (
       distance: `${info.distance}km`,
       weather: {
         iconStatus: iconStatus,
-        text: `${info.temp}℃`,
+        text: info.precptMsg || '',
       },
       airQuality: info.airIndex || '-',
       image: info.images?.[0] || '',
