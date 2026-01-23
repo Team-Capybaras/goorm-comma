@@ -32,7 +32,7 @@ export default function ParkFilterModal({
     if (parks.length === 0) {
       showToast("조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요.", 'default', 2000)
     }
-  }, [parks, showToast])
+  }, [parks])
 
   const applyFilter = () => {
     setActiveOptions(selected)
