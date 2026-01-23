@@ -63,8 +63,8 @@ export default function MainMap({ data, center }: Props) {
         center={center}
         level={7}
         getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
-        markerSize={{ width: 32, height: 32 }}
-        activeMarkerSize={{ width: 48, height: 48 }}
+        markerSize={{ width: 48, height: 48 }}
+        activeMarkerSize={{ width: 64, height: 64 }}
         selectedItem={selectedPark}
         setSelectedItem={setSelectedPark}
         renderCard={(item) => <ParkMapCard item={item} />}
