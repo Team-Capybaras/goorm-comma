@@ -1,5 +1,6 @@
 import {ChartDataset, ChartType, ScriptableContext, ScriptableLineSegmentContext} from 'chart.js'
-import {CongestionWeekday} from "@/shared/types/chart-types";
+import {CongestionWeekday, Weekday, WEEKDAYS} from "@/shared/types/chart-types";
+import {getWeekday} from "@/shared/utils/time-format";
 
 type BuildCongestionDatasetsParams = {
   day: string
@@ -12,14 +13,21 @@ export function congestionDatasets({
     weekdays,
     labels,
   }: BuildCongestionDatasetsParams) {
-
   const currentHour = new Date().getHours()
+  const currentDay: Weekday = getWeekday()
+
+  // 0시를 24시로 표기
+  const normalizeHourForChart = (hour: number) =>
+    hour === 0 ? 24 : hour
 
   const targetDay = weekdays.find(w => w.weekday === day)
   if (!targetDay) return []
 
   const hourMap = new Map(
-    targetDay.hours.map(h => [h.hour, h])
+    targetDay.hours.map(h => [
+      normalizeHourForChart(h.hour),
+      h,
+    ])
   )
 
   /* ---------- 과거 ---------- */
@@ -37,7 +45,7 @@ export function congestionDatasets({
     const data = hourMap.get(hour)
 
     if (!data) return { x: hour, y: null }
-    if (hour <= currentHour) return { x: hour, y: data.now ?? 0 }
+    if (hour <= currentHour && day === currentDay) return { x: hour, y: data.now ?? 0 }
     return { x: hour, y: data.future }
   })
 
@@ -81,7 +89,7 @@ export function congestionDatasets({
       segment: {
         borderDash: (ctx: ScriptableLineSegmentContext) =>
           Number(labels[ctx.p0DataIndex]) >= currentHour
-            ? [6, 4]
+            ? [3, 3]
             : undefined,
         backgroundColor: (ctx: ScriptableLineSegmentContext) =>
           Number(labels[ctx.p0DataIndex]) >= currentHour
@@ -94,7 +102,7 @@ export function congestionDatasets({
       data: [],
       order:2,
       borderColor: '#5F98FE',
-      borderDash: [6, 4],
+      borderDash: [1.5, 1.5],
       borderWidth: 1,
       pointRadius: 0,
     },

@@ -15,6 +15,9 @@ import CongestionInfoDashboard from "@/app/(view)/detail/_components/CongestionI
 import ParkThumbnailSkeleton from "@/app/(view)/detail/_status/ParkThumbnailSkeleton";
 import ParkInfoDashboardSkeleton from "@/app/(view)/detail/_status/ParkInfoDashboardSkeleton";
 import FacilityDashboardSkeleton from "@/app/(view)/detail/_status/FacilityDashboardSkeleton";
+import AlternativeParkDashboard from "@/app/(view)/detail/_components/AlternativeParkDashboard";
+import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
+import AlternativeParkClient from "@/app/(view)/detail/_components/AlternativeParkClient";
 
 export default function ParkDataClient({areaCode}:{areaCode: string} ) {
   const { location } = useLocationStore()
@@ -54,7 +57,7 @@ export default function ParkDataClient({areaCode}:{areaCode: string} ) {
     <>
       {loading ? <ParkThumbnailSkeleton /> : (error || !data) ? <ErrorComponent /> : <ParkThumbnail data={data.images}/> }
       {/* 공원 종합 정보 */}
-      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-xl">
+      <div className="relative before:content-[''] before:w-full before:h-[32px] before:absolute before:top-[-32px] before:bg-white before:rounded-t-3xl">
         {loading ? <ParkInfoDashboardSkeleton />: (error || !data) ? <ParkInfoDashboardError />  : <ParkInfoDashboard data={data}/> }
         <div className="bg-gray-100 w-full h-[1px] mt s-6"></div>
         <div className="px s-5 flex flex-col gap-xs  rounded-xl">
@@ -71,6 +74,21 @@ export default function ParkDataClient({areaCode}:{areaCode: string} ) {
           }
         </div>
       </div>
+      {/* bar */}
+      <div className="bg-gray-100 w-full h-[8px]"></div>
+      {/* 대체 공원 */}
+      {loading ? <AlternativeSkeleton /> : (!error && data) ?
+        <AlternativeParkDashboard areaCode={areaCode} lat={data.latitude} lng={data.longitude}/> :
+        (
+          <div className="mt s-5 pb-8">
+            <div className="flex gap s-1 relative">
+              <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
+              <AlternativeParkClient />
+            </div>
+            <ErrorComponent className={"bg-white"} />
+          </div>
+        )
+      }
     </>
   )
 }
