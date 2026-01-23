@@ -1,7 +1,9 @@
 package groom.backend.unit.park.recommend;
 
+import groom.backend.application.park.dto.response.GetAllParksResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -10,7 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import groom.backend.application.park.controller.ParkRecommendController;
 import groom.backend.application.park.service.spec.ParkRecommendService;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,11 +29,61 @@ class F202ContractTest {
   @MockitoBean
   ParkRecommendService parkRecommendService;
 
-  private static final String ENDPOINT = "/api/v1/parks/recommend";
+  private static final String ENDPOINT = "/v1/parks/recommend";
+
+  private GetAllParksResponse sampleRecommendationResponse() {
+    return GetAllParksResponse.builder()
+            .parks(List.of(
+                    GetAllParksResponse.ParkInfo.builder()
+                            .areaCode("POI101")
+                            .areaName("여의도한강공원")
+                            .longitude(126.934889)
+                            .latitude(37.528411)
+                            .areaCongestLevel("여유")
+                            .distance(2.4)
+                            .images(List.of("https://example.com/park1.jpg"))
+                            .build(),
+                    GetAllParksResponse.ParkInfo.builder()
+                            .areaCode("POI102")
+                            .areaName("망원한강공원")
+                            .longitude(126.902200)
+                            .latitude(37.554200)
+                            .areaCongestLevel("보통")
+                            .distance(4.7)
+                            .images(List.of("https://example.com/park2.jpg"))
+                            .build()
+            ))
+            .nextCursor(null)
+            .hasNext(false)
+            .size(2)
+            .totalCount(2)
+            .count(null)
+            .build();
+  }
+
+  private GetAllParksResponse emptyRecommendationResponse() {
+    return GetAllParksResponse.builder()
+            .parks(List.of())
+            .nextCursor(null)
+            .hasNext(false)
+            .size(0)
+            .totalCount(0)
+            .count(null)
+            .build();
+  }
 
   @Test
   @DisplayName("F202-01 기준 공원이 붐빌 경우 대체지 추천 API가 정상 동작한다")
   void shouldReturnAlternativeRecommendationsByBaseArea() throws Exception {
+    BDDMockito.given(
+            parkRecommendService.recommendTop5Parks(
+                    anyDouble(),  // longitude
+                    anyDouble(),   // latitude
+                    eq("POI001")
+            )
+    ).willReturn(sampleRecommendationResponse());
+
+
     mockMvc.perform(
                     get(ENDPOINT)
                             .param("longitude", "127.0")
