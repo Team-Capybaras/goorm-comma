@@ -88,15 +88,13 @@ export default function ParkListContent({location} : ParkLocationProps) {
   return (
     <div className="mt-[10px]">
       {/* filter */}
-      <div className="pl s-5">
-        <ParkFilter
-          parks={parks}
-          activeSort={activeSort}
-          setActiveSort={setActiveSort}
-          activeOptions={activeOptions}
-          setActiveOptions={setActiveOptions}
-        />
-      </div>
+      <ParkFilter
+        parks={parks}
+        activeSort={activeSort}
+        setActiveSort={setActiveSort}
+        activeOptions={activeOptions}
+        setActiveOptions={setActiveOptions}
+      />
 
       {/* 초기 로딩 Skeleton */}
       {isFetching && parks.length === 0 && (
