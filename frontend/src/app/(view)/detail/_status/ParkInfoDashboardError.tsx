@@ -4,7 +4,7 @@ import ErrorComponent from "@/components/ui/ErrorComponent";
 export default function ParkInfoDashboardError () {
   return (
     <div className="px s-5">
-      <div className="flex items-center mb s-3">
+      <div className="flex items-center mb s-2">
         <p className="text-title-2-sb mr s-2-sub">공원 이름 정보 없음</p>
         <p className="text-sub">거리 정보 없음</p>
       </div>

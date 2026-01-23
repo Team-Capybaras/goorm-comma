@@ -80,7 +80,7 @@ export default function EnvironmentDashboard({areaCode}: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <img src={"/images/icons/weather/sun.svg"} className="mr s-3" width={24} height={24} alt="해"/>
-              <p className="text-body-2-m mr s-2">{data?.precptType}</p>
+              <p className="text-body-2-m mr s-2">{data?.precptType === '없음' ? '맑음' : data?.precptType}</p>
               <div className="flex items-center">
                 <p className="text-body-2-m mr s-1">{data?.temp}</p>
                 <p className="text-caption-3-m">℃</p>
@@ -99,7 +99,7 @@ export default function EnvironmentDashboard({areaCode}: Props) {
             </div>
           </div>
           <div className="w-full h-[1px] my-4 bg-gray-100"></div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div className="flex items-center">
               <img src={"/images/icons/weather/air.svg"} width={24} height={24} alt="대기환경지수"/>
               <p className="text-caption-1-m ml s-3">대기환경지수</p>
