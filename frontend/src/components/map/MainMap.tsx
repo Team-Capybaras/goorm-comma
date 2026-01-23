@@ -54,7 +54,7 @@ export default function MainMap({ data, center }: Props) {
     })
   }
 
-  const showMarkerName = zoomLevel <= 6
+  const showMarkerName = zoomLevel <= 7
 
   return (
     <div className="w-full h-full relative">
