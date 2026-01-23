@@ -1,20 +1,25 @@
 package groom.backend.unit.park.search;
 
 import groom.backend.application.park.controller.ParkApplicationController;
+import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.service.spec.ParkApplicationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * F104-A 공원 리스트 조회 Contract Test
- *
+ * TODO: getAllParksResponse 주소값 확인 할 것
  * - 필터/정렬 파라미터 수용 여부 검증
  * - 결과 정렬의 결정성은 Service 테스트 책임
  */
@@ -27,11 +32,66 @@ class F104ParkListContractTest {
   @MockitoBean
   ParkApplicationService parkApplicationService;
 
-  private static final String ENDPOINT = "/api/v1/parks";
+  private GetAllParksResponse sampleParkListResponse() {
+    return GetAllParksResponse.builder()
+            .parks(List.of(
+                    GetAllParksResponse.ParkInfo.builder()
+                            .areaCode("POI093")
+                            .areaName("뚝섬한강공원")
+                            .longitude(127.069903)
+                            .latitude(37.529546)
+                            .temp(null)
+                            .precptMsg(null)
+                            .airIndex(null)
+                            .areaCongestLevel("보통")
+                            .distance(2.3)   // 거리 정렬 테스트 대응
+                            .images(List.of("https://example.com/image.jpg"))
+                            .tags(List.of("한강뷰", "평지"))
+                            .recommendedVisitHour(null)
+                            .tagSimilarity(null)
+                            .build(),
+                    GetAllParksResponse.ParkInfo.builder()
+                            .areaCode("POI102")
+                            .areaName("여의도한강공원")
+                            .longitude(126.934889)
+                            .latitude(37.528411)
+                            .temp(null)
+                            .precptMsg(null)
+                            .airIndex(null)
+                            .areaCongestLevel("여유")
+                            .distance(5.1)
+                            .images(List.of("https://example.com/image2.jpg"))
+                            .tags(List.of("한강뷰"))
+                            .recommendedVisitHour(null)
+                            .tagSimilarity(null)
+                            .build()
+            ))
+            .nextCursor(null)
+            .hasNext(false)
+            .size(2)
+            .totalCount(2)
+            .count(null)
+            .build();
+  }
+
+  private static final String ENDPOINT = "/v1/parks";
 
   @Test
   @DisplayName("F104-05 혼잡도순 정렬 파라미터를 수용하여 정상 응답한다")
   void shouldAcceptCongestionSort() throws Exception {
+    // given
+    // loosely matched parameters because of search options is too much discursive? ambiguous
+    BDDMockito.given(
+            parkApplicationService.getParks(
+                    any(),        // cursor
+                    any(),        // size
+                    any(),        // sort
+                    any(),        // tagNames
+                    any(),        // longitude
+                    any()         // latitude
+            )
+    ).willReturn(sampleParkListResponse());
+
     mockMvc.perform(get(ENDPOINT)
                     .param("sort", "LOW_CONGESTION"))
             .andExpect(status().isOk())
@@ -41,6 +101,19 @@ class F104ParkListContractTest {
   @Test
   @DisplayName("F104-06 거리순 정렬 시 좌표가 주어지면 정상 응답한다")
   void shouldAcceptDistanceSortWithCoordinates() throws Exception {
+    // given
+    // loosely matched parameters because of search options is too much discursive? ambiguous
+    BDDMockito.given(
+            parkApplicationService.getParks(
+                    any(),        // cursor
+                    any(),        // size
+                    any(),        // sort
+                    any(),        // tagNames
+                    any(),        // longitude
+                    any()         // latitude
+            )
+    ).willReturn(sampleParkListResponse());
+
     mockMvc.perform(get(ENDPOINT)
                     .param("sort", "BY_DISTANCE")
                     .param("latitude", "37.5665")
@@ -52,6 +125,19 @@ class F104ParkListContractTest {
   @Test
   @DisplayName("F104-07 태그 필터 적용 시 정상 응답한다")
   void shouldAcceptTagFilter() throws Exception {
+    // given
+    // loosely matched parameters because of search options is too much discursive? ambiguous
+    BDDMockito.given(
+            parkApplicationService.getParks(
+                    any(),        // cursor
+                    any(),        // size
+                    any(),        // sort
+                    any(),        // tagNames
+                    any(),        // longitude
+                    any()         // latitude
+            )
+    ).willReturn(sampleParkListResponse());
+
     mockMvc.perform(get(ENDPOINT)
                     .param("tag_names", "한강뷰")
                     .param("tag_names", "평지"))
@@ -62,6 +148,19 @@ class F104ParkListContractTest {
   @Test
   @DisplayName("F104-08 필터 미적용 시 기본 리스트가 반환된다")
   void shouldReturnDefaultListWhenNoFilter() throws Exception {
+    // given
+    // loosely matched parameters because of search options is too much discursive? ambiguous
+    BDDMockito.given(
+            parkApplicationService.getParks(
+                    any(),        // cursor
+                    any(),        // size
+                    any(),        // sort
+                    any(),        // tagNames
+                    any(),        // longitude
+                    any()         // latitude
+            )
+    ).willReturn(sampleParkListResponse());
+
     mockMvc.perform(get(ENDPOINT))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.parks").isArray());
