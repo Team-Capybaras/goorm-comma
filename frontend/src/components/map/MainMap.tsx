@@ -8,6 +8,7 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
+import {useLocationStore} from "@/store/location.store";
 
 interface Props {
   data: ParkItem[]
@@ -19,25 +20,16 @@ export default function MainMap({ data, center }: Props) {
   const [map, setMap] = useState<any>(null)
   const [isLocLoading, setIsLocLoading] = useState(false)
   const [selectedPark, setSelectedPark] = useState<ParkItem | null>(null)
+  const { location, loading: locationLoading } = useLocationStore()
 
   const [zoomLevel, setZoomLevel] = useState(7)
 
   const handleCurrentLocation = () => {
     if (!map) return
     setIsLocLoading(true)
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
-        const locPosition = new window.kakao.maps.LatLng(lat, lng)
-        map.panTo(locPosition)
-        setIsLocLoading(false)
-      },
-      (err) => {
-        console.error(err)
-        setIsLocLoading(false)
-      }
-    )
+    const locPosition = new window.kakao.maps.LatLng(location!.lat, location!.lng)
+    map.panTo(locPosition)
+    setIsLocLoading(false)
   }
 
   const handleCardClick = (item: ParkItem) => {
