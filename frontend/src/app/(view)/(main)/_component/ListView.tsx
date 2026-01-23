@@ -10,7 +10,6 @@ export default function ListView() {
         <div className="w-full max-w-2xl bg-bright pb-3 flex flex-col gap-4">
           <div className="flex justify-between items-center px-5 pt-5">
             <MyLocationButton />
-            <span className="text-body-2-m">현재 날씨</span>
           </div>
 
           <div className="px-5">
