@@ -45,7 +45,7 @@ export default function EmblaCarousel({
         {/* dots (옵션) */}
         {showDots && dotState && (
           <div
-            className="absolute left-1/2 -translate-x-1/2 flex gap-3"
+            className="absolute left-1/2 -translate-x-1/2 flex gap-2"
             style={{ bottom: dotBottom }}
           >
             {dotState.scrollSnaps.map((_, index) => (

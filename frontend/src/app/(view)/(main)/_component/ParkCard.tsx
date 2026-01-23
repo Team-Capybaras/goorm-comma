@@ -20,7 +20,7 @@ export default function ParkCard ({data}: ParkCardProps) {
         <div className="w-full h-[325px] border-default rounded-8 bg-gray-500 overflow-hidden">
           <ParkThumbnail
             height={325}
-            dotBottom={12}
+            dotBottom={16}
             data={data.images}
           />
         </div>
