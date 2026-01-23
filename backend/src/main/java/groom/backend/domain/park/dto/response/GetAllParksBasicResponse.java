@@ -64,5 +64,11 @@ public class GetAllParksBasicResponse {
                 example = "37.529546"
         )
         private Double latitude;
+
+        @Schema(
+                description = "공원 지번 주소",
+                example = "경기 과천시 막계동"
+        )
+        private String parkAddr;
     }
 }
