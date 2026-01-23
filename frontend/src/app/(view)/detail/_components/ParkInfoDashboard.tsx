@@ -15,7 +15,7 @@ const PARK_IMAGE_MAP: Record<ParkType, string> = {
 
 export default function ParkInfoDashboard({data}: ParkInfoProps) {
   return (
-    <div className="px s-5">
+    <div className="px s-5 w-full">
       {/* 공원 이름 및 거리 */}
       <div className="flex items-center mb s-2">
         <p className="text-title-2-sb mr s-2-sub">{data?.areaName}</p>
