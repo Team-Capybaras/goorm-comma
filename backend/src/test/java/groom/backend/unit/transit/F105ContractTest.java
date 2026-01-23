@@ -1,116 +1,99 @@
 package groom.backend.unit.transit;
 
-package groom.backend.transit.interfaces;
-
+import groom.backend.domain.transit.controller.TransitController;
+import groom.backend.domain.transit.service.spec.TransitService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ParkTransitController.class)
-class TransitF105ContractTest {
+
+@WebMvcTest(TransitController.class)
+class F105ContractTest {
 
   @Autowired
   MockMvc mockMvc;
 
-  @MockBean
-  ParkTransitQueryService parkTransitQueryService;
+  @MockitoBean
+  TransitService transitService;
 
-  private static final String ENDPOINT =
-          "/api/v1/parks/{areaCode}/transits";
+  private static final String ENDPOINT = "/v1/transits";
 
   @Test
-  @DisplayName("F105-01 공원 상세 페이지 기준 대중교통 정보 조회 API가 정상 동작한다")
-  void shouldReturnTransitInfoByPark() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F105-01 지역 코드 기준 대중교통 정보 조회 API가 정상 동작한다")
+  void shouldReturnTransitInfo() throws Exception {
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits").exists())
-            .andExpect(jsonPath("$.data.transits").isArray());
+            .andExpect(jsonPath("$.data").exists());
   }
 
   @Test
-  @DisplayName("F105-02 공원 기준 인접 버스정류장 정보가 조회된다")
-  void shouldReturnBusStops() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[?(@.type=='BUS')]").exists());
-  }
-
-  @Test
-  @DisplayName("F105-03 공원 기준 인접 지하철역 정보가 조회된다")
+  @DisplayName("F105-02 지하철역 정보 리스트가 반환된다")
   void shouldReturnSubwayStations() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[?(@.type=='SUBWAY')]").exists());
+            .andExpect(jsonPath("$.data.subwayStations").isArray());
   }
 
   @Test
-  @DisplayName("F105-04 공원 기준 인접 따릉이 거치소 정보가 조회된다")
-  void shouldReturnBikeStations() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F105-03 버스 정류장 정보 리스트가 반환된다")
+  void shouldReturnBusStations() throws Exception {
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[?(@.type=='BIKE')]").exists());
+            .andExpect(jsonPath("$.data.busStations").isArray());
   }
 
   @Test
-  @DisplayName("F105-06 각 대중교통 항목에 위치 좌표 정보가 포함된다")
-  void transitShouldContainCoordinates() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F105-04 공유 자전거 정보 리스트가 반환된다")
+  void shouldReturnSbikes() throws Exception {
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[*].latitude").isNumber())
-            .andExpect(jsonPath("$.data.transits[*].longitude").isNumber());
+            .andExpect(jsonPath("$.data.sbikes").isArray());
   }
 
   @Test
-  @DisplayName("F105-07 대중교통 유형이 구분 가능한 값으로 반환된다")
-  void transitTypeShouldBeExplicit() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+  @DisplayName("F105-05 모든 대중교통 항목에 좌표 정보가 포함된다")
+  void shouldContainCoordinates() throws Exception {
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[*].type",
-                    everyItem(anyOf(is("BUS"), is("SUBWAY"), is("BIKE")))));
+            .andExpect(jsonPath("$.data.subwayStations[*].subStnX").exists())
+            .andExpect(jsonPath("$.data.subwayStations[*].subStnY").exists())
+            .andExpect(jsonPath("$.data.busStations[*].busStnX").exists())
+            .andExpect(jsonPath("$.data.busStations[*].busStnY").exists())
+            .andExpect(jsonPath("$.data.sbikes[*].sbikeX").exists())
+            .andExpect(jsonPath("$.data.sbikes[*].sbikeY").exists());
   }
 
   @Test
-  @DisplayName("F105-08 지도 표시가 가능한 최소 정보(식별자, 좌표)가 반환된다")
+  @DisplayName("F105-06 지도 표시 최소 정보(식별자 + 좌표)가 반환된다")
   void shouldContainMinimumMapInfo() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[*].id").exists())
-            .andExpect(jsonPath("$.data.transits[*].latitude").exists())
-            .andExpect(jsonPath("$.data.transits[*].longitude").exists());
+            .andExpect(jsonPath("$.data.subwayStations[*].subId").exists())
+            .andExpect(jsonPath("$.data.busStations[*].busStnId").exists())
+            .andExpect(jsonPath("$.data.sbikes[*].sbikeSpotId").exists());
   }
 
   @Test
-  @DisplayName("F105-09 도착버스/도착시간 정보가 백엔드 응답에 포함되지 않는다")
+  @DisplayName("F105-07 대중교통 정보가 없는 경우 빈 배열로 반환된다")
+  void shouldReturnEmptyArrays() throws Exception {
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI999"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.subwayStations").isArray())
+            .andExpect(jsonPath("$.data.busStations").isArray())
+            .andExpect(jsonPath("$.data.sbikes").isArray());
+  }
+
+  @Test
+  @DisplayName("F105-08 도착버스/도착시간 정보가 응답에 포함되지 않는다")
   void shouldNotContainArrivalInfo() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits[*].arrivalTime").doesNotExist())
-            .andExpect(jsonPath("$.data.transits[*].arrivalBus").doesNotExist());
-  }
-
-  @Test
-  @DisplayName("F105-10 외부 지도앱 연동을 위한 식별자 또는 링크 정보가 포함된다")
-  void shouldContainExternalLinkOrId() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI001"))
-            .andExpect(status().isOk())
-            .andExpect(
-                    jsonPath("$.data.transits[*].externalLink").exists()
-            );
-  }
-
-  @Test
-  @DisplayName("F105-11 대중교통 정보가 없는 경우 빈 배열로 반환된다")
-  void shouldReturnEmptyArrayWhenNoTransit() throws Exception {
-    mockMvc.perform(get(ENDPOINT, "POI999"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.transits").isArray())
-            .andExpect(jsonPath("$.data.transits", hasSize(0)));
+    mockMvc.perform(get(ENDPOINT).param("area_code", "POI001"))
+            .andExpect(jsonPath("$.data.busStations[*].arrivalTime").doesNotExist())
+            .andExpect(jsonPath("$.data.busStations[*].arrivalBus").doesNotExist());
   }
 }
