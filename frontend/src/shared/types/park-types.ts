@@ -20,6 +20,7 @@ export interface ParkListWithPage {
   size: number
   parks: ParkInfo[]
   totalCount: number
+  count: number
 }
 
 export interface ParkInfo {

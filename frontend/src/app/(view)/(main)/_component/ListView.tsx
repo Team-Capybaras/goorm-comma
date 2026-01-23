@@ -5,7 +5,7 @@ import MyLocationButton from './MyLocationButton'
 
 export default function ListView() {
   return (
-    <div className="bg-default">
+    <div>
       <div className="flex bg-bright justify-center mb-3">
         <div className="w-full max-w-2xl flex flex-col gap-4">
           <div className="flex justify-between items-center px-5 pt-5">

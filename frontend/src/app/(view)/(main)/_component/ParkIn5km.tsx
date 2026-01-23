@@ -49,14 +49,17 @@ export default function ParkIn5km() {
   if (locationLoading || loading || parks.length === 0) return null
 
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-subtitle-1-sb px-5">
-        지금 <span className="text-primary">한적한 5km</span> 이내 공원
-      </p>
+    <>
+      <div className="flex flex-col gap-3">
+        <p className="text-subtitle-1-sb px-5">
+          지금 <span className="text-primary">한적한 5km</span> 이내 공원
+        </p>
 
-      <Card className="w-full border-0 rounded-[0] mb s-6">
-        <ParkCardCarousel data={parks} />
-      </Card>
-    </div>
+        <Card className="w-full border-0 rounded-[0] mb s-6">
+          <ParkCardCarousel data={parks} />
+        </Card>
+      </div>
+      <div className="w-full h-[8px] bg-gray-100"></div>
+    </>
   )
 }
