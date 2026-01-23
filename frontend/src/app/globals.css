@@ -763,6 +763,7 @@
 
   body {
     font-size: var(--font-md);
+    background-color: rgb(var(--background-deep));
     line-height: calc(var(--font-md) * var(--leading-md));
     font-weight: var(--font-medium);
     color: rgb(var(--color-gray-800));
