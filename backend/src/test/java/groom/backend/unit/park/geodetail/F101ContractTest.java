@@ -1,10 +1,12 @@
 package groom.backend.unit.park.geodetail;
 
+import groom.backend.application.park.controller.ParkApplicationController;
+import groom.backend.application.park.service.spec.ParkApplicationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,14 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 계산 로직, 갱신 정책, 상세 페이지 연계는
  * 본 테스트의 책임 범위가 아니다.
  */
-@WebMvcTest(ParkMapController.class)
+@WebMvcTest(ParkApplicationController.class)
 class F101ContractTest {
 
   @Autowired
   MockMvc mockMvc;
 
-  @MockBean
-  ParkMapQueryService parkMapQueryService;
+  @MockitoBean
+  ParkApplicationService parkApplicationService;
 
   @Test
   @DisplayName("F101-01 지도용 API에서 모든 대상 공원이 좌표와 함께 반환된다")

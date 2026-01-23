@@ -1,7 +1,12 @@
 package groom.backend.unit.transit;
 
+import groom.backend.domain.transit.dto.response.GetTransitResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 정책에 대한 테스트
