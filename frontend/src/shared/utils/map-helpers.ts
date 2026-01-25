@@ -5,11 +5,11 @@ export const getWeatherIconPath = (status: string): string => {
   const s = status?.trim() || ''
 
   // API 데이터나 텍스트에 포함된 키워드로 아이콘 매칭
-  if (s.includes('맑음') || s.includes('해')) return '/images/icons/map/map-sun.svg'
-  if (s.includes('비')) return '/images/icons/map/map-rain.svg'
-  if (s.includes('눈')) return '/images/icons/map/map-snow.svg'
-  if (s.includes('구름') || s.includes('흐림')) return '/images/icons/map/map-cloud.svg'
-  if (s.includes('구름') && s.includes('해')) return '/images/icons/map/cloudsun.svg'
+  if (s.includes('맑음') || s.includes('해')) return '/images/icons/weather/sun.svg'
+  if (s.includes('비')) return '/images/icons/weather/umbrella-gray.svg'
+  if (s.includes('눈')) return '/images/icons/weather/snow.svg'
+  if (s.includes('구름') || s.includes('흐림')) return '/images/icons/weather/cloud.svg'
+  if (s.includes('구름') && s.includes('해')) return '/images/icons/weather/cloudsun.svg'
 
   // 기본값
   return '/images/icons/map/map-sun.svg'

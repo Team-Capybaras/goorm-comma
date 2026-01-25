@@ -27,6 +27,7 @@ public class ParkMapper {
                 .areaName(park.getAreaName())
                 .longitude(park.getLongitude())
                 .latitude(park.getLatitude())
+                .parkAddr(park.getParkAddr())
                 .build();
     }
 

@@ -6,21 +6,17 @@ import EmblaCarousel from "@/components/common/EmblaCarousel";
 import {CONGESTION_COLOR_MAP} from "@/shared/utils/congestion-helper";
 import {api} from "@/shared/libs/axios";
 import {ParkInfo} from "@/shared/types/park-types";
-import ErrorComponent from "@/components/ui/ErrorComponent";
-import {useLocationStore} from "@/store/location.store";
 import {useEffect, useState} from "react";
-import AlternativeSkeleton from "@/app/(view)/detail/_status/AlternativeSkeleton";
+import Link from "next/link";
 
 interface AlternativeParkDashboardProps {
-  areaCode: string;
+  areaCode: string
+  lat: number
+  lng: number
 }
 
-export default function AlternativeParkDashboard({areaCode}: AlternativeParkDashboardProps) {
-  const { location, loading: locationLoading } = useLocationStore()
-
+export default function AlternativeParkDashboard({areaCode, lat, lng}: AlternativeParkDashboardProps) {
   const [data, setData] = useState<ParkInfo[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
 
   const fetchData = async (
     lat: number,
@@ -40,50 +36,26 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
   useEffect(() => {
     if (!location) return
 
-    setLoading(true)
-
-    fetchData(location.lat, location.lng)
+    fetchData(lat, lng)
       .then(setData)
       .catch((err) => {
         console.error('공원 조회 실패', err)
-        setError(true)
         setData([])
       })
-      .finally(() => {
-        setLoading(false)
-      })
   }, [location])
-
-  if(loading) {
-    return (
-      <AlternativeSkeleton />
-    )
-  }
-
-  if (error || data.length === 0) {
-    return (
-      <div className="mt s-5 pb-8">
-        <div className="flex gap s-1 relative">
-          <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
-          <AlternativeParkClient />
-        </div>
-        <ErrorComponent className={"bg-white"} />
-      </div>
-    )
-  }
 
   return (
     <div className="mt s-5 pb-8">
       <div className="flex gap s-1 relative">
-        <h3 className="pl s-6 text-subtitle-2-sb">지금 갈만한 공원</h3>
+        <h3 className="pl s-6 text-subtitle-2-sb">지금은 이 공원이 더 여유로워요</h3>
         <AlternativeParkClient />
       </div>
       <div className="mt s-4">
-        <EmblaCarousel containerClassName={'gap-x-3 mr-6'}>
+        <EmblaCarousel containerClassName={'gap-x-2 mr-6'}>
           <>
             {data?.map((item, i) => (
-              <div className={`flex-[0_0_40%] ${i == 0 ? 'ml s-6' : ''}`} key={i}>
-                <div className="relative w-full h-[220px]">
+              <Link href={`/detail/${item.areaCode}`} className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`} key={i}>
+                <div className="relative w-full h-[218px]">
                   <Image
                     src={item.images[0]}
                     alt={`park-thumbnail-${i}`}
@@ -103,7 +75,7 @@ export default function AlternativeParkDashboard({areaCode}: AlternativeParkDash
                 <p className={`text-caption-1-sb ${CONGESTION_COLOR_MAP[item.areaCongestLevel]}`}>
                   {item.areaCongestLevel}
                 </p>
-              </div>
+              </Link>
             ))}
           </>
         </EmblaCarousel>

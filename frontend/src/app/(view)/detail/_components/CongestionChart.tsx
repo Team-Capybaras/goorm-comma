@@ -7,14 +7,14 @@ import {legendMarginPlugin, tooltipBubblePlugin, verticalLinePlugin} from "@/app
 import LineChart from "@/components/chart/LineChart";
 import {congestionLineOptions} from "@/app/(view)/detail/_utils/chart-option";
 import WeekdayTabs from "@/components/chart/WeekdayTabs";
-import {formatDateTimePad} from "@/shared/utils/time-format";
+import {formatDateTimePad, getWeekday} from "@/shared/utils/time-format";
 
 interface Props {
   data : CongestionType
 }
 
 export default function CongestionChart({data}: Props) {
-  const [selectedDay, setSelectedDay] = useState<Weekday>('MON')
+  const [selectedDay, setSelectedDay] = useState<Weekday>(getWeekday())
   const labels = Array.from({ length: 10 }, (_, i) => String(6 + i * 2))
 
   const dataset = congestionDatasets({
@@ -30,7 +30,7 @@ export default function CongestionChart({data}: Props) {
     const recommendedHour = selectedData?.recommendedVisitHour
 
     const base = [legendMarginPlugin(46)]
-
+    const today = getWeekday()
 
     if (recommendedHour === undefined) return base
     if (recommendedHour < 9) return base
@@ -40,7 +40,10 @@ export default function CongestionChart({data}: Props) {
       ...base,
       tooltipBubblePlugin({
         hour: recommendedHour,
-        text: (hour) => `오늘 ${hour}시대가 가장 한적해요`,
+        text: (hour: number) =>
+          selectedDay === today
+            ? `오늘 ${hour}시대가 방문하기 좋아요.`
+            : `${hour}시대가 방문하기 좋아요.`,
       }),
       verticalLinePlugin({
         hour: recommendedHour,
@@ -54,7 +57,7 @@ export default function CongestionChart({data}: Props) {
         <h3 className="text-body-1-sb">혼잡도</h3>
         <p className="text-caption-3-m text-gray-300">{formatDateTimePad(data.refreshTime)} 기준</p>
       </div>
-      <div className="border-1-line-default p s-4 rounded-xl mt s-4">
+      <div className="border-1-line-blue p s-4 rounded-2xl mt s-4">
         <div>
           <LineChart
             chartKey={selectedDay}

@@ -15,11 +15,11 @@ const PARK_IMAGE_MAP: Record<ParkType, string> = {
 
 export default function ParkInfoDashboard({data}: ParkInfoProps) {
   return (
-    <div className="px s-5">
+    <div className="px s-5 w-full">
       {/* 공원 이름 및 거리 */}
-      <div className="flex items-center mb s-3">
+      <div className="flex items-center mb s-2">
         <p className="text-title-2-sb mr s-2-sub">{data?.areaName}</p>
-        <p className="text-sub">{data?.distance ?? 0}Km</p>
+        <p className="text-sub">{data?.distance ?? 0}km</p>
       </div>
 
       {/* 혼잡도 요약, 주소, 길찾기 */}
@@ -30,7 +30,14 @@ export default function ParkInfoDashboard({data}: ParkInfoProps) {
           {data?.areaCongestLevel}
         </p>
         <div className="w-0.75 h-0.75 rounded-full mx-2 bg-deep"></div>
-        <p className="text-sub-deep text-caption-1-m mr s-3">{data?.address}</p>
+        <p className="text-sub-deep text-caption-1-m mr s-3 cursor-pointer"
+           onClick={() => {
+             if (!data?.address) return
+             navigator.clipboard.writeText(data.address)
+           }}
+        >
+          {data?.address}
+        </p>
         <ParkInfoClient data={data}/>
       </div>
 

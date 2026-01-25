@@ -57,7 +57,16 @@ export const tooltipBubblePlugin = ({
 
     ctx.save()
 
-    ctx.fillStyle = '#3B82F6'
+    const gradient = ctx.createLinearGradient(
+      chartArea.left,
+      0,
+      chartArea.right,
+      0
+    )
+    gradient.addColorStop(0, '#217CF9')
+    gradient.addColorStop(1, '#5F98FE')
+
+    ctx.fillStyle = gradient
     ctx.beginPath()
     ctx.roundRect(
       x - half,
@@ -100,7 +109,7 @@ export const verticalLinePlugin = ({
     ctx.save()
 
     // 점선
-    ctx.setLineDash([4, 4])
+    ctx.setLineDash([4, 3])
     ctx.strokeStyle = color ? color : '#0C4596'
     ctx.lineWidth = 1
     ctx.beginPath()

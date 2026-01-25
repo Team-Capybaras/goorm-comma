@@ -80,6 +80,4 @@ public class CongestionAvoidanceController {
     parkStatisticsService.aggregateAll();
     return ApiResponse.success(200, "triggered. aggregate start", "");
   }
-
-  // TODO: 시간대 추천 기능
 }

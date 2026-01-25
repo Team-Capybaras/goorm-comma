@@ -37,9 +37,20 @@ export default function SearchClient ({data}: SearchClientProps) {
             setOnfocus(e.target.value !== "")
           }}
           value={keyword}
-          placeholder="공원을 검색해보세요"
+          placeholder="공원 이름이나 지역을 검색해요"
           className="pl-15 h-12 rounded-full border-default"
         />
+        {onfocus &&
+          <button
+            className="absolute right-5 top-1/2 -translate-y-1/2"
+            onClick={() => {
+              setKeyword("")
+              setOnfocus(false)
+            }}
+          >
+            <img src="/images/icons/closecircle.svg" alt="삭제"/>
+          </button>
+        }
       </div>
 
       {/* 검색 모달 */}

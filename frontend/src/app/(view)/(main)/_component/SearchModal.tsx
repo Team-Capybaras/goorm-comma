@@ -12,10 +12,12 @@ interface SearchModalProps {
 export default function SearchModal ({keyword, data} : SearchModalProps) {
   /* 검색 필터링 */
   const filteredDatas = useMemo(() => {
-    if (!keyword.trim()) return []
+    const q = keyword.trim().toLowerCase()
+    if (!q) return []
 
-    return data.filter((data) =>
-      data.areaName.includes(keyword)
+    return data.filter(item =>
+      item.areaName.toLowerCase().includes(q) ||
+      item.parkAddr.toLowerCase().includes(q)
     )
   }, [data, keyword])
 

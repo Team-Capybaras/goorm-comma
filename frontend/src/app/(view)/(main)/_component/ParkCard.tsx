@@ -20,7 +20,7 @@ export default function ParkCard ({data}: ParkCardProps) {
         <div className="w-full h-[325px] border-default rounded-8 bg-gray-500 overflow-hidden">
           <ParkThumbnail
             height={325}
-            dotBottom={12}
+            dotBottom={16}
             data={data.images}
           />
         </div>
@@ -33,14 +33,19 @@ export default function ParkCard ({data}: ParkCardProps) {
           <p className={`text-body-2-b ${CONGESTION_COLOR_MAP[data?.areaCongestLevel]}`}>
             {data.areaCongestLevel}
           </p>
-          <div className="w-0.75 h-0.75 rounded-full mx s-2 bg-deep"></div>
-          <img src="/images/icons/weather/umbrella-gray.svg" width={16} height={16} alt="우산"/>
-          <p className="text-caption-1-m text-sub-deep">
-            {data.precptMsg}
-          </p>
+          { data.precptMsg !== '비 또는 눈 소식이 없어요.' && (
+            <>
+              <div className="w-0.75 h-0.75 rounded-full mx s-2 bg-deep"></div>
+              <img src="/images/icons/weather/umbrella-gray.svg" width={16} height={16} alt="우산"/>
+              <p className="text-caption-1-m text-sub-deep">
+                {data.precptMsg}
+              </p>
+            </>
+          )}
+
         </div>
 
-        <div className="flex gap-2 mt s-3">
+        <div className="flex flex-wrap gap-2 mt s-3">
           <Tag variant="blue">{data.recommendedVisitHour}</Tag>
           {data.tags.map(tag => (
             <Tag key={tag}>{tag}</Tag>
