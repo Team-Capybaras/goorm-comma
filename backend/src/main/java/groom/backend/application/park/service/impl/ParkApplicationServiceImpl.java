@@ -80,6 +80,11 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                     "BY_DISTANCE 정렬을 위해서는 longitude와 latitude가 필수입니다.");
         }
         
+        // 좌표가 제공된 경우 유효성 검증
+        if (longitude != null && latitude != null) {
+            validateCoordinates(longitude, latitude);
+        }
+        
         log.info("공원 리스트 조회 시작 - cursor: {}, size: {}, sort: {}, tagNames: {}", 
                 cursor, pageSize, sort, tagNames);
 
@@ -481,6 +486,9 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         Double distance = null;
         if (longitude != null && latitude != null
                 && park.getLongitude() != null && park.getLatitude() != null) {
+            // 좌표 유효성 검증
+            validateCoordinates(longitude, latitude);
+            
             double calculatedDistance = DistanceCalculator.calculateDistance(
                     latitude,
                     longitude,
@@ -575,6 +583,26 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         }
         
         return null;
+    }
+
+    /**
+     * 좌표 유효성 검증
+     * longitude: -180 ~ 180
+     * latitude: -90 ~ 90
+     */
+    private void validateCoordinates(Double longitude, Double latitude) {
+        if (longitude == null || latitude == null) {
+            return; // null인 경우는 상위에서 처리
+        }
+        
+        if (longitude < -180 || longitude > 180) {
+            throw new BusinessException(ErrorCode.PARK_RECOMMEND_INVALID_COORDINATES,
+                    "longitude는 -180과 180 사이의 값이어야 합니다. 입력값: " + longitude);
+        }
+        if (latitude < -90 || latitude > 90) {
+            throw new BusinessException(ErrorCode.PARK_RECOMMEND_INVALID_COORDINATES,
+                    "latitude는 -90과 90 사이의 값이어야 합니다. 입력값: " + latitude);
+        }
     }
 }
 

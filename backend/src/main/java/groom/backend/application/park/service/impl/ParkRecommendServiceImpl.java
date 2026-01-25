@@ -2,6 +2,8 @@ package groom.backend.application.park.service.impl;
 
 import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.service.spec.ParkRecommendService;
+import groom.backend.common.exception.BusinessException;
+import groom.backend.common.exception.ErrorCode;
 import groom.backend.common.utils.DistanceCalculator;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.entity.ParkTag;
@@ -45,9 +47,14 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
   private final LivePopStatusRepository livePopStatusRepository;
   private final CongestionRecommendService congestionRecommendService;
 
+  /**
+   * 실시간 사용자 위치 기반 공원 추천
+   * 좌표 유효성 검증 포함
+   */
   @Override
   @Transactional(readOnly = true)
   public GetAllParksResponse recommendTop5Parks(double longitude, double latitude) {
+    validateCoordinates(longitude, latitude);
 
     log.info("실시간 사용자 위치 기반 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
 
@@ -65,18 +72,28 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
             .build();
   }
 
+  /**
+   * 거리 제한이 있는 공원 추천
+   * 좌표 유효성 검증 및 거리 제한값 검증 포함
+   */
   @Override
   @Transactional(readOnly = true)
   public GetAllParksResponse recommendTop5Parks(double longitude, double latitude, int limitDistance) {
+    validateCoordinates(longitude, latitude);
+    
+    if (limitDistance <= 0) {
+      throw new BusinessException(ErrorCode.INVALID_INPUT,
+              "거리 제한(limit_distance)은 0보다 큰 값이어야 합니다.");
+    }
 
-    log.info("실시간 사용자 주변 거리 필터링 공원 추천 - longitude: {}, latitude: {}", longitude, latitude);
+    log.info("실시간 사용자 주변 거리 필터링 공원 추천 - longitude: {}, latitude: {}, limitDistance: {}", 
+            longitude, latitude, limitDistance);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude).stream()
             // 거리 제한
-            .filter(p -> p.getDistance() < limitDistance)
+            .filter(p -> p.getDistance() != null && p.getDistance() < limitDistance)
             // Top K 제한
             .limit(RECOMMEND_LIMIT).toList();
-
 
     return GetAllParksResponse.builder()
             .parks(sorted)
@@ -87,20 +104,29 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
   }
 
 
+  /**
+   * 특정 공원을 기준으로 대체지 추천
+   * baseAreaCode로 공원을 찾을 수 없으면 예외 발생
+   */
   @Override
   @Transactional(readOnly = true)
   public GetAllParksResponse recommendTop5Parks(double longitude, double latitude, String baseAreaCode) {
+    // baseAreaCode로 공원 존재 여부 확인
+    Optional<Park> baseParkOptional = parkRepository.findByAreaCode(baseAreaCode);
+    if (baseParkOptional.isEmpty()) {
+      log.warn("기준 공원을 찾을 수 없습니다 - baseAreaCode: {}", baseAreaCode);
+      throw new BusinessException(ErrorCode.PARK_RECOMMEND_BASE_PARK_NOT_FOUND,
+              "기준 공원(base_area_code: " + baseAreaCode + ")을 찾을 수 없습니다.");
+    }
 
     int order = getBaseCongestionOrder(baseAreaCode);
 
-    log.info("공원 주변 대체지 추천 - longitude: {}, latitude: {}", longitude, latitude);
+    log.info("공원 주변 대체지 추천 - baseAreaCode: {}, longitude: {}, latitude: {}", 
+            baseAreaCode, longitude, latitude);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude, order, baseAreaCode).stream()
-            // 거리 제한
-//            .filter(p -> p.getDistance() < limitDistance)
             // Top K 제한
             .limit(RECOMMEND_LIMIT).toList();
-
 
     return GetAllParksResponse.builder()
             .parks(sorted)
@@ -400,5 +426,21 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
                     .count();
 
     return (double) intersection / union;
+  }
+
+  /**
+   * 좌표 유효성 검증
+   * longitude: -180 ~ 180
+   * latitude: -90 ~ 90
+   */
+  private void validateCoordinates(double longitude, double latitude) {
+    if (longitude < -180 || longitude > 180) {
+      throw new BusinessException(ErrorCode.PARK_RECOMMEND_INVALID_COORDINATES,
+              "longitude는 -180과 180 사이의 값이어야 합니다. 입력값: " + longitude);
+    }
+    if (latitude < -90 || latitude > 90) {
+      throw new BusinessException(ErrorCode.PARK_RECOMMEND_INVALID_COORDINATES,
+              "latitude는 -90과 90 사이의 값이어야 합니다. 입력값: " + latitude);
+    }
   }
 }

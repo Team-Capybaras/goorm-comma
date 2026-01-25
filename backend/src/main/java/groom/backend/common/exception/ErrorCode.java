@@ -42,6 +42,10 @@ public enum ErrorCode {
   PARK_NOT_FOUND(404, "PK_001", "해당 지역코드 또는 지역코드에 대한 공원 정보를 찾을 수 없습니다."),
   PARK_SEARCH_KEYWORD_EMPTY(400, "PK_002", "검색어가 제공되지 않았습니다."),
   PARK_SEARCH_NOT_FOUND(404, "PK_003", "검색어에 해당하는 공원을 찾을 수 없습니다."),
+  PARK_RECOMMEND_PARAMETER_INVALID(400, "PK_004", "limit_distance 또는 base_area_code 중 하나만 반드시 입력해야 합니다."),
+  PARK_RECOMMEND_LOCATION_REQUIRED(400, "PK_005", "공원 추천을 위해서는 longitude와 latitude가 필수입니다."),
+  PARK_RECOMMEND_BASE_PARK_NOT_FOUND(404, "PK_006", "기준 공원(base_area_code)을 찾을 수 없습니다."),
+  PARK_RECOMMEND_INVALID_COORDINATES(400, "PK_007", "유효하지 않은 좌표값입니다. longitude는 -180~180, latitude는 -90~90 범위여야 합니다."),
 
   // Server 에러 (S_xxx)
   INTERNAL_SERVER_ERROR(500, "S_001", "서버 내부 오류가 발생했습니다"),
