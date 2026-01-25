@@ -30,6 +30,9 @@ Backend 터미널에 찍힌 로그가 Grafana에서 실시간으로 보이는지
 
 # Frontend 서버 실행
 ./dev.sh front build
+
+# 로컬 배포 시
+./local.sh deploy
 ```
 
 #### 2. API 호출 및 로그 확인
