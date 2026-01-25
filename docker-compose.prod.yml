@@ -35,6 +35,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - TZ=Asia/Seoul
       - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
+      - LOGGING_FILE_NAME=/app/logs/application.log
     depends_on:
       - db
       - redis
@@ -43,6 +44,13 @@ services:
     volumes:
       - ./backend/src:/app/src
       - app_logs:/app/logs  # 로그 디렉토리를 공유 볼륨으로 마운트
+    command: sh -c "touch /app/logs/application.log && chmod 666 /app/logs/application.log && java -jar /app/app.jar"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/swagger-ui.html", "||", "exit", "1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   frontend:
     image: kmgyu/goorm-comma-fe:latest
@@ -142,8 +150,10 @@ services:
       - --storage.path=/var/lib/alloy/data
       - /etc/alloy/config.alloy
     depends_on:
-      - loki
-      - backend
+      loki:
+        condition: service_started
+      backend:
+        condition: service_started
     networks:
       - goorm
     restart: unless-stopped

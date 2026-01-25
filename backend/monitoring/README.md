@@ -33,6 +33,9 @@ Backend 터미널에 찍힌 로그가 Grafana에서 실시간으로 보이는지
 
 # 로컬 배포 시
 ./local.sh deploy
+
+# 로컬 배포 종료
+./local.sh down    
 ```
 
 #### 2. API 호출 및 로그 확인
