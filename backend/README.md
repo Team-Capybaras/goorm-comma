@@ -28,10 +28,12 @@ Grafana (로그 시각화)
 
 #### 1. 모니터링 시스템 시작
 
-프로젝트 루트 디렉토리에서 실행: 백엔드 서버 실행
+프로젝트 루트 디렉토리에서 실행
 
 ```bash
 ./dev.sh back build
+./dev.sh front build
+
 docker-compose -f docker-compose.backend-dev.yml up -d
 ```
 

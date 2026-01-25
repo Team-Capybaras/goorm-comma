@@ -24,9 +24,7 @@ services:
       - goorm
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: kmgyu/goorm-comma-be:latest
     container_name: backend
     ports:
       - "8080:8080"
@@ -43,16 +41,14 @@ services:
       - ./backend/src:/app/src
 
   frontend:
+    image: kmgyu/goorm-comma-fe:latest
     container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    environment:
-      - TZ=Asia/Seoul
     ports:
       - "3000:3000"
     depends_on:
       - backend
+    environment:
+      - TZ=Asia/Seoul
     env_file:
       - .env.prod
     networks:
@@ -87,4 +83,3 @@ services:
       - backend
     networks:
       - goorm
-

@@ -6,6 +6,7 @@ volumes:
   db_data:
   loki_data:
   grafana_data:
+  app_logs:  # 애플리케이션 로그 공유 볼륨
 
 services:
   db:
@@ -55,6 +56,27 @@ services:
     networks:
       - goorm
 
+  # Backend - Spring Boot 애플리케이션
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - TZ=Asia/Seoul
+      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
+    depends_on:
+      - db
+      - redis
+    networks:
+      - goorm
+    volumes:
+      - app_logs:/app/logs  # 로그 디렉토리를 공유 볼륨으로 마운트
+    restart: unless-stopped
+
   nginx:
     container_name: nginx
     image: nginx:latest
@@ -99,6 +121,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./backend/monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./backend/monitoring/grafana/dashboards:/etc/grafana/dashboards
     depends_on:
       - loki
     networks:
@@ -115,8 +138,7 @@ services:
       - TZ=Asia/Seoul
     volumes:
       - ./backend/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - app_logs:/app/logs:ro  # Backend 로그와 공유 볼륨 마운트 (읽기 전용)
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -124,6 +146,7 @@ services:
       - /etc/alloy/config.alloy
     depends_on:
       - loki
+      - backend
     networks:
       - goorm
     restart: unless-stopped
