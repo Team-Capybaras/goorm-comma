@@ -88,9 +88,6 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         log.info("공원 리스트 조회 시작 - cursor: {}, size: {}, sort: {}, tagNames: {}", 
                 cursor, pageSize, sort, tagNames);
 
-        // 정렬이 필요한지 확인 (DEFAULT가 아니면 정렬 필요)
-        boolean needsSorting = sort != ParkSortType.DEFAULT;
-
         // 1. 태그 필터링 (태그가 제공된 경우)
         List<String> filteredAreaCodes = null;
         if (tagNames != null && !tagNames.isEmpty()) {
@@ -112,12 +109,7 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
             log.debug("태그에 해당하는 공원 수: {}", filteredAreaCodes.size());
         }
 
-        // 2. DEFAULT 정렬이고 태그 필터가 없으면 기존 커서 기반 조회 사용 (성능 최적화)
-        if (!needsSorting && filteredAreaCodes == null) {
-            return getParksWithCursorPagination(cursor, pageSize, longitude, latitude);
-        }
-
-        // 3. 정렬이 필요하거나 태그 필터가 있는 경우: 전체 조회 후 정렬
+        // 2. 공원 조회 (태그 필터링이 있으면 필터링된 공원만, 없으면 전체 공원)
         List<Park> parks;
         if (filteredAreaCodes != null) {
             // 태그 필터링된 공원만 조회
@@ -127,62 +119,67 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
                     .map(Optional::get)
                     .collect(Collectors.toList());
         } else {
-            // 정렬이 필요한 경우 전체 공원 조회
+            // 전체 공원 조회 (정렬 타입과 관계없이 동일한 공원 집합 사용)
             parks = parkRepository.findAllByOrderByAreaCode();
         }
 
-        // 4. ParkInfo 변환 (날씨, 인구, 태그, 거리 정보 포함)
+        // 3. ParkInfo 변환 (날씨, 인구, 태그, 거리 정보 포함)
         // 배치 조회로 N+1 문제 해결
         List<GetAllParksResponse.ParkInfo> allParkInfoList = convertToParkInfoBatch(parks, longitude, latitude);
 
-        // 5. 정렬 적용
-        if (needsSorting) {
-            switch (sort) {
-                case LOW_CONGESTION:
-                    allParkInfoList = allParkInfoList.stream()
-                            .sorted((p1, p2) -> {
-                                int level1 = getCongestionLevelOrder(p1.getAreaCongestLevel());
-                                int level2 = getCongestionLevelOrder(p2.getAreaCongestLevel());
-                                int compare = Integer.compare(level1, level2);
-                                if (compare == 0) {
-                                    String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
-                                    String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
-                                    compare = code1.compareTo(code2);
-                                }
-                                return compare;
-                            })
-                            .collect(Collectors.toList());
-                    break;
-                case BY_DISTANCE:
-                    allParkInfoList = allParkInfoList.stream()
-                            .sorted((p1, p2) -> {
-                                Double distance1 = p1.getDistance();
-                                Double distance2 = p2.getDistance();
-                                if (distance1 == null && distance2 == null) {
-                                    String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
-                                    String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
-                                    return code1.compareTo(code2);
-                                }
-                                if (distance1 == null) return 1;
-                                if (distance2 == null) return -1;
-                                int compare = Double.compare(distance1, distance2);
-                                if (compare == 0) {
-                                    String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
-                                    String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
-                                    compare = code1.compareTo(code2);
-                                }
-                                return compare;
-                            })
-                            .collect(Collectors.toList());
-                    break;
-                case DEFAULT:
-                default:
-                    // DEFAULT는 areaCode 순서 유지 (이미 정렬되어 있음)
-                    break;
-            }
+        // 4. 정렬 적용 (모든 정렬 타입에서 동일한 공원 집합 사용, 순서만 변경)
+        switch (sort) {
+            case LOW_CONGESTION:
+                // 혼잡도 낮은 순으로 정렬 (여유 < 보통 < 붐빔 < 매우붐빔)
+                // 혼잡도 정보가 없는 공원은 뒤로 보냄
+                allParkInfoList = allParkInfoList.stream()
+                        .sorted((p1, p2) -> {
+                            int level1 = getCongestionLevelOrder(p1.getAreaCongestLevel());
+                            int level2 = getCongestionLevelOrder(p2.getAreaCongestLevel());
+                            int compare = Integer.compare(level1, level2);
+                            if (compare == 0) {
+                                // 혼잡도가 같으면 areaCode 순서 유지
+                                String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
+                                String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
+                                compare = code1.compareTo(code2);
+                            }
+                            return compare;
+                        })
+                        .collect(Collectors.toList());
+                break;
+            case BY_DISTANCE:
+                // 거리 가까운 순으로 정렬
+                // 거리 정보가 없는 공원은 뒤로 보냄
+                allParkInfoList = allParkInfoList.stream()
+                        .sorted((p1, p2) -> {
+                            Double distance1 = p1.getDistance();
+                            Double distance2 = p2.getDistance();
+                            if (distance1 == null && distance2 == null) {
+                                // 둘 다 거리 정보가 없으면 areaCode 순서 유지
+                                String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
+                                String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
+                                return code1.compareTo(code2);
+                            }
+                            if (distance1 == null) return 1;  // distance1이 null이면 뒤로
+                            if (distance2 == null) return -1; // distance2가 null이면 뒤로
+                            int compare = Double.compare(distance1, distance2);
+                            if (compare == 0) {
+                                // 거리가 같으면 areaCode 순서 유지
+                                String code1 = p1.getAreaCode() != null ? p1.getAreaCode() : "";
+                                String code2 = p2.getAreaCode() != null ? p2.getAreaCode() : "";
+                                compare = code1.compareTo(code2);
+                            }
+                            return compare;
+                        })
+                        .collect(Collectors.toList());
+                break;
+            case DEFAULT:
+            default:
+                // DEFAULT는 areaCode 순서 유지 (이미 정렬되어 있음)
+                break;
         }
 
-        // 6. 커서 기반 페이지네이션 적용
+        // 5. 커서 기반 페이지네이션 적용
         int startIndex = 0;
         if (cursor != null && !cursor.trim().isEmpty()) {
             for (int i = 0; i < allParkInfoList.size(); i++) {
