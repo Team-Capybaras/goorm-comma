@@ -38,6 +38,11 @@ public enum ErrorCode {
   // Population 도메인 에러 (P_xxx)
   POPULATION_AREA_CODE_NOT_FOUND(404, "P_001", "해당 지역코드 또는 지역코드에 대한 인구 데이터를 찾을 수 없습니다."),
 
+  // Park 도메인 에러 (PK_xxx)
+  PARK_NOT_FOUND(404, "PK_001", "해당 지역코드 또는 지역코드에 대한 공원 정보를 찾을 수 없습니다."),
+  PARK_SEARCH_KEYWORD_EMPTY(400, "PK_002", "검색어가 제공되지 않았습니다."),
+  PARK_SEARCH_NOT_FOUND(404, "PK_003", "검색어에 해당하는 공원을 찾을 수 없습니다."),
+
   // Server 에러 (S_xxx)
   INTERNAL_SERVER_ERROR(500, "S_001", "서버 내부 오류가 발생했습니다"),
   DATABASE_ERROR(500, "S_002", "데이터베이스 오류가 발생했습니다");

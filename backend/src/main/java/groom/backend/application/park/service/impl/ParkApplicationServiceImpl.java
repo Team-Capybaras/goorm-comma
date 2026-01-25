@@ -4,6 +4,8 @@ import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.dto.response.GetParkResponse;
 import groom.backend.application.park.enums.ParkSortType;
 import groom.backend.application.park.service.spec.ParkApplicationService;
+import groom.backend.common.exception.BusinessException;
+import groom.backend.common.exception.ErrorCode;
 import groom.backend.common.utils.DistanceCalculator;
 import groom.backend.domain.park.entity.Park;
 import groom.backend.domain.park.entity.ParkFeature;
@@ -74,7 +76,8 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         
         // BY_DISTANCE 정렬 시 위치 정보 필수 검증
         if (sort == ParkSortType.BY_DISTANCE && (longitude == null || latitude == null)) {
-            throw new IllegalArgumentException("BY_DISTANCE 정렬을 위해서는 longitude와 latitude가 필수입니다.");
+            throw new BusinessException(ErrorCode.MISSING_PARAMETER, 
+                    "BY_DISTANCE 정렬을 위해서는 longitude와 latitude가 필수입니다.");
         }
         
         log.info("공원 리스트 조회 시작 - cursor: {}, size: {}, sort: {}, tagNames: {}", 
@@ -442,7 +445,8 @@ public class ParkApplicationServiceImpl implements ParkApplicationService {
         Optional<Park> parkOptional = parkRepository.findByAreaCode(areaCode);
         if (parkOptional.isEmpty()) {
             log.warn("공원 정보를 찾을 수 없습니다 - AREA_CODE: {}", areaCode);
-            throw new RuntimeException("공원 정보를 찾을 수 없습니다: " + areaCode);
+            throw new BusinessException(ErrorCode.PARK_NOT_FOUND, 
+                    "지역코드 '" + areaCode + "'에 해당하는 공원 정보를 찾을 수 없습니다.");
         }
 
         Park park = parkOptional.get();
