@@ -88,7 +88,7 @@ export function Modal({
       {/* 배경보다 zindex 10 높게 설정 후, 카드를 감쌈. */}
       <div
         style={{ zIndex: zIndex + 10 }}
-        className="fixed bottom-0 left-0 z-99 w-full pt-8 px s-5 py-12 rounded-t-xl bg-bright"
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 z-99 w-full max-w-2xl pt-8 px s-5 py-12 rounded-t-xl bg-bright"
         // 접근성 관련 설정
         role="dialog"
         aria-modal="true"

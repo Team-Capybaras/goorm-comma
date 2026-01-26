@@ -7,15 +7,19 @@ import {ParkList} from "@/shared/types/park-types";
 interface SearchModalProps {
   keyword: string
   data: ParkList[]
+  setFocus: React.Dispatch<React.SetStateAction<boolean>>
+  setKeyword: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function SearchModal ({keyword, data} : SearchModalProps) {
+export default function SearchModal ({keyword, data, setKeyword, setFocus} : SearchModalProps) {
   /* 검색 필터링 */
   const filteredDatas = useMemo(() => {
-    if (!keyword.trim()) return []
+    const q = keyword.trim().toLowerCase()
+    if (!q) return []
 
-    return data.filter((data) =>
-      data.areaName.includes(keyword)
+    return data.filter(item =>
+      item.areaName.toLowerCase().includes(q) ||
+      item.parkAddr.toLowerCase().includes(q)
     )
   }, [data, keyword])
 
@@ -37,7 +41,7 @@ export default function SearchModal ({keyword, data} : SearchModalProps) {
   }
 
   return (
-    <div className="h-full w-full fixed top-[172px] left-0 bg-bright z-99">
+    <div className="h-full w-full max-w-2xl  bg-bright z-99 fixed top-[172px] left-[50%] translate-x-[-50%]">
       <ul className="px-5">
         {filteredDatas.length === 0 && (
           <li className="text-body-1-sb text-sub-bright">검색 결과가 없습니다.</li>
@@ -45,7 +49,10 @@ export default function SearchModal ({keyword, data} : SearchModalProps) {
 
         {filteredDatas.map((data) => (
           <li key={data.areaCode} className="py-[12px]">
-            <Link href={`/detail/${data.areaCode}`} className="block w-full text-body-1-m">
+            <Link href={`/detail/${data.areaCode}`} onClick={() => {
+              setFocus(false)
+              setKeyword("")
+            }} className="block w-full text-body-1-m">
               {highlightKeyword(data.areaName, keyword)}
             </Link>
           </li>

@@ -2,7 +2,7 @@ export default function ParkInfoDashboardSkeleton() {
   return (
     <div className="px s-5 animate-pulse">
       {/* 공원 이름 및 거리 */}
-      <div className="flex items-center mb s-3">
+      <div className="flex items-center mb s-2">
         <div className="h-[24px] w-[160px] bg-gray-200 rounded mr s-2-sub" />
         <div className="h-[16px] w-[48px] bg-gray-200 rounded" />
       </div>

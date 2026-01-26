@@ -8,6 +8,7 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
+import {useLocationStore} from "@/store/location.store";
 
 interface Props {
   data: ParkItem[]
@@ -19,25 +20,16 @@ export default function MainMap({ data, center }: Props) {
   const [map, setMap] = useState<any>(null)
   const [isLocLoading, setIsLocLoading] = useState(false)
   const [selectedPark, setSelectedPark] = useState<ParkItem | null>(null)
+  const { location, loading: locationLoading } = useLocationStore()
 
   const [zoomLevel, setZoomLevel] = useState(7)
 
   const handleCurrentLocation = () => {
     if (!map) return
     setIsLocLoading(true)
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
-        const locPosition = new window.kakao.maps.LatLng(lat, lng)
-        map.panTo(locPosition)
-        setIsLocLoading(false)
-      },
-      (err) => {
-        console.error(err)
-        setIsLocLoading(false)
-      }
-    )
+    const locPosition = new window.kakao.maps.LatLng(location!.lat, location!.lng)
+    map.panTo(locPosition)
+    setIsLocLoading(false)
   }
 
   const handleCardClick = (item: ParkItem) => {
@@ -54,7 +46,7 @@ export default function MainMap({ data, center }: Props) {
     })
   }
 
-  const showMarkerName = zoomLevel <= 6
+  const showMarkerName = zoomLevel <= 7
 
   return (
     <div className="w-full h-full relative">
@@ -63,8 +55,8 @@ export default function MainMap({ data, center }: Props) {
         center={center}
         level={7}
         getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
-        markerSize={{ width: 32, height: 32 }}
-        activeMarkerSize={{ width: 48, height: 48 }}
+        markerSize={{ width: 48, height: 48 }}
+        activeMarkerSize={{ width: 64, height: 64 }}
         selectedItem={selectedPark}
         setSelectedItem={setSelectedPark}
         renderCard={(item) => <ParkMapCard item={item} />}

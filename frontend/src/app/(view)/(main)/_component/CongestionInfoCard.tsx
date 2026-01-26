@@ -23,7 +23,7 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
     <>
       {/* 1. 헤더 */}
       <div className="flex justify-between ">
-        <p className="text-subtitle-2-sb">정렬 옵션</p>
+        <p className="text-subtitle-2-sb">혼잡도란?</p>
         <img src="/images/icons/close.svg"
              className="w-[24px] h-[24px] cursor-pointer"
              onClick={onClose}
@@ -67,7 +67,7 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
       </div>
 
       {/* 3. 푸터 */}
-      <p className="text-caption-3-r text-gray-400 -tracking-[0.5px] mt s-4">
+      <p className="text-caption-3-r text-sub -tracking-[0.5px] mt s-4">
         * 통신사 인구 데이터를 가공해 제공해요. 실제 현장과 다를 수 있어요.
       </p>
     </>

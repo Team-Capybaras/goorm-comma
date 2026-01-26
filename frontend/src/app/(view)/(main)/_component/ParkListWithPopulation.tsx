@@ -4,8 +4,7 @@ import { useState } from 'react' // 1. useState 불러오기
 import { useLocationStore } from '@/store/location.store'
 import ParkListContent from '@/app/(view)/(main)/_component/ParkListContent'
 import { CongestionInfoCard } from './CongestionInfoCard'
-import ParkFilterModal from "@/app/(view)/(main)/_component/ParkFilterModal";
-import {Modal} from "@/components/ui/Modal";
+import { Modal } from '@/components/ui/Modal'
 
 export default function ParkListWithPopulation() {
   const { location } = useLocationStore()
@@ -20,10 +19,9 @@ export default function ParkListWithPopulation() {
   const handleCloseInfo = () => setIsInfoOpen(false)
 
   return (
-
     <>
-      <div className="flex bg-bright justify-center mb-3">
-        <div className="w-full max-w-2xl flex flex-col mt s-5">
+      <div className="flex justify-center mb-1">
+        <div className="w-full max-w-2xl bg-bright flex flex-col pt s-5">
           <div className="flex items-center justify-start px s-5">
             <p className="text-caption-1-m text-sub">현재 인구 흐름을 분석해 혼잡도를 표시해요.</p>
 
@@ -40,7 +38,7 @@ export default function ParkListWithPopulation() {
         </div>
       </div>
 
-      <Modal open={isInfoOpen} onClose={handleCloseInfo} size={"full"} >
+      <Modal open={isInfoOpen} onClose={handleCloseInfo} size={'full'}>
         <CongestionInfoCard onClose={handleCloseInfo} />
       </Modal>
     </>

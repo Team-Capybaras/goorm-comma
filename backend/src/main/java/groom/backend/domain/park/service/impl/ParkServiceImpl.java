@@ -1,5 +1,7 @@
 package groom.backend.domain.park.service.impl;
 
+import groom.backend.common.exception.BusinessException;
+import groom.backend.common.exception.ErrorCode;
 import groom.backend.domain.park.dto.response.GetAllParksBasicResponse;
 import groom.backend.domain.park.dto.response.GetParkSearchResponse;
 import groom.backend.domain.park.entity.Park;
@@ -57,7 +59,8 @@ public class ParkServiceImpl implements ParkService {
      * 상세 페이지로 이동하기 위한 정보를 제공합니다.
      *
      * @param searchKeyword 검색어
-     * @return 검색된 공원 정보 (areaCode, areaName만 포함, 없으면 null)
+     * @return 검색된 공원 정보 (areaCode, areaName만 포함)
+     * @throws BusinessException 검색어가 비어있거나 공원을 찾을 수 없는 경우
      */
     @Override
     @Transactional(readOnly = true)
@@ -66,15 +69,16 @@ public class ParkServiceImpl implements ParkService {
 
         if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
             log.warn("검색어가 제공되지 않았습니다.");
-            return null;
+            throw new BusinessException(ErrorCode.PARK_SEARCH_KEYWORD_EMPTY);
         }
 
         // 공원명에 검색어가 포함된 공원들 조회 (부분 일치)
         List<Park> parks = parkRepository.findByAreaNameContaining(searchKeyword.trim());
         
         if (parks.isEmpty()) {
-            log.info("검색된 공원이 없습니다 - searchKeyword: {}", searchKeyword);
-            return null;
+            log.warn("검색된 공원이 없습니다 - searchKeyword: {}", searchKeyword);
+            throw new BusinessException(ErrorCode.PARK_SEARCH_NOT_FOUND, 
+                    "검색어 '" + searchKeyword + "'에 해당하는 공원을 찾을 수 없습니다.");
         }
 
         // 첫 번째 공원만 반환
