@@ -54,7 +54,7 @@ export default function SearchClient ({data}: SearchClientProps) {
       </div>
 
       {/* 검색 모달 */}
-      {onfocus && <SearchModal keyword={keyword} data={data} />}
+      {onfocus && <SearchModal keyword={keyword} data={data} setFocus={setOnfocus} setKeyword={setKeyword} />}
     </>
   )
 }

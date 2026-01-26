@@ -7,9 +7,11 @@ import {ParkList} from "@/shared/types/park-types";
 interface SearchModalProps {
   keyword: string
   data: ParkList[]
+  setFocus: React.Dispatch<React.SetStateAction<boolean>>
+  setKeyword: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function SearchModal ({keyword, data} : SearchModalProps) {
+export default function SearchModal ({keyword, data, setKeyword, setFocus} : SearchModalProps) {
   /* 검색 필터링 */
   const filteredDatas = useMemo(() => {
     const q = keyword.trim().toLowerCase()
@@ -47,7 +49,10 @@ export default function SearchModal ({keyword, data} : SearchModalProps) {
 
         {filteredDatas.map((data) => (
           <li key={data.areaCode} className="py-[12px]">
-            <Link href={`/detail/${data.areaCode}`} className="block w-full text-body-1-m">
+            <Link href={`/detail/${data.areaCode}`} onClick={() => {
+              setFocus(false)
+              setKeyword("")
+            }} className="block w-full text-body-1-m">
               {highlightKeyword(data.areaName, keyword)}
             </Link>
           </li>
