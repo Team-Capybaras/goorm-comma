@@ -34,10 +34,11 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
   /**
    * 공원 혼잡도 통계 조회
    */
+  // TODO : 각 요일별 캐싱 및 today에 대한 캐시만 갱신하도록 변경. 매일 00시 집계시 전체 캐시 변경
   @Override
   @Cacheable(
           cacheNames = "parkStatistics",
-          key = "#areaCode",
+          key = "#areaCode + ':' + T(java.time.LocalDateTime).now().getHour()", // 1시간 단위로 캐시키 구분
           cacheManager = "avoidanceCacheManager"
   )
   public CongestionRecommendResponse getParkStatistics(String areaCode) {

@@ -84,8 +84,8 @@ public class RedisCacheConfig {
                     .serializeValuesWith(
                             RedisSerializationContext.SerializationPair
                                     .fromSerializer(avoidanceValueSerializer)
-                    );
-//                    .entryTtl(Duration.ofMinutes(60));
+                    )
+                    .entryTtl(Duration.ofMinutes(60));
 
     return RedisCacheManager.builder(connectionFactory)
             .cacheDefaults(cacheConfig)
