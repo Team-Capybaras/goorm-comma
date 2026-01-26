@@ -78,11 +78,6 @@ public class ParkController {
             @RequestParam(name = "search_keyword") String searchKeyword
     ) {
         GetParkSearchResponse response = parkService.searchParkByAreaName(searchKeyword);
-        
-        if (response == null) {
-            return ApiResponse.success(404, "공원을 찾을 수 없습니다", null);
-        }
-        
         return ApiResponse.success(200, "공원 검색 성공", response);
     }
 }
