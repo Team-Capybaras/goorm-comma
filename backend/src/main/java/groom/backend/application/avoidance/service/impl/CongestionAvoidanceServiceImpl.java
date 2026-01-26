@@ -35,10 +35,11 @@ public class CongestionAvoidanceServiceImpl implements CongestionAvoidanceServic
    * 공원 혼잡도 통계 조회
    */
   @Override
-//  @Cacheable(
-//          cacheNames = "parkStatistics",
-//          key = "#areaCode"
-//  )
+  @Cacheable(
+          cacheNames = "parkStatistics",
+          key = "#areaCode",
+          cacheManager = "avoidanceCacheManager"
+  )
   public CongestionRecommendResponse getParkStatistics(String areaCode) {
 
     log.info("[CongestionAvoidance] getParkStatistics start. areaCode={}", areaCode);
