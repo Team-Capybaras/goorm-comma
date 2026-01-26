@@ -13,26 +13,49 @@
 - 비밀번호: `admin`
 
 #### AWS 프로덕션 환경
-Grafana는 nginx를 통해 접속할 수 있습니다:
+
+Grafana는 nginx를 통해 접속할 수 있습니다.
 
 **방법 1: nginx 리버스 프록시 (권장)**
-- URL: `https://parkybara.deving.xyz/grafana/`
-- 사용자명: `admin`
-- 비밀번호: `admin`
-- 장점: 
+
+- **URL**: `https://parkybara.deving.xyz/grafana/`
+- **사용자명**: `admin`
+- **비밀번호**: `admin`
+- **장점**: 
   - HTTPS로 안전하게 접속
   - 포트 노출 불필요
   - 보안 그룹 설정 불필요
   - 도메인을 통한 접속 가능
-- 설정: `GF_SERVER_ROOT_URL` 환경 변수를 `https://parkybara.deving.xyz/grafana/`로 설정 필요 (선택사항)
+
+**설정 방법:**
+
+1. `.env.prod` 파일에 다음 내용 추가:
+   ```bash
+   GF_SERVER_ROOT_URL=https://parkybara.deving.xyz/grafana/
+   ```
+
+2. AWS 서버에서 컨테이너 재시작:
+   ```bash
+   # Grafana 컨테이너 재시작 (환경 변수 적용)
+   docker-compose -f docker-compose.prod.yml up -d --force-recreate grafana
+   
+   # nginx 재시작 (설정 적용)
+   docker-compose -f docker-compose.prod.yml restart nginx
+   ```
+
+3. 접속 테스트:
+   - 브라우저에서 `https://parkybara.deving.xyz/grafana/` 접속
+   - admin/admin으로 로그인
 
 **방법 2: 직접 포트 접속**
-- URL: `http://AWS_EC2_IP:3001`
-- 사용자명: `admin`
-- 비밀번호: `admin`
-- 주의: 
+
+- **URL**: `http://AWS_EC2_IP:3001`
+- **사용자명**: `admin`
+- **비밀번호**: `admin`
+- **주의**: 
   - AWS 보안 그룹에서 3001 포트를 열어야 합니다
   - HTTP만 가능 (HTTPS는 별도 설정 필요)
+  - 보안상 권장하지 않음
 
 ### Loki
 - 로컬: http://localhost:3100
@@ -128,7 +151,8 @@ backend | 2026-01-26 02:15:15.239 [http-nio-0.0.0.0-8080-exec-7] INFO  g.b.d.p.s
 **방법 B: 대시보드 사용**
 
 1. **대시보드 접속**
-   - http://localhost:3001 접속
+   - 로컬: http://localhost:3001 접속
+   - AWS: https://parkybara.deving.xyz/grafana/ 접속
    - 좌측 메뉴 → "Dashboards" 클릭
    - "Spring Boot Application Logs" 대시보드 선택
 
@@ -488,7 +512,10 @@ curl http://localhost:8080/api/v1/parks/all
 Grafana에 Spring Boot 애플리케이션 로그를 위한 대시보드가 자동으로 로드됩니다.
 
 **대시보드 접속:**
-1. http://localhost:3001 접속 (admin/admin)
+1. Grafana 접속
+   - 로컬: http://localhost:3001
+   - AWS: https://parkybara.deving.xyz/grafana/
+   - 로그인: admin/admin
 2. 좌측 메뉴에서 **Dashboards** 클릭
 3. **Spring Boot Application Logs** 대시보드 선택
 
