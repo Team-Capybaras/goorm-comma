@@ -93,6 +93,7 @@ services:
     depends_on:
       - frontend
       - backend
+      - grafana  # Grafana도 nginx에서 프록시하므로 의존성 추가
     networks:
       - goorm
 
@@ -122,7 +123,8 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-http://localhost:3001}  # 환경 변수로 오버라이드 가능
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true  # 서브패스에서 실행 허용
     volumes:
       - grafana_data:/var/lib/grafana
       - ./backend/monitoring/grafana/provisioning:/etc/grafana/provisioning

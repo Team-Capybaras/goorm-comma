@@ -6,15 +6,41 @@
 ## 서비스 접속 정보
 
 ### Grafana
+
+#### 로컬 환경
 - URL: http://localhost:3001
 - 사용자명: `admin`
 - 비밀번호: `admin`
 
+#### AWS 프로덕션 환경
+Grafana는 nginx를 통해 접속할 수 있습니다:
+
+**방법 1: nginx 리버스 프록시 (권장)**
+- URL: `https://parkybara.deving.xyz/grafana/`
+- 사용자명: `admin`
+- 비밀번호: `admin`
+- 장점: 
+  - HTTPS로 안전하게 접속
+  - 포트 노출 불필요
+  - 보안 그룹 설정 불필요
+  - 도메인을 통한 접속 가능
+- 설정: `GF_SERVER_ROOT_URL` 환경 변수를 `https://parkybara.deving.xyz/grafana/`로 설정 필요 (선택사항)
+
+**방법 2: 직접 포트 접속**
+- URL: `http://AWS_EC2_IP:3001`
+- 사용자명: `admin`
+- 비밀번호: `admin`
+- 주의: 
+  - AWS 보안 그룹에서 3001 포트를 열어야 합니다
+  - HTTP만 가능 (HTTPS는 별도 설정 필요)
+
 ### Loki
-- URL: http://localhost:3100
+- 로컬: http://localhost:3100
+- AWS: 내부 네트워크에서만 접근 가능 (외부 노출 안 됨)
 
 ### Alloy UI
-- URL: http://localhost:12345
+- 로컬: http://localhost:12345
+- AWS: 내부 네트워크에서만 접근 가능 (외부 노출 안 됨)
 
 ## 실시간 로그 모니터링 확인 방법 (검증 완료)
 
