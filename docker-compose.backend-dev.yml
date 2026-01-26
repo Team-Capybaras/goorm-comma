@@ -53,31 +53,6 @@ services:
     networks:
       - goorm
 
-  # Backend - Spring Boot 애플리케이션
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: backend
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
-      - TZ=Asia/Seoul
-      - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
-    depends_on:
-      - db
-      - redis
-    networks:
-      - goorm
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/swagger-ui.html", "||", "exit", "1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    restart: unless-stopped
-
   nginx:
     container_name: nginx
     image: nginx:latest
