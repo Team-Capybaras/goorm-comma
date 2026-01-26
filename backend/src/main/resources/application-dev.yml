@@ -52,7 +52,9 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   file:
-    name: /app/logs/application.log  # Docker 볼륨 마운트 경로
+    # 개발 환경: 로컬 빌드 시 logs/ 디렉토리에 저장
+    # Docker 환경: LOGGING_FILE_NAME 환경 변수로 오버라이드 가능
+    name: ${LOGGING_FILE_NAME:logs/application.log}
     max-size: 10MB
     max-history: 30
 
