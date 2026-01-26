@@ -4,7 +4,6 @@ networks:
 
 volumes:
   db_data:
-  app_logs:  # 애플리케이션 로그 공유 볼륨 (로깅 모니터링은 docker-compose.local.yml에서만 사용)
 
 services:
   db:
@@ -66,15 +65,11 @@ services:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
       - TZ=Asia/Seoul
       - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
-      - LOGGING_FILE_NAME=/app/logs/application.log
     depends_on:
       - db
       - redis
     networks:
       - goorm
-    volumes:
-      - app_logs:/app/logs  # 로그 디렉토리를 공유 볼륨으로 마운트
-    command: sh -c "touch /app/logs/application.log && chmod 666 /app/logs/application.log && java -jar /app/app.jar"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/api/swagger-ui.html", "||", "exit", "1"]
       interval: 10s
