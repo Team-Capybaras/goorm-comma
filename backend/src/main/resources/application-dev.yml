@@ -43,6 +43,21 @@ server:
     context-path: /api
   address: 0.0.0.0
 
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    groom.backend: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    # 개발 환경: 로컬 빌드 시 logs/ 디렉토리에 저장
+    # Docker 환경: LOGGING_FILE_NAME 환경 변수로 오버라이드 가능
+    name: ${LOGGING_FILE_NAME:logs/application.log}
+    max-size: 10MB
+    max-history: 30
+
 ## Redis 설정
 #redis:
 #  host: localhost

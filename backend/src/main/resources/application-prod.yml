@@ -42,3 +42,16 @@ server:
   servlet:
     context-path: /api
   address: 0.0.0.0
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    groom.backend: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /app/logs/application.log  # Docker 볼륨 마운트 경로
+    max-size: 10MB
+    max-history: 30
