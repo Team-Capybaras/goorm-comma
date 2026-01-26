@@ -4,9 +4,7 @@ networks:
 
 volumes:
   db_data:
-  loki_data:
-  grafana_data:
-  app_logs:  # 애플리케이션 로그 공유 볼륨
+  app_logs:  # 애플리케이션 로그 공유 볼륨 (로깅 모니터링은 docker-compose.local.yml에서만 사용)
 
 services:
   db:
@@ -99,64 +97,3 @@ services:
     networks:
       - goorm
 
-  # Loki - 로그 집계 시스템
-  loki:
-    container_name: loki
-    image: grafana/loki:latest
-    ports:
-      - "3100:3100"
-    environment:
-      - TZ=Asia/Seoul
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - loki_data:/loki
-    networks:
-      - goorm
-    restart: unless-stopped
-
-  # Grafana - 로그 시각화
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    ports:
-      - "3001:3000"
-    environment:
-      - TZ=Asia/Seoul
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost:3001
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./backend/monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - ./backend/monitoring/grafana/dashboards:/etc/grafana/dashboards
-    depends_on:
-      - loki
-    networks:
-      - goorm
-    restart: unless-stopped
-
-  # Alloy - 로그 수집 에이전트
-  alloy:
-    container_name: alloy
-    image: grafana/alloy:latest
-    ports:
-      - "12345:12345" # Alloy UI
-    environment:
-      - TZ=Asia/Seoul
-    volumes:
-      - ./backend/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
-      - app_logs:/app/logs:ro  # Backend 로그와 공유 볼륨 마운트 (읽기 전용)
-    command:
-      - run
-      - --server.http.listen-addr=0.0.0.0:12345
-      - --storage.path=/var/lib/alloy/data
-      - /etc/alloy/config.alloy
-    depends_on:
-      loki:
-        condition: service_started
-      backend:
-        condition: service_started
-    networks:
-      - goorm
-    restart: unless-stopped
