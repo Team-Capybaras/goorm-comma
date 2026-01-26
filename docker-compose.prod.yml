@@ -129,8 +129,8 @@ services:
       - .env.prod
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./backend/monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - ./backend/monitoring/grafana/dashboards:/etc/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards
     depends_on:
       - loki
     networks:
@@ -146,7 +146,7 @@ services:
     environment:
       - TZ=Asia/Seoul
     volumes:
-      - ./backend/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - app_logs:/app/logs:ro  # Backend 로그와 공유 볼륨 마운트 (읽기 전용)
     command:
       - run
