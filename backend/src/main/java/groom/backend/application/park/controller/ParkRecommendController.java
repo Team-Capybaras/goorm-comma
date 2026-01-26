@@ -2,6 +2,8 @@ package groom.backend.application.park.controller;
 
 import groom.backend.application.park.dto.response.GetAllParksResponse;
 import groom.backend.application.park.service.spec.ParkRecommendService;
+import groom.backend.common.exception.BusinessException;
+import groom.backend.common.exception.ErrorCode;
 import groom.backend.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,6 +56,10 @@ public class ParkRecommendController {
           description = "필수 위치 정보 누락",
           content = @Content
   )
+  /**
+   * 혼잡도·거리 기반 공원 추천
+   * limit_distance 또는 base_area_code 중 하나만 반드시 입력해야 합니다.
+   */
   @GetMapping("/recommend")
   public ApiResponse<GetAllParksResponse> getRecommendedParks(
           @Parameter(
@@ -80,21 +86,21 @@ public class ParkRecommendController {
           @Parameter(
                   description = "기준이 되는 공원입니다. 대체지 추천 시 사용하십시오.",
                   required = false,
-                  example = "5"
+                  example = "POI093"
           )
           @RequestParam(name="base_area_code", required = false) String baseAreaCode
   ) {
-    if ((limitDistance == null) == (baseAreaCode == null)) {
-      return ApiResponse.error(
-              400,
-              "limit_distance 또는 base_area_code 중 하나만 반드시 입력해야 합니다.",
-              null
-      );
+    // limitDistance와 baseAreaCode 중 하나만 필수인지 검증
+    boolean hasLimitDistance = limitDistance != null;
+    boolean hasBaseAreaCode = baseAreaCode != null && !baseAreaCode.trim().isEmpty();
+    
+    if (hasLimitDistance == hasBaseAreaCode) {
+      throw new BusinessException(ErrorCode.PARK_RECOMMEND_PARAMETER_INVALID);
     }
 
     GetAllParksResponse response;
 
-    if (limitDistance == null) {
+    if (hasBaseAreaCode) {
       response = parkRecommendService.recommendTop5Parks(longitude, latitude, baseAreaCode);
     } else {
       response = parkRecommendService.recommendTop5Parks(longitude, latitude, limitDistance);
