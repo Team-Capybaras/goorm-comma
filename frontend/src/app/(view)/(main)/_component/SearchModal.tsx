@@ -39,7 +39,7 @@ export default function SearchModal ({keyword, data} : SearchModalProps) {
   }
 
   return (
-    <div className="h-full w-full fixed top-[172px] left-0 bg-bright z-99">
+    <div className="h-full w-full max-w-2xl  bg-bright z-99 fixed top-[172px] left-[50%] translate-x-[-50%]">
       <ul className="px-5">
         {filteredDatas.length === 0 && (
           <li className="text-body-1-sb text-sub-bright">검색 결과가 없습니다.</li>
