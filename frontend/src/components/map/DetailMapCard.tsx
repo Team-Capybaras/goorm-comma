@@ -1,6 +1,5 @@
 import type { FacilityItem } from '@/shared/types/map-types'
 import { getSubwayColor } from '@/shared/utils/map-helpers'
-
 interface DetailMapCardProps {
   item: FacilityItem
   onClose?: () => void
@@ -11,12 +10,14 @@ export default function DetailMapCard({ item, onClose }: DetailMapCardProps) {
   const isSubway = item.category === 'SUBWAY'
   const isBus = item.category === 'BUS'
   const isFree = item.tags?.includes('무료')
-  const subwayLineName = item.tags?.find((t) => t.includes('호선') || t.includes('선'))
-  const subwayColor = isSubway ? getSubwayColor(item.tags) : '#999A98'
+  const subwayLineName = item.line
+  const subwayColor = isSubway ? getSubwayColor(subwayLineName) : '#999A98'
 
+  const displayLineName =
+    subwayLineName && /^\d+$/.test(subwayLineName) ? `${subwayLineName}호선` : subwayLineName
   return (
     <article
-      className="w-full bg-default rounded-2xl shadow-md p-5 animate-slide-up cursor-default relative"
+      className="w-full h-[160px] bg-white rounded-2xl shadow-md p-5 animate-slide-up cursor-default relative"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 닫기 버튼 */}
@@ -48,15 +49,14 @@ export default function DetailMapCard({ item, onClose }: DetailMapCardProps) {
         )}
 
         {/* 지하철 태그 (컬러는 동적, 폰트는 Bold 적용) */}
-        {isSubway && subwayLineName && (
+        {isSubway && displayLineName && (
           <span
             className="text-[14px] leading-[1.5] font-bold whitespace-nowrap"
             style={{ color: subwayColor }}
           >
-            {subwayLineName}
+            {displayLineName}
           </span>
         )}
-
         {/* 버스 태그 (Gray 500, Bold) */}
         {isBus && (
           <span className="text-[14px] leading-[1.5] font-bold text-gray-500">{item.id}</span>

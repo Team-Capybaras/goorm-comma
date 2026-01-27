@@ -20,7 +20,7 @@ export default function ParkMapCard({ item }: Props) {
   return (
     <MapCard
       congestion={item.congestion}
-      className="w-full min-w-[300px] border-box  cursor-pointer"
+      className="w-[calc(100%-48px)] mx-auto min-w-[300px] cursor-pointer mb-10"
     >
       <div className="flex justify-between items-start gap-3">
         {/* 좌측 텍스트 컨테이너 */}
@@ -66,11 +66,7 @@ export default function ParkMapCard({ item }: Props) {
 
       <div className="flex flex-wrap items-center gap-1.5 mt-3">
         {/* 예측 배지 */}
-        {item.forecast && (
-          <span className="bg-blue-0 text-blue-600 px-2.5 py-1 rounded-[6px] text-caption-1-sb">
-            {item.forecast}
-          </span>
-        )}
+        {item.forecast && <Tag variant="blue">{item.forecast}</Tag>}
 
         {/* 태그 목록 */}
         {item.tags?.map((tag, index) => (

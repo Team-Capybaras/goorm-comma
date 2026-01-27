@@ -78,7 +78,6 @@ export const getFacilityMarkerIcon = (category: FacilityCategory, isSelected: bo
   return `/images/icons/map/state=${stateStr}_type=${typeStr}.svg`
 }
 
-//지하철 노선별 색상 매핑
 const SUBWAY_COLORS: Record<string, string> = {
   '1호선': '#004A85',
   '2호선': '#00A23F',
@@ -89,27 +88,27 @@ const SUBWAY_COLORS: Record<string, string> = {
   '7호선': '#6E7E31',
   '8호선': '#D11D70',
   '9호선': '#A49D87',
-  우이신설선: '#BACC50',
-  신림선: '#5E7DBB',
+  우이신설: '#BACC50',
+  신림: '#5E7DBB',
   수인분당: '#ECA300',
   신분당: '#B81B30',
   공항철도: '#0079AC',
+  경의중앙: '#77C4A3',
 }
 
-// 기본 색상
 const DEFAULT_SUBWAY_COLOR = '#999A98'
 
-export const getSubwayColor = (tags: string[] = []): string => {
-  if (!tags || tags.length === 0) return DEFAULT_SUBWAY_COLOR
-
-  // 태그 중 '호선'이나 '선'이 포함된 문자열 찾기
-  const lineName = tags.find((t) => t.includes('호선') || t.includes('선'))
-
+export const getSubwayColor = (lineName?: string): string => {
   if (!lineName) return DEFAULT_SUBWAY_COLOR
 
-  // 정확한 매칭 확인
+  let cleanName = lineName.trim().normalize('NFC')
+
+  if (/^\d+$/.test(cleanName)) {
+    cleanName += '호선'
+  }
+
   for (const [key, color] of Object.entries(SUBWAY_COLORS)) {
-    if (lineName.includes(key)) return color
+    if (cleanName.includes(key)) return color
   }
 
   return DEFAULT_SUBWAY_COLOR
