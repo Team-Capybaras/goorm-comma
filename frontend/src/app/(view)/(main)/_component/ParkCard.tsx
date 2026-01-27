@@ -4,6 +4,7 @@ import { ParkInfo } from '@/shared/types/park-types'
 import { Card } from '@/components/common/Card'
 import { CONGESTION_COLOR_MAP } from '@/shared/utils/congestion-helper'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface ParkCardProps {
   data: ParkInfo
@@ -32,7 +33,7 @@ export default function ParkCard({ data }: ParkCardProps) {
           {data.precptMsg !== '비 또는 눈 소식이 없어요.' && (
             <>
               <div className="w-0.75 h-0.75 rounded-full mx s-2 bg-deep"></div>
-              <img
+              <Image
                 src="/images/icons/weather/umbrella-gray.svg"
                 width={16}
                 height={16}
