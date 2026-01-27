@@ -1,4 +1,5 @@
-import {ParkInfo} from "@/shared/types/park-types";
+import { ParkInfo } from '@/shared/types/park-types'
+import Image from 'next/image'
 
 interface ParkSortFilterModalProps {
   data : string
@@ -22,23 +23,41 @@ export default function ParkSortFilterModal({
     <>
       <div className="flex justify-between ">
         <p className="text-subtitle-2-sb">정렬 옵션</p>
-        <img src="/images/icons/close.svg"
-             className="w-[24px] h-[24px] cursor-pointer"
-             onClick={() => setShow(false)}
-             alt="닫기"/>
+        <Image
+          src="/images/icons/close.svg"
+          className="cursor-pointer"
+          width={24}
+          height={24}
+          onClick={() => setShow(false)}
+          alt="닫기"
+        />
       </div>
       <ul className="mt s-6">
         <li className="py s-4">
           <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('BY_DISTANCE')}>
             <p className={`text-body-1-m ${isDistance && 'text-primary'}`}>가까운 순</p>
-            {isDistance && <img src="/images/icons/check.svg" alt="선택"/>}
+            {isDistance &&
+              <Image 
+                src="/images/icons/check.svg"
+                width={24}
+                height={24}
+                alt="선택"
+              />
+            }
           </button>
 
         </li>
         <li className="py s-4">
           <button className="w-full flex justify-between cursor-pointer" onClick={() => setActiveSort('LOW_CONGESTION')}>
             <p className={`text-body-1-m ${isCongestion && 'text-primary'}`}>한적한 순</p>
-            {isCongestion && <img src="/images/icons/check.svg" alt="선택"/>}
+            {isCongestion && 
+              <Image
+                src="/images/icons/check.svg"
+                width={24}
+                height={24}
+                alt="선택"
+              />
+            }
           </button>
         </li>
       </ul>

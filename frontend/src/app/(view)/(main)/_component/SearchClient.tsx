@@ -48,7 +48,12 @@ export default function SearchClient ({data}: SearchClientProps) {
               setOnfocus(false)
             }}
           >
-            <Image src="/images/icons/closecircle.svg" alt="삭제"/>
+            <Image
+              src="/images/icons/closecircle.svg"
+              width={24}
+              height={24}
+              alt="삭제"
+            />
           </button>
         }
       </div>
