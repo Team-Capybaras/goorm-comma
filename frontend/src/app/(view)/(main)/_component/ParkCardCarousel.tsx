@@ -21,7 +21,7 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
         <Link
           key={park.areaName}
           href={`/detail/${park.areaCode}`}
-          className={`relative mx-1 flex-[0_0_80%] rounded-8 overflow-hidden ${(i ===0) && 'ml-5'}`}
+          className={`relative mx-1 flex-[0_0_80%] rounded-8 overflow-hidden ${i === 0 && 'ml-5'}`}
           style={{ height: 362 }}
         >
           {/* 공원 이미지 */}
@@ -29,6 +29,8 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
             src={park.images[0]}
             alt={park.areaName}
             fill
+            priority={i === 0}
+            sizes="(max-width: 768px) 80vw, 40vw"
             className="object-cover"
           />
 
@@ -43,7 +45,9 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
                 alt="사람아이콘"
                 width={16}
                 height={16}
-              />{park.recommendedVisitHour}
+                className="w-4 h-auto"
+              />{' '}
+              {park.recommendedVisitHour}
             </span>
           </div>
 
@@ -55,22 +59,18 @@ export default function ParkCardCarousel({ data }: ParkCardCarouselProps) {
                 className={cn(
                   'border-none flex items-center justify-center px-[8px] h-[26px] rounded-8 font-2xs font-semibold',
                   CONGESTION_COLOR_MAP[park.areaCongestLevel],
-                  CONGESTION_BG_COLOR_MAP[park.areaCongestLevel],
+                  CONGESTION_BG_COLOR_MAP[park.areaCongestLevel]
                 )}
-              >{park.areaCongestLevel}
+              >
+                {park.areaCongestLevel}
               </Card>
-
             </div>
             <div className="flex items-end gap-2 my-1">
               {/* 공원 이름 */}
-              <p className="text-title-2-sb">
-                {park.areaName}
-              </p>
+              <p className="text-title-2-sb">{park.areaName}</p>
 
               {/* 현재 위치에서 거리 */}
-              <p className="text-body-2-m mb-[2px]">
-                {park.distance}km
-              </p>
+              <p className="text-body-2-m mb-[2px]">{park.distance}km</p>
             </div>
 
             {/* 태그 */}

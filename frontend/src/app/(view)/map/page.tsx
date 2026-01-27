@@ -28,7 +28,6 @@ export default function MapPage() {
           fetchParkList(latitude, longitude)
         },
         (err) => {
-          console.error('위치 권한 에러:', err)
           fetchParkList(37.5284, 126.9331)
         }
       )
