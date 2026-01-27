@@ -24,7 +24,7 @@ export default function SearchClient ({data}: SearchClientProps) {
     <>
       {/* 검색 Input */}
       <div className="relative w-full">
-        <img
+        <Image
           src="/images/icons/search.svg"
           alt="검색"
           width={26}
@@ -48,7 +48,7 @@ export default function SearchClient ({data}: SearchClientProps) {
               setOnfocus(false)
             }}
           >
-            <img src="/images/icons/closecircle.svg" alt="삭제"/>
+            <Image src="/images/icons/closecircle.svg" alt="삭제"/>
           </button>
         }
       </div>
