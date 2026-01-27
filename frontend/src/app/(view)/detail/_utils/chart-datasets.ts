@@ -1,5 +1,5 @@
-import {ChartDataset, ChartType, ScriptableContext, ScriptableLineSegmentContext} from 'chart.js'
-import {CongestionWeekday, Weekday, WEEKDAYS} from "@/shared/types/chart-types";
+import {ChartType, ScriptableContext, ScriptableLineSegmentContext} from 'chart.js'
+import {CongestionWeekday, Weekday} from "@/shared/types/chart-types";
 import {getWeekday} from "@/shared/utils/time-format";
 
 type BuildCongestionDatasetsParams = {
