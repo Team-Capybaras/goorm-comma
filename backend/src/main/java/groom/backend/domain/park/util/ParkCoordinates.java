@@ -42,8 +42,8 @@ public class ParkCoordinates {
         COORDINATES.put("POI110", new ParkCoordinate(127.086648, 37.517709)); // 잠실한강공원
         COORDINATES.put("POI111", new ParkCoordinate(127.009401, 37.521718)); // 잠원한강공원
         COORDINATES.put("POI112", new ParkCoordinate(127.041707, 37.414744)); // 청계산
-        COORDINATES.put("POI113", new ParkCoordinate(126.973821, 37.582922)); // 청와대
-        COORDINATES.put("POI123", new ParkCoordinate(126.988892, 37.557586)); // 보라매공원
+        COORDINATES.put("POI113", new ParkCoordinate(126.979307, 37.583920)); // 청와대
+        COORDINATES.put("POI123", new ParkCoordinate(126.919756, 37.493086)); // 보라매공원
         COORDINATES.put("POI124", new ParkCoordinate(126.955073, 37.575422)); // 서대문독립공원
         COORDINATES.put("POI125", new ParkCoordinate(126.880855, 37.522477)); // 안양천
         COORDINATES.put("POI126", new ParkCoordinate(126.919962, 37.533304)); // 여의서로
