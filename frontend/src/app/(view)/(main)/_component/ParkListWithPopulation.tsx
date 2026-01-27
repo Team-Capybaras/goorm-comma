@@ -20,7 +20,7 @@ export default function ParkListWithPopulation() {
 
   return (
     <>
-      <div className="flex justify-center mb-1">
+      <div className="flex justify-center">
         <div className="w-full max-w-2xl bg-bright flex flex-col pt s-5">
           <div className="flex items-center justify-start px s-5">
             <p className="text-caption-1-m text-sub">현재 인구 흐름을 분석해 혼잡도를 표시해요.</p>

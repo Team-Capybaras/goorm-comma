@@ -5,9 +5,11 @@ import MapCard from '@/components/map/MapCard'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionColorClass, getWeatherIconPath } from '@/shared/utils/map-helpers'
 import Tag from '@/components/common/Tag'
+import { CardCloseButton } from '@/components/common/CardCloseButton'
 
 interface Props {
   item: ParkItem
+  onClose?: () => void
 }
 
 const airQualityTextMap: Record<string, string> = {
@@ -16,12 +18,18 @@ const airQualityTextMap: Record<string, string> = {
   좋음: '대기질이 좋아요',
 }
 
-export default function ParkMapCard({ item }: Props) {
+export default function ParkMapCard({ item, onClose }: Props) {
   return (
     <MapCard
       congestion={item.congestion}
-      className="w-[calc(100%-48px)] mx-auto min-w-[300px] cursor-pointer mb-10"
+      className="w-[calc(100%-48px)] mx-auto min-w-[300px] cursor-pointer mb-10 relative !overflow-visible"
     >
+      {onClose && (
+        <div className="absolute -top-[52px] right-0 z-50">
+          <CardCloseButton onClose={onClose} />
+        </div>
+      )}
+
       <div className="flex justify-between items-start gap-3">
         {/* 좌측 텍스트 컨테이너 */}
         <div className="flex flex-col gap-1 flex-1 min-w-0">
