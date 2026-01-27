@@ -97,6 +97,14 @@ class F202ContractTest {
   @Test
   @DisplayName("F202-02 추천 결과 개수는 최대 5개를 초과하지 않는다")
   void recommendationSizeShouldNotExceedFive() throws Exception {
+    BDDMockito.given(
+            parkRecommendService.recommendTop5Parks(
+                    anyDouble(),  // longitude
+                    anyDouble(),   // latitude
+                    eq("POI001")
+            )
+    ).willReturn(sampleRecommendationResponse());
+
     mockMvc.perform(
                     get(ENDPOINT)
                             .param("longitude", "127.0")
@@ -110,6 +118,14 @@ class F202ContractTest {
   @Test
   @DisplayName("F202-03 추천 결과에 공원 식별자(areaCode)가 포함된다")
   void recommendationShouldContainAreaCode() throws Exception {
+    BDDMockito.given(
+            parkRecommendService.recommendTop5Parks(
+                    anyDouble(),  // longitude
+                    anyDouble(),   // latitude
+                    eq("POI001")
+            )
+    ).willReturn(sampleRecommendationResponse());
+
     mockMvc.perform(
                     get(ENDPOINT)
                             .param("longitude", "127.0")
@@ -123,20 +139,36 @@ class F202ContractTest {
   @Test
   @DisplayName("F202-04 추천 결과에 거리 정보(distance)가 포함된다")
   void recommendationShouldContainDistance() throws Exception {
+    BDDMockito.given(
+            parkRecommendService.recommendTop5Parks(
+                    anyDouble(),  // longitude
+                    anyDouble(),   // latitude
+                    eq("POI001")
+            )
+    ).willReturn(sampleRecommendationResponse());
+
     mockMvc.perform(
                     get(ENDPOINT)
-                            .param("longitude", "127.0")
+                            .param("longitude", "127.9")
                             .param("latitude", "37.5")
                             .param("base_area_code", "POI001")
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.parks[*].distance").exists())
-            .andExpect(jsonPath("$.data.parks[*].distance").isNumber());
+            .andExpect(jsonPath("$.data.parks[*].distance", everyItem(instanceOf(Number.class))));
   }
 
   @Test
   @DisplayName("F202-05 반경 기준 추천 시 5km 이내 공원이 없으면 빈 배열을 반환한다")
   void shouldReturnEmptyWhenNoParkWithinLimitDistance() throws Exception {
+    BDDMockito.given(
+            parkRecommendService.recommendTop5Parks(
+                    anyDouble(),  // longitude
+                    anyDouble(),   // latitude
+                    eq(5)
+            )
+    ).willReturn(emptyRecommendationResponse());
+
     mockMvc.perform(
                     get(ENDPOINT)
                             .param("longitude", "127.0")
