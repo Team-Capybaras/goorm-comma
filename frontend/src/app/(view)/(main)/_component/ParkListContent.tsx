@@ -9,6 +9,7 @@ import { fetchParks } from '@/shared/libs/park-list-api'
 import ParkListCardSkeleton from '@/app/(view)/(main)/_status/ParkListCardSkeleton'
 import ErrorComponent from '@/components/ui/ErrorComponent'
 import Image from 'next/image'
+import { useGlobalToast } from '@/components/common/ToastProvider'
 
 type ParksQueryKey = ['parks', string[], string, { lat: number; lng: number }]
 
@@ -23,6 +24,7 @@ export default function ParkListContent({ location }: ParkLocationProps) {
   const [activeOptions, setActiveOptions] = useState<string[]>([])
   const [activeSort, setActiveSort] = useState<string>('BY_DISTANCE')
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const showToast = useGlobalToast()
   const SKELETON_COUNT = 3
 
   // react-qeury fetch
@@ -51,6 +53,20 @@ export default function ParkListContent({ location }: ParkLocationProps) {
   const count: number = data?.pages?.[0]?.count ?? 0
 
   const parks: ParkInfo[] = data?.pages.flatMap((page) => page.parks) ?? []
+  
+  // 토스트 출력 방식
+  useEffect(() => {
+    if (isFetching) return
+
+    // 필터가 적용된 상태에서 결과 없으면 출력
+    if (activeOptions.length > 0 && parks.length === 0) {
+      showToast(
+        '조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요.',
+        'default',
+        2000
+      )
+    } 
+  }, [isFetching, parks, activeOptions])
 
   console.log(data)
 
