@@ -8,7 +8,7 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
-import {useLocationStore} from "@/store/location.store";
+import { useLocationStore } from '@/store/location.store'
 
 interface Props {
   data: ParkItem[]
@@ -75,6 +75,7 @@ export default function MainMap({ data, center }: Props) {
           alt="현위치"
           fill
           className={`object-cover scale-200 ${isLocLoading ? 'animate-spin' : ''}`}
+          priority
         />
       </button>
 
