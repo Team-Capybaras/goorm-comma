@@ -11,17 +11,26 @@ export default function ParkDirectionModal ({data, setShow}:ParkInfoModalProps) 
     <>
       <div className="flex justify-between">
         <p className="text-subtitle-2-sb">길찾기</p>
-        <Image src="/images/icons/close.svg"
-             className="w-[24px] h-[24px] cursor-pointer"
-             onClick={() => setShow(false)}
-             alt="닫기"/>
+        <Image
+          src="/images/icons/close.svg"
+          className="cursor-pointer"
+          width={24}
+          height={24}
+          onClick={() => setShow(false)}
+          alt="닫기"
+        />
       </div>
       <ul className="mt s-6">
         <li className="py s-4">
           <a href={`https://map.naver.com/index.nhn?menu=route&etext=${data.areaName}&elat=${data.latitude}&elng=${data.longitude}&pathType=0&showMap=true&menu=route`}
              className="flex block items-center gap s-4"
              target={"_blank"}>
-            <Image src="/images/icons/naver.svg" className="w-8 h-8" alt="네이버"/>
+            <Image 
+              src="/images/icons/naver.svg"
+              width={32}
+              height={32}
+              alt="네이버"
+            />
             <p className="text-body-2-r">네이버 지도</p>
           </a>
         </li>
@@ -29,7 +38,12 @@ export default function ParkDirectionModal ({data, setShow}:ParkInfoModalProps) 
           <a href={`https://map.kakao.com/link/to/${data?.areaName},${data?.latitude},${data.longitude}`}
              className="flex block items-center gap s-4"
              target={"_blank"}>
-            <img src="/images/icons/kakao.svg" className="w-8 h-8" alt="카카오"/>
+            <Image
+              src="/images/icons/kakao.svg"
+              width={32}
+              height={32}
+              alt="카카오"
+            />
             <p className="text-body-2-r">카카오맵</p>
           </a>
         </li>

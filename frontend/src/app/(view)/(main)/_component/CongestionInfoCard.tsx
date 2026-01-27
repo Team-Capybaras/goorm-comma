@@ -12,7 +12,7 @@ interface CongestionInfoCardProps {
 export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-
+    
     return () => {
       document.body.style.overflow = 'unset'
     }
@@ -23,10 +23,14 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
       {/* 1. 헤더 */}
       <div className="flex justify-between ">
         <p className="text-subtitle-2-sb">혼잡도란?</p>
-        <Image src="/images/icons/close.svg"
-             className="w-[24px] h-[24px] cursor-pointer"
-             onClick={onClose}
-             alt="닫기"/>
+        <Image 
+          src="/images/icons/close.svg"
+          className="cursor-pointer"
+          width={24}
+          height={24}
+          onClick={onClose}
+          alt="닫기"
+        />
       </div>
 
       {/* 2. 본문 */}

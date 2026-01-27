@@ -1,6 +1,7 @@
 import { ParkInfo } from '@/shared/types/park-types'
 import Button from '@/components/common/Button'
 import { useState } from 'react'
+import Image from 'next/image'
 
 interface ParkFilterModalProps {
   parks: ParkInfo[]
@@ -40,17 +41,21 @@ export default function ParkFilterModal({
     <>
       <div className="flex justify-between ">
         <p className="text-subtitle-2-sb">정렬 옵션</p>
-        <img src="/images/icons/close.svg"
-             className="w-[24px] h-[24px] cursor-pointer"
-             onClick={() => setShow(false)}
-             alt="닫기"/>
+        <Image 
+          src="/images/icons/close.svg"
+          className="cursor-pointer"
+          width={24}
+          height={24}
+          onClick={() => setShow(false)}
+          alt="닫기"
+        />
       </div>
       <p className="text-body-2-sb mt s-6">공원 특징</p>
       <ul className="mt s-3 flex flex-wrap gap-1">
         {options.map((option) => (
           <li key={option}>
             <Button variant={selected.includes(option) ? 'active' : 'default'}
-                    onClick={() => toggleOption(option)}>
+              onClick={() => toggleOption(option)}>
               <span className="text-body-2-m">{option}</span>
             </Button>
           </li>
