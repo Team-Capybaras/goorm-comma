@@ -20,7 +20,7 @@ export default function ParkMapCard({ item }: Props) {
   return (
     <MapCard
       congestion={item.congestion}
-      className="w-full min-w-[300px] border-box  cursor-pointer"
+      className="w-[calc(100%-48px)] mx-auto min-w-[300px] cursor-pointer mb-10"
     >
       <div className="flex justify-between items-start gap-3">
         {/* 좌측 텍스트 컨테이너 */}
