@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import KakaoMap from '@/components/common/KakaoMap'
@@ -38,7 +38,7 @@ export default function MainMap({ data, center }: Props) {
 
   const handleMapLoad = (loadedMap: any) => {
     setMap(loadedMap)
-    setZoomLevel(loadedMap.getLevel()) // 초기 줌 레벨 저장
+    setZoomLevel(loadedMap.getLevel())
 
     window.kakao.maps.event.addListener(loadedMap, 'zoom_changed', () => {
       const level = loadedMap.getLevel()
@@ -59,7 +59,7 @@ export default function MainMap({ data, center }: Props) {
         activeMarkerSize={{ width: 64, height: 64 }}
         selectedItem={selectedPark}
         setSelectedItem={setSelectedPark}
-        renderCard={(item) => <ParkMapCard item={item} />}
+        renderCard={(item) => <ParkMapCard item={item} onClose={() => setSelectedPark(null)} />}
         onMapLoad={handleMapLoad}
         onCardClick={handleCardClick}
         showLabel={showMarkerName}
