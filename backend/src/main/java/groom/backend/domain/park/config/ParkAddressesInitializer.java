@@ -39,24 +39,24 @@ public class ParkAddressesInitializer {
     ADDRESS_MAP.put("POI099", "서울 중구 을지로1가 50-1");        // 서울광장
     ADDRESS_MAP.put("POI100", "경기 과천시 막계동 159-1");        // 서울대공원
     ADDRESS_MAP.put("POI101", "서울 성동구 성수동1가 685-20");    // 서울숲공원
-    ADDRESS_MAP.put("POI102", "경기 구리시 아천동");              // 아차산
+    ADDRESS_MAP.put("POI102", "경기 구리시 아천동 산 7-1");       // 아차산
     ADDRESS_MAP.put("POI103", "서울 영등포구 양화동 1-4");        // 양화한강공원
     ADDRESS_MAP.put("POI104", "서울 광진구 능동 18");             // 어린이대공원
-    ADDRESS_MAP.put("POI105", "서울 영등포구 여의도동 8");        // 여의도한강공원
+    ADDRESS_MAP.put("POI105", "서울 영등포구 여의도동 85");        // 여의도한강공원
     ADDRESS_MAP.put("POI106", "서울 마포구 상암동 481-6");        // 월드컵공원
-    ADDRESS_MAP.put("POI107", "서울 성동구 금호동4가 173-9");     // 응봉산
+    ADDRESS_MAP.put("POI107", "서울특별시 성동구 응봉동 269-4");     // 응봉산
     ADDRESS_MAP.put("POI108", "서울 용산구 이촌동 302-17");       // 이촌한강공원
     ADDRESS_MAP.put("POI109", "서울 송파구 잠실동 10");           // 잠실종합운동장
     ADDRESS_MAP.put("POI110", "서울 송파구 잠실동 1-1");          // 잠실한강공원
-    ADDRESS_MAP.put("POI111", "서울 서초구 잠원동");              // 잠원한강공원
-    ADDRESS_MAP.put("POI112", "경기 과천시 막계동");              // 청계산
-    ADDRESS_MAP.put("POI113", "서울특별시 종로구 청와대로 1");    // 청와대
+    ADDRESS_MAP.put("POI111", "서울 서초구 잠원동 154-1");        // 잠원한강공원
+    ADDRESS_MAP.put("POI112", "경기도 의왕시 청계동 산 1-1");     // 청계산
+    ADDRESS_MAP.put("POI113", "서울 종로구 청와대로 1");          // 청와대
     ADDRESS_MAP.put("POI123", "서울 동작구 신대방동 722");        // 보라매공원
     ADDRESS_MAP.put("POI124", "서울 서대문구 현저동 101");        // 서대문독립공원
-    ADDRESS_MAP.put("POI125", "경기 군포시 당정동");              // 안양천
-    ADDRESS_MAP.put("POI126", "서울 영등포구 여의도동");          // 여의서로
+    ADDRESS_MAP.put("POI125", "서울 영등포구 문래동6가 52");      // 안양천
+    ADDRESS_MAP.put("POI126", "서울 영등포구 여의도동 82-9");     // 여의서로
     ADDRESS_MAP.put("POI127", "서울 송파구 방이동 88");           // 올림픽공원
-    ADDRESS_MAP.put("POI128", "서울 서대문구 연희동 170-181");    // 홍제폭포
+    ADDRESS_MAP.put("POI128", "서울 서대문구 연희동 170-185");    // 홍제폭포
   }
 
 
