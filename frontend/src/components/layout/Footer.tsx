@@ -8,14 +8,24 @@ export default function Footer() {
     <footer className="w-full max-w-2xl mx-auto bg-[#FBFBFB] px-6 pt-6 pb-20 flex flex-col justify-center">
       <div className="flex items-center gap-[10px] mb-[14px]">
         <Link
-          href="/docs/location_terms.pdf"
+          href="/docs/Terms_of_Use.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[11px] font-medium text-[#70716F] leading-[1.5] tracking-[-0.01em] hover:text-gray-900 transition-colors"
         >
-          위치정보 이용약관
+          서비스 이용약관
         </Link>
 
+        <span className="text-[10px] text-[#E8E8E8]">|</span>
+
+        <Link
+          href="/docs/location_terms.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-semibold text-[#70716F] leading-[1.5] tracking-[-0.01em] hover:text-gray-900 transition-colors"
+        >
+          위치정보 이용약관
+        </Link>
         <span className="text-[10px] text-[#E8E8E8]">|</span>
 
         <Link
