@@ -1,7 +1,6 @@
-import {ParkInfo} from "@/shared/types/park-types";
-import Button from "@/components/common/Button";
-import {useEffect, useState} from "react";
-import useToast from "@/components/common/ToastContainer";
+import { ParkInfo } from '@/shared/types/park-types'
+import Button from '@/components/common/Button'
+import { useState } from 'react'
 
 interface ParkFilterModalProps {
   parks: ParkInfo[]
@@ -18,7 +17,6 @@ export default function ParkFilterModal({
     setShow,
     setActiveOptions
   }: ParkFilterModalProps) {
-  const { showToast, ToastContainer } = useToast()
   const [selected, setSelected] = useState<string[]>(data)
 
   const toggleOption = (option: string) => {
@@ -27,17 +25,13 @@ export default function ParkFilterModal({
     )
   }
 
-  // 공원이 없는 경우 Toast
-  useEffect(() => {
-    if (parks.length === 0) {
-      showToast("조건에 맞는 공원이 없어요. 필터를 다시 설정해보세요.", 'default', 2000)
-    }
-  }, [parks])
-
+  // 필터 적용 후 모달 닫힘
   const applyFilter = () => {
     setActiveOptions(selected)
+    setShow(false)
   }
 
+  // 필터 초기화
   const resetFilter = () => {
     setSelected([])
   }
@@ -73,8 +67,6 @@ export default function ParkFilterModal({
           <span className="text-body-1-m">적용</span>
         </Button>
       </div>
-
-    {ToastContainer}
     </>
   )
 }
