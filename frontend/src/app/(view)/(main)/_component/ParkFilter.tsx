@@ -7,8 +7,8 @@ import ParkSortFilterModal from "@/app/(view)/(main)/_component/ParkSortFilterMo
 import {useState} from "react";
 import ParkFilterModal from "@/app/(view)/(main)/_component/ParkFilterModal";
 import {ParkInfo} from "@/shared/types/park-types";
-import ParkDirectionModal from "@/app/(view)/detail/_components/ParkDirectionModal";
 import {Modal} from "@/components/ui/Modal";
+import Image from 'next/image'
 
 const OPTIONS: EmblaOptionsType = { dragFree: true }
 
@@ -51,13 +51,13 @@ export default function ParkFilter ({
             variant={activeOptions.length > 0 ? "active" : "default"}
             onClick={() => setShowFilterModal(true)}
             className="shrink-0 ml s-5">
-            <img src="/images/icons/slider.svg" width={22} alt={"아이콘"}/>
+            <Image src="/images/icons/slider.svg" width={22} height={22} alt={"아이콘"}/>
           </Button>
 
           <Button
             className="shrink-0"
             onClick={() => setShowSortModal(true)}
-            rightIcon={<img src="/images/icons/arrow/down.svg" width={16} alt={"아이콘"}/>}
+            rightIcon={<Image src="/images/icons/arrow/down.svg" width={16} height={16} alt={"아이콘"}/>}
           >
             <p className="text-body-2-m text-center pl-1">
               {activeSort === 'BY_DISTANCE' ? '가까운 순' : '한적한 순'}

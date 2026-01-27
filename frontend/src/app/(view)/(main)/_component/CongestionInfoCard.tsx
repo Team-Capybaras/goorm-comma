@@ -1,10 +1,9 @@
 'use client'
 
-import { MouseEvent, useEffect } from 'react'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
+import { useEffect } from 'react'
 import Tag from '@/components/common/Tag'
 import cn from '@/shared/utils/cn'
-import { Bold } from 'lucide-react'
+import Image from 'next/image'
 
 interface CongestionInfoCardProps {
   onClose?: () => void
@@ -24,7 +23,7 @@ export function CongestionInfoCard({ onClose }: CongestionInfoCardProps) {
       {/* 1. 헤더 */}
       <div className="flex justify-between ">
         <p className="text-subtitle-2-sb">혼잡도란?</p>
-        <img src="/images/icons/close.svg"
+        <Image src="/images/icons/close.svg"
              className="w-[24px] h-[24px] cursor-pointer"
              onClick={onClose}
              alt="닫기"/>

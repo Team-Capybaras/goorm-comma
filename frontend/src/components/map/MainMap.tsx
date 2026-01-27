@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import KakaoMap from '@/components/common/KakaoMap'
@@ -8,7 +8,7 @@ import ParkMapCard from '@/components/map/ParkMapCard'
 import FloatingBar from '@/components/common/FloatingBar'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionMarkerIcon } from '@/shared/utils/map-helpers'
-import {useLocationStore} from "@/store/location.store";
+import { useLocationStore } from '@/store/location.store'
 
 interface Props {
   data: ParkItem[]
@@ -38,7 +38,7 @@ export default function MainMap({ data, center }: Props) {
 
   const handleMapLoad = (loadedMap: any) => {
     setMap(loadedMap)
-    setZoomLevel(loadedMap.getLevel()) // 초기 줌 레벨 저장
+    setZoomLevel(loadedMap.getLevel())
 
     window.kakao.maps.event.addListener(loadedMap, 'zoom_changed', () => {
       const level = loadedMap.getLevel()
@@ -59,7 +59,7 @@ export default function MainMap({ data, center }: Props) {
         activeMarkerSize={{ width: 64, height: 64 }}
         selectedItem={selectedPark}
         setSelectedItem={setSelectedPark}
-        renderCard={(item) => <ParkMapCard item={item} />}
+        renderCard={(item) => <ParkMapCard item={item} onClose={() => setSelectedPark(null)} />}
         onMapLoad={handleMapLoad}
         onCardClick={handleCardClick}
         showLabel={showMarkerName}
@@ -75,6 +75,7 @@ export default function MainMap({ data, center }: Props) {
           alt="현위치"
           fill
           className={`object-cover scale-200 ${isLocLoading ? 'animate-spin' : ''}`}
+          priority
         />
       </button>
 

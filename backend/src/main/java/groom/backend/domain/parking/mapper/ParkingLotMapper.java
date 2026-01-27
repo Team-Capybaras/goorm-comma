@@ -41,8 +41,8 @@ public class ParkingLotMapper {
             // current status field
             // if currentInfoYn is false, then null
             .currentInfoYn(currentInfoYn)
-            .currentPrkTime(currentInfoYn ? null : latestStatus.getCurrentPrkTime())
-            .currentPrkCnt(currentInfoYn ? null : latestStatus.getCurrentPrkCnt())
+            .currentPrkTime(currentInfoYn ? latestStatus.getCurrentPrkTime() : null)
+            .currentPrkCnt(currentInfoYn ? latestStatus.getCurrentPrkCnt() : null)
 
 
             .build();

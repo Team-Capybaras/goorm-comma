@@ -138,7 +138,7 @@ export default function KakaoMap<T extends BaseMapItem>({
       })
 
       const content = `
-        <div style="transform: translateY(4px);"> 
+        <div class="translate-y-[-5px]"> 
           <div class="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-xl shadow-sm ">
              <span class="text-[14px] font-semibold text-gray-800 whitespace-nowrap leading-none block">
                ${item.name}
@@ -211,14 +211,7 @@ export default function KakaoMap<T extends BaseMapItem>({
 
       {selectedItem && (
         <>
-          <div className="absolute bottom-6 left-4 right-4 z-20 mx-[24px] animate-slide-up">
-            <button
-              className="absolute top-[-45px] right-[4px] w-[36px] h-[36px] p s-3 bg-white rounded-full cursor-pointer
-            shadow-[0_1px_2px_0_rgba(56,57,56,0.5),0_0_16px_0_rgba(232,232,232,0.3)]"
-              onClick={() => setSelectedItem(null)}
-            >
-              <img src="/images/icons/close.svg" width={20} height={20} alt="닫기"/>
-            </button>
+          <div className="absolute bottom-0 left-0 w-full z-20 animate-slide-up">
             <div onClick={() => onCardClick?.(selectedItem)}>{renderCard(selectedItem)}</div>
           </div>
         </>

@@ -41,7 +41,7 @@ export default function FloatingBar() {
               `}
             >
               <div className="relative w-5 h-5">
-                <img
+                <Image
                   src={isActive ? item.iconOn : item.iconOff}
                   alt={item.label}
                   width={20}

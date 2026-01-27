@@ -20,7 +20,7 @@ interface SingleToastProps extends ToastProps {
   onClose: (id: string) => void
 }
 
-const baseStyle = 'flex items-center justify-center gap-2 px-4 py-2 rounded-full shadow text-white'
+const baseStyle = 'flex items-center justify-center gap-2 px-4 py-3 rounded-full shadow text-white'
 
 const variantClasses: Record<ToastType, string> = {
   default: 'bg-toast text-white',

@@ -1,10 +1,10 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import {useState} from "react";
 import {CongestionType, Weekday} from "@/shared/types/chart-types";
 import {congestionDatasets} from "@/app/(view)/detail/_utils/chart-datasets";
 import {legendMarginPlugin, tooltipBubblePlugin, verticalLinePlugin} from "@/app/(view)/detail/_utils/chart-plugins";
-import LineChart from "@/components/chart/LineChart";
 import {congestionLineOptions} from "@/app/(view)/detail/_utils/chart-option";
 import WeekdayTabs from "@/components/chart/WeekdayTabs";
 import {formatDateTimePad, getWeekday} from "@/shared/utils/time-format";
@@ -12,6 +12,11 @@ import {formatDateTimePad, getWeekday} from "@/shared/utils/time-format";
 interface Props {
   data : CongestionType
 }
+
+const LineChart = dynamic(
+  () => import('@/components/chart/LineChart'),
+  { ssr: false }
+)
 
 export default function CongestionChart({data}: Props) {
   const [selectedDay, setSelectedDay] = useState<Weekday>(getWeekday())

@@ -52,6 +52,7 @@ export default function EmblaCarousel({
               <DotButton
                 key={index}
                 onClick={() => dotState.onDotButtonClick(index)}
+                aria-label={`슬라이드 ${index + 1}로 이동`}
                 className={cn(
                   'w-[8px] h-[8px] rounded-full',
                   index === dotState.selectedIndex

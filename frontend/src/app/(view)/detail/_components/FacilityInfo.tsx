@@ -4,7 +4,7 @@ export default function FacilityInfo() {
   return (
     <div className="grid grid-cols-3 mt-3">
       <div className="flex items-center justify-start gap s-2">
-        <img src="/images/icons/facility/parking.svg" width={16} height={16} alt={'주차장'} />
+        <Image src="/images/icons/facility/parking.svg" width={16} height={16} alt={'주차장'} />
         <p className="font-xs">주차공간</p>
       </div>
       <div className="flex items-center justify-start gap s-2">
