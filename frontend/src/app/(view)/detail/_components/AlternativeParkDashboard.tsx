@@ -64,7 +64,7 @@ export default function AlternativeParkDashboard({
             {data?.map((item, i) => (
               <Link
                 href={`/detail/${item.areaCode}`}
-                className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`}
+                className={`flex-[0_0_40%] max-w-[168px] min-w-[168px] ${i == 0 ? 'ml s-5' : ''}`}
                 key={i}
               >
                 <div className="relative w-[168px] h-[218px]">
