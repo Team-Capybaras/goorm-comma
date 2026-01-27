@@ -15,22 +15,22 @@ public class ParkCoordinates {
     
     static {
         // 공원별 경도, 위도 정보 초기화 (AREA_CD를 키로 사용)
-        COORDINATES.put("POI085", new ParkCoordinate(126.815256, 37.588272)); // 강서한강공원
-        COORDINATES.put("POI086", new ParkCoordinate(126.866998, 37.497058)); // 고척돔
-        COORDINATES.put("POI087", new ParkCoordinate(127.120071, 37.548939)); // 광나루한강공원
-        COORDINATES.put("POI088", new ParkCoordinate(126.975966, 37.573793)); // 광화문광장
-        COORDINATES.put("POI089", new ParkCoordinate(126.98397, 37.521267)); // 국립중앙박물관·용산가족공원
-        COORDINATES.put("POI090", new ParkCoordinate(126.878076, 37.566974)); // 난지한강공원
-        COORDINATES.put("POI091", new ParkCoordinate(126.98084, 37.554048)); // 남산공원
-        COORDINATES.put("POI092", new ParkCoordinate(126.960096, 37.518681)); // 노들섬
-        COORDINATES.put("POI093", new ParkCoordinate(127.069903, 37.529546)); // 뚝섬한강공원
-        COORDINATES.put("POI094", new ParkCoordinate(126.898604, 37.552919)); // 망원한강공원
-        COORDINATES.put("POI095", new ParkCoordinate(126.995963, 37.510827)); // 반포한강공원
-        COORDINATES.put("POI096", new ParkCoordinate(127.04056, 37.62161)); // 북서울꿈의숲
-        COORDINATES.put("POI098", new ParkCoordinate(126.999838, 37.490796)); // 서리풀공원·몽마르뜨공원
-        COORDINATES.put("POI099", new ParkCoordinate(126.978046, 37.565772)); // 서울광장
-        COORDINATES.put("POI100", new ParkCoordinate(127.017136, 37.42783)); // 서울대공원
-        COORDINATES.put("POI101", new ParkCoordinate(127.037464, 37.544617)); // 서울숲공원
+        COORDINATES.put("POI085", new ParkCoordinate(126.815224, 37.588238)); // 강서한강공원
+        COORDINATES.put("POI086", new ParkCoordinate(126.867052, 37.498199)); // 고척돔
+        COORDINATES.put("POI087", new ParkCoordinate(127.120038, 37.548982)); // 광나루한강공원
+        COORDINATES.put("POI088", new ParkCoordinate(126.976965, 37.572576)); // 광화문광장
+        COORDINATES.put("POI089", new ParkCoordinate(126.980449, 37.523987)); // 국립중앙박물관·용산가족공원
+        COORDINATES.put("POI090", new ParkCoordinate(126.877980, 37.566991)); // 난지한강공원
+        COORDINATES.put("POI091", new ParkCoordinate(126.990947, 37.551309)); // 남산공원
+        COORDINATES.put("POI092", new ParkCoordinate(126.959710, 37.518408)); // 노들섬
+        COORDINATES.put("POI093", new ParkCoordinate(127.069988, 37.529546)); // 뚝섬한강공원
+        COORDINATES.put("POI094", new ParkCoordinate(126.898540, 37.552970)); // 망원한강공원
+        COORDINATES.put("POI095", new ParkCoordinate(126.995973, 37.510801)); // 반포한강공원
+        COORDINATES.put("POI096", new ParkCoordinate(127.040635, 37.621610)); // 북서울꿈의숲
+        COORDINATES.put("POI098", new ParkCoordinate(126.999741, 37.491000)); // 서리풀공원·몽마르뜨공원
+        COORDINATES.put("POI099", new ParkCoordinate(126.978012, 37.565736)); // 서울광장
+        COORDINATES.put("POI100", new ParkCoordinate(127.017029, 37.427813)); // 서울대공원
+        COORDINATES.put("POI101", new ParkCoordinate(127.037442, 37.544549)); // 서울숲공원
         COORDINATES.put("POI102", new ParkCoordinate(127.103634, 37.572188)); // 아차산
         COORDINATES.put("POI103", new ParkCoordinate(126.902297, 37.538471)); // 양화한강공원
         COORDINATES.put("POI104", new ParkCoordinate(127.081040, 37.549571)); // 어린이대공원
