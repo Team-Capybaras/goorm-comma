@@ -125,6 +125,8 @@ public class ParkRecommendServiceImpl implements ParkRecommendService {
             baseAreaCode, longitude, latitude);
 
     List<GetAllParksResponse.ParkInfo> sorted = getSortedParkList(longitude, latitude, order, baseAreaCode).stream()
+            // baseAreaCode와 같은 공원 제외
+            .filter(p -> !baseAreaCode.equals(p.getAreaCode()))
             // Top K 제한
             .limit(RECOMMEND_LIMIT).toList();
 
