@@ -168,7 +168,22 @@ com.example.project
 
 ## API 명세
 
----
+| Resource             | Method | URI (엔드포인트)                | 설명                                                                                                                                                            |
+| -------------------- | ------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Park                 | GET    | `/v1/parks`                | 공원 리스트 조회 (커서 기반 페이지네이션). 필터(`tag_names`)와 정렬(`sort`) 사용 가능. 정렬 옵션: `DEFAULT`, `LOW_CONGESTION`, `BY_DISTANCE`. `BY_DISTANCE` 사용 시 `longitude`, `latitude` 필수 |
+| Park                 | GET    | `/v1/parks/{areaCode}`     | 특정 공원 상세 조회 (공원 상세 정보 카드)                                                                                                                                     |
+| Park                 | GET    | `/v1/parks/all`            | 전체 공원 기본 정보 조회 (지도 마커용: 이름, 지역코드, 경도, 위도)                                                                                                                     |
+| Park                 | GET    | `/v1/parks/search`         | 공원명 검색. 검색어가 포함된 공원 중 첫 번째 결과 조회                                                                                                                              |
+| Park                 | GET    | `/v1/parks/recommend`      | 혼잡도·거리 기반 공원 추천. 입력 위치 기준 최대 5개 추천. `limit_distance` 또는 `base_area_code` 중 하나 필수                                                                              |
+| Parking              | GET    | `/v1/parking`              | 지역 코드 기반 편의시설 정보 조회 (주차장, 전기차 충전소)                                                                                                                            |
+| Weather              | GET    | `/v1/weather/current`      | 현재 날씨 조회 (`area_code` 기준). 서울시 Open API 연동                                                                                                                    |
+| Population           | GET    | `/v1/populations`          | 지역 코드 기반 실시간 인구 현황 및 예보 조회                                                                                                                                    |
+| Transit              | GET    | `/v1/transits`             | 지역 코드 기반 대중교통 정보 조회 (지하철, 버스, 공유 자전거)                                                                                                                         |
+| Seoul                | GET    | `/v1/seoul/citydata`       | 핫스팟 장소명 기준 도시 데이터 조회 (서울시 공공 API)                                                                                                                             |
+| PublicData           | POST   | `/v1/publicdata/save`      | 서울시 공공 API 호출 결과를 DB에 저장                                                                                                                                      |
+| Congestion Avoidance | GET    | `/v1/avoidance/statistics` | 특정 공원의 요일·시간(hour) 단위 혼잡도 통계 조회 (차트용)                                                                                                                         |
+| Congestion Avoidance | GET    | `/v1/avoidance/aggregate`  | 전체 공원 통계 집계 트리거 (테스트용)                                                                                                                                        |
+
 
 
 ## 데이터 흐름 및 예상 시나리오
