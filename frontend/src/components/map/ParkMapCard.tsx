@@ -4,7 +4,7 @@ import Image from 'next/image'
 import MapCard from '@/components/map/MapCard'
 import type { ParkItem } from '@/shared/types/map-types'
 import { getCongestionColorClass, getWeatherIconPath } from '@/shared/utils/map-helpers'
-import Tag from "@/components/common/Tag";
+import Tag from '@/components/common/Tag'
 
 interface Props {
   item: ParkItem
@@ -16,10 +16,12 @@ const airQualityTextMap: Record<string, string> = {
   좋음: '대기질이 좋아요',
 }
 
-
 export default function ParkMapCard({ item }: Props) {
   return (
-    <MapCard congestion={item.congestion} className="w-full min-w-[300px] border-box  cursor-pointer">
+    <MapCard
+      congestion={item.congestion}
+      className="w-full min-w-[300px] border-box  cursor-pointer"
+    >
       <div className="flex justify-between items-start gap-3">
         {/* 좌측 텍스트 컨테이너 */}
         <div className="flex flex-col gap-1 flex-1 min-w-0">
@@ -64,17 +66,11 @@ export default function ParkMapCard({ item }: Props) {
 
       <div className="flex flex-wrap items-center gap-1.5 mt-3">
         {/* 예측 배지 */}
-        {item.forecast && (
-          <span className="bg-blue-0 text-blue-600 px-2.5 py-1 rounded-[6px] text-caption-1-sb">
-            {item.forecast}
-          </span>
-        )}
+        {item.forecast && <Tag variant="blue">{item.forecast}</Tag>}
 
         {/* 태그 목록 */}
         {item.tags?.map((tag, index) => (
-          <Tag key={index}>
-            {tag}
-          </Tag>
+          <Tag key={index}>{tag}</Tag>
         ))}
       </div>
     </MapCard>
