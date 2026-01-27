@@ -1,7 +1,6 @@
 import { ChartOptions } from 'chart.js'
 
 export const congestionLineOptions: ChartOptions<'line'> = {
-  responsive: true,
   plugins: {
     legend: {
       display: true,

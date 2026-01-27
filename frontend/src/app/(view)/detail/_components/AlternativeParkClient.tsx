@@ -1,5 +1,5 @@
 'use client'
-import Image from "next/image";
+
 import AlternativeInfoModal from "@/app/(view)/detail/_components/AlternativeInfoModal";
 import {useState} from "react";
 

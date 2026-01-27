@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     domains: [
       'goorm-shopping-s3.s3.ap-northeast-2.amazonaws.com',
     ],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 
