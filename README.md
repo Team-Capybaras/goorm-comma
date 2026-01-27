@@ -120,35 +120,118 @@ frontend
 
 backend
 ```
-com.example.project
+groom.backend
 │
-├─ application
-│   └─ product
+├─ application                    # 애플리케이션 레이어 (Use Case)
+│   ├─ avoidance                  # 혼잡도 회피 기능
+│   │   ├─ mapper
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   ├─ dto
+│   │   ├─ model                  # 혼잡도 예측 모델 (Strategy Pattern)
+│   │   └─ scheduler
+│   │
+│   └─ park                       # 공원 관련 기능
 │       ├─ mapper
 │       ├─ service
 │       │   ├─ spec
-│       │   └─ Impl
+│       │   └─ impl
 │       ├─ controller
-│       └─ dto
+│       ├─ dto
+│       └─ enums
 │
-├─ domain
-│   └─ product
-│       ├─ mapper
-│       ├─ entity
-│       ├─ repository
-│       ├─ service
-│       │   ├─ spec
-│       │   └─ Impl
-│       ├─ controller
-│       └─ dto
+├─ domain                         # 도메인 레이어 (Entity & Repository)
+│   ├─ park                       # 공원 도메인
+│   │   ├─ mapper
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   ├─ dto
+│   │   ├─ config
+│   │   └─ util
+│   │
+│   ├─ parking                    # 주차장 도메인
+│   │   ├─ mapper
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   └─ dto
+│   │
+│   ├─ population                 # 인구/혼잡도 도메인
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   └─ dto
+│   │
+│   ├─ weather                     # 날씨 도메인
+│   │   ├─ mapper
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   └─ dto
+│   │
+│   ├─ transit                     # 대중교통 도메인
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   └─ dto
+│   │
+│   ├─ avoidance                   # 혼잡도 통계 도메인
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   └─ enums
+│   │
+│   ├─ publicdata                  # 공공데이터 수집 도메인
+│   │   ├─ mapper
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   ├─ dto
+│   │   └─ scheduler
+│   │
+│   ├─ seoul                       # 서울시 API 연동 도메인
+│   │   ├─ service
+│   │   │   ├─ spec
+│   │   │   └─ impl
+│   │   ├─ controller
+│   │   └─ README.md
+│   │
+│   ├─ tag                         # 태그 도메인
+│   │   ├─ entity
+│   │   ├─ repository
+│   │   └─ config
+│   │
+│   └─ enums                       # 공통 Enum
 │
-├─ common
-│   ├─ response
+├─ common                          # 공통 모듈
+│   ├─ config
+│   ├─ entity
 │   ├─ exception
-│   ├─ util
-│   └─ config
+│   ├─ response
+│   └─ utils
 │
-├─ interfaces
+├─ interfaces                      # 외부 인터페이스
+│   └─ seoul
+│       ├─ dto
+│       └─ SeoulApiClient
 │
 └─ BackendApplication.java
 ```
