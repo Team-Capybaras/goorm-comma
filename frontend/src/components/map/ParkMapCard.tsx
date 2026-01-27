@@ -59,7 +59,7 @@ export default function ParkMapCard({ item }: Props) {
         {/* 우측 썸네일 이미지 (데이터가 있을 경우만 표시) */}
         {item.image && (
           <div className="relative w-[72px] h-[72px] shrink-0 rounded-lg overflow-hidden bg-background-deep">
-            <Image src={item.image} alt={item.name} fill className="object-cover" />
+            <Image src={item.image} alt={item.name} sizes="72px" fill className="object-cover" />
           </div>
         )}
       </div>

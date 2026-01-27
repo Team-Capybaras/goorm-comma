@@ -4,6 +4,7 @@ import groom.backend.application.avoidance.service.spec.ParkStatisticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class ParkStatisticsScheduler {
   private final ParkStatisticsService parkStatisticsService;
 
+  @Profile("dev")
   @EventListener(ApplicationReadyEvent.class)
   public void onApplicationReady() {
     log.info("=== 애플리케이션 시작 시 혼잡도 데이터 집계 시작 ===");

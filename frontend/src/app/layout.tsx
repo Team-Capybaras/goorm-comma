@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: '파키바라 | Parkibara',
+  title: '파키바라 | parkybara',
+  description: '파키바라 | parkybara',
   icons: {
     icon: '/logo/logo-color.png',
   },
