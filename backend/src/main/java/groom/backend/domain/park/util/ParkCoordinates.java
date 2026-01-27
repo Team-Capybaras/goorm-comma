@@ -33,12 +33,12 @@ public class ParkCoordinates {
         COORDINATES.put("POI101", new ParkCoordinate(127.037464, 37.544617)); // 서울숲공원
         COORDINATES.put("POI102", new ParkCoordinate(127.103634, 37.572188)); // 아차산
         COORDINATES.put("POI103", new ParkCoordinate(126.902297, 37.538471)); // 양화한강공원
-        COORDINATES.put("POI104", new ParkCoordinate(127.08178, 37.549542)); // 어린이대공원
+        COORDINATES.put("POI104", new ParkCoordinate(127.081040, 37.549571)); // 어린이대공원
         COORDINATES.put("POI105", new ParkCoordinate(126.934754, 37.526906)); // 여의도한강공원
         COORDINATES.put("POI106", new ParkCoordinate(126.893597, 37.564061)); // 월드컵공원
         COORDINATES.put("POI107", new ParkCoordinate(127.029869, 37.54872)); // 응봉산
-        COORDINATES.put("POI108", new ParkCoordinate(126.971273, 37.518894)); // 이촌한강공원
-        COORDINATES.put("POI109", new ParkCoordinate(127.072213, 37.522129)); // 잠실종합운동장
+        COORDINATES.put("POI108", new ParkCoordinate(126.970511, 37.517415)); // 이촌한강공원
+        COORDINATES.put("POI109", new ParkCoordinate(127.073583, 37.516395)); // 잠실종합운동장
         COORDINATES.put("POI110", new ParkCoordinate(127.086648, 37.517709)); // 잠실한강공원
         COORDINATES.put("POI111", new ParkCoordinate(127.009401, 37.521718)); // 잠원한강공원
         COORDINATES.put("POI112", new ParkCoordinate(127.041707, 37.414744)); // 청계산

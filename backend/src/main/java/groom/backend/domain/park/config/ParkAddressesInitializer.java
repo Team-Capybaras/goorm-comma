@@ -39,12 +39,12 @@ public class ParkAddressesInitializer {
     ADDRESS_MAP.put("POI099", "서울 중구 을지로1가 50-1");        // 서울광장
     ADDRESS_MAP.put("POI100", "경기 과천시 막계동 159-1");        // 서울대공원
     ADDRESS_MAP.put("POI101", "서울 성동구 성수동1가 685-20");    // 서울숲공원
-    ADDRESS_MAP.put("POI102", "경기 구리시 아천동");              // 아차산
+    ADDRESS_MAP.put("POI102", "경기 구리시 아천동 산 7-1");       // 아차산
     ADDRESS_MAP.put("POI103", "서울 영등포구 양화동 1-4");        // 양화한강공원
     ADDRESS_MAP.put("POI104", "서울 광진구 능동 18");             // 어린이대공원
-    ADDRESS_MAP.put("POI105", "서울 영등포구 여의도동 8");        // 여의도한강공원
+    ADDRESS_MAP.put("POI105", "서울 영등포구 여의도동 85");        // 여의도한강공원
     ADDRESS_MAP.put("POI106", "서울 마포구 상암동 481-6");        // 월드컵공원
-    ADDRESS_MAP.put("POI107", "서울 성동구 금호동4가 173-9");     // 응봉산
+    ADDRESS_MAP.put("POI107", "서울특별시 성동구 응봉동 269-4");     // 응봉산
     ADDRESS_MAP.put("POI108", "서울 용산구 이촌동 302-17");       // 이촌한강공원
     ADDRESS_MAP.put("POI109", "서울 송파구 잠실동 10");           // 잠실종합운동장
     ADDRESS_MAP.put("POI110", "서울 송파구 잠실동 1-1");          // 잠실한강공원
