@@ -55,7 +55,7 @@ export default function AlternativeParkDashboard({
   return (
     <div className="mt s-5 pb-8">
       <div className="flex gap s-1 relative">
-        <h3 className="pl s-6 text-subtitle-2-sb">지금은 이 공원이 더 여유로워요</h3>
+        <h3 className="pl s-5 text-subtitle-2-sb">지금은 이 공원이 더 여유로워요</h3>
         <AlternativeParkClient />
       </div>
       <div className="mt s-4">
@@ -67,12 +67,12 @@ export default function AlternativeParkDashboard({
                 className={`flex-[0_0_40%] ${i == 0 ? 'ml s-5' : ''}`}
                 key={i}
               >
-                <div className="relative w-full h-[218px]">
+                <div className="relative w-[168px] h-[218px]">
                   <Image
                     src={item.images[0]}
                     alt={`park-thumbnail-${i}`}
                     fill
-                    sizes="100%"
+                    sizes="168px"
                     className="object-cover rounded-6"
                     priority={i === 0}
                   />
