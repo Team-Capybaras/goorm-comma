@@ -1,6 +1,9 @@
 
 # Take idle time with Parkybara
 
+<img width="1800" height="1000" alt="image" src="https://github.com/user-attachments/assets/e3ca4774-af20-43f3-8ff5-942b200bfe31" />
+
+
 <a xlink:href="https://parkybara.deving.xyz" target="_blank">
 <svg width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_1_280)">
