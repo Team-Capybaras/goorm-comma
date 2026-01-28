@@ -31,8 +31,6 @@
 ---
 ## Team Capybara
 
-## 👥 Team Capybara
-
 | PM | PD | FE | BE |
 |----|----|----|----|
 | alsgml2846@gmail.com | rlajh6571@gmail.com<br>tosalgoo@gmail.com | https://github.com/chdaud78<br>https://github.com/asdfdk123<br>https://github.com/Ikmyeongs | https://github.com/jung0522<br>https://github.com/kmgyu |
