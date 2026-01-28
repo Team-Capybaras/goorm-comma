@@ -13,8 +13,8 @@ interface KakaoMapProps<T extends BaseMapItem> {
   onCardClick?: (item: T) => void
   onMapLoad?: (map: any) => void
 
-  markerSize?: { width: number; height: number }
-  activeMarkerSize?: { width: number; height: number }
+  markerSize: { width: number; height: number }
+  activeMarkerSize: { width: number; height: number }
 
   selectedItem?: T | null
   setSelectedItem?: (item: T | null) => void
@@ -29,8 +29,8 @@ export default function KakaoMap<T extends BaseMapItem>({
   renderCard,
   onCardClick,
   onMapLoad,
-  markerSize = { width: 32, height: 32 },
-  activeMarkerSize = { width: 48, height: 48 },
+  markerSize,
+  activeMarkerSize,
   selectedItem: cardSelectedItem,
   setSelectedItem: cardSetSelectedItem,
   showLabel = true,
@@ -58,24 +58,32 @@ export default function KakaoMap<T extends BaseMapItem>({
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    window.kakao.maps.load(() => {
-      if (!mapContainer.current) return
-
-      const options = {
-        center: new window.kakao.maps.LatLng(center.lat, center.lng),
-        level: level,
-      }
-      const map = new window.kakao.maps.Map(mapContainer.current, options)
-      setMapInstance(map)
-
-      if (onMapLoad) {
-        onMapLoad(map)
+    const initMap = () => {
+      if (!window.kakao || !window.kakao.maps) {
+        setTimeout(initMap, 100)
+        return
       }
 
-      window.kakao.maps.event.addListener(map, 'click', () => {
-        handleInternalSelect(null)
+      window.kakao.maps.load(() => {
+        if (!mapContainer.current) return
+
+        const options = {
+          center: new window.kakao.maps.LatLng(center.lat, center.lng),
+          level: level,
+        }
+        const map = new window.kakao.maps.Map(mapContainer.current, options)
+        setMapInstance(map)
+
+        if (onMapLoad) {
+          onMapLoad(map)
+        }
+
+        window.kakao.maps.event.addListener(map, 'click', () => {
+          handleInternalSelect(null)
+        })
       })
-    })
+    }
+    initMap()
   }, [])
 
   // 2. 현재 위치 표시
@@ -196,18 +204,28 @@ export default function KakaoMap<T extends BaseMapItem>({
     })
   }, [selectedItem, data, getMarkerImage, markerSize, activeMarkerSize])
 
-  // 7. 중심 이동
+  // 7. 중심 이동 및 레벨 변경
   useEffect(() => {
-    if (mapInstance && center) {
+    if (!mapInstance || !center) return
+
+    const currentLevel = mapInstance.getLevel()
+    if (level && currentLevel !== level) {
+      mapInstance.setLevel(level, { animate: { duration: 300 } })
+    }
+
+    const currentCenter = mapInstance.getCenter()
+    const latDiff = Math.abs(currentCenter.getLat() - center.lat)
+    const lngDiff = Math.abs(currentCenter.getLng() - center.lng)
+
+    if (latDiff > 0.00001 || lngDiff > 0.00001) {
       const moveLatLon = new window.kakao.maps.LatLng(center.lat, center.lng)
-      mapInstance.setCenter(moveLatLon)
-      mapInstance.setLevel(level)
+      mapInstance.panTo(moveLatLon)
     }
   }, [center, level, mapInstance])
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-background">
-      <div ref={mapContainer} className="w-full h-full" />
+      <div ref={mapContainer} className="w-full h-full" style={{ willChange: 'transform' }} />
 
       {selectedItem && (
         <>

@@ -53,7 +53,7 @@ export default function MainMap({ data, center }: Props) {
       <KakaoMap<ParkItem>
         data={data}
         center={center}
-        level={7}
+        level={zoomLevel}
         getMarkerImage={(item, _isSelected) => getCongestionMarkerIcon(item.congestion)}
         markerSize={{ width: 48, height: 48 }}
         activeMarkerSize={{ width: 64, height: 64 }}
@@ -67,18 +67,19 @@ export default function MainMap({ data, center }: Props) {
 
       <button
         onClick={handleCurrentLocation}
-        className="absolute top-4 left-4 z-30 w-[40px] h-[40px] rounded-full overflow-hidden shadow-md p-0 outline-none hover:opacity-70 transition-opacity"
+        className="absolute top-4 left-4 z-30 w-[40px] h-[40px] rounded-full flex justify-center items-center bg-bright shadow-md p-0 outline-none hover:opacity-70 transition-opacity"
         aria-label="내 위치로 이동"
       >
         <Image
           src="/images/icons/map/current-button.svg"
           alt="현위치"
-          fill
-          className={`object-cover scale-200 ${isLocLoading ? 'animate-spin' : ''}`}
+          width={16}
+          height={16}
+          unoptimized
+          className={`${isLocLoading ? 'animate-spin' : ''}`}
           priority
         />
       </button>
-
       {!selectedPark && (
         <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center pointer-events-none">
           <div className="pointer-events-auto">
