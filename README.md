@@ -473,26 +473,8 @@ docker logs backend -f
 
 ## 개발 환경 가이드
 
-### 1. 프로젝트 구조
 
-- `backend/` : Spring Boot 서버 (로컬 실행)
-- `frontend/` : Next.js 프론트엔드 (Docker로 실행)
-- `nginx/` : Nginx 설정
-- `docker-compose.yml` : DB, Redis, Nginx, Next.js 정의
-- `.env.dev` : 개발 환경 변수
-
-- **브라우저**: 사용자 요청
-- **Nginx (Docker)**: 리버스 프록시 역할
-    - `/api/` 요청 → 로컬 Spring Boot 백엔드
-    - 그 외 요청 → Next.js 프론트엔드
-- **Spring Boot (로컬)**: API 서버, 포트 8080, 컨텍스트 경로 `/api`
-- **Docker Compose 서비스**:
-    - PostgreSQL 데이터베이스 (포트 5432)
-    - Redis 캐시 서버 (포트 6379)
-    - Next.js 프론트엔드 (포트 3000)
-    - Nginx (포트 80)
-
-#### 2.환경 변수 
+#### 1.환경 변수 
 
 개발 환경에서 사용하는 데이터베이스 계정과 비밀번호, DB 이름의 정의
 .env.dev 및 .env.prod
@@ -503,7 +485,7 @@ backend 환경변수
 
 ---
 
-## 🔧 개발용 실행 순서
+## 개발용 실행 순서
 
 1. manually start
 ```shell
