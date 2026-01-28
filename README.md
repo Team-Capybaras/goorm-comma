@@ -273,7 +273,89 @@ groom.backend
 
 ## 데이터 흐름 및 예상 시나리오
 
----
+flowchart TD
+    %% ===============================
+    %% Application Startup Data Flow
+    %% ===============================
+    A[Application Start] --> B[ApplicationReadyEvent]
+    B --> C[PublicDataScheduler.onApplicationReady()]
+
+    C --> C1[updateParkCoordinates]
+    C --> C2[updatePublicData]
+
+    C2 --> D[Seoul Public API]
+    D --> E[XML Response]
+    E --> F[DTO Mapping]
+    F --> G[PublicDataService.saveCityData]
+
+    G --> P1[Park]
+    G --> P2[LivePopStatus]
+    G --> P3[PredPopStatus]
+    G --> P4[WeatherStatus]
+    G --> P5[ParkingLot]
+    G --> P6[ParkingLotStatus]
+    G --> P7[ChargerStation]
+    G --> P8[SubwayStation]
+    G --> P9[BusStation]
+    G --> P10[Sbike]
+
+    %% ===============================
+    %% Scheduler Data Flow
+    %% ===============================
+    S1[@Scheduled (Every 30 min)]
+        --> S2[PublicDataScheduler.scheduledUpdate]
+        --> S3[Iterate 34 Parks]
+        --> D
+
+    S4[@Scheduled (Daily 00:00)]
+        --> S5[ParkStatisticsScheduler.aggregate]
+        --> S6[ParkStatisticsService.aggregateAll]
+        --> S7[Congestion Aggregation]
+        --> S8[ParkStatistics]
+    S7 --> S9[ParkStatisticsLog]
+
+    %% ===============================
+    %% Park Recommendation API Flow
+    %% ===============================
+    R1[Client Request<br/>GET /api/v1/parks/recommend]
+        --> R2[ParkRecommendController]
+        --> R3[ParkRecommendService]
+
+    R3 --> R4[Validate Base Park]
+    R3 --> R5[Get Base Congestion]
+
+    R3 --> R6[Load All Parks]
+    R6 --> R7[Build ParkInfo]
+
+    R7 --> R8[WeatherStatusRepository]
+    R7 --> R9[LivePopStatusRepository]
+    R7 --> R10[ParkTagRepository]
+    R7 --> R11[Distance Calculator]
+    R7 --> R12[Tag Similarity Calculator]
+
+    R7 --> R13[Filter: Low / Normal Congestion]
+    R13 --> R14[Sort<br/>(Congestion → Tag → Distance)]
+    R14 --> R15[Exclude Base Park]
+    R15 --> R16[Top 5 Response]
+
+    %% ===============================
+    %% Parking Status API Flow
+    %% ===============================
+    PAPI1[Client Request<br/>GET /api/v1/parking]
+        --> PAPI2[ParkingStatusController]
+        --> PAPI3[ParkingStatusService]
+
+    PAPI3 --> PAPI4[ParkingLotRepository]
+    PAPI3 --> PAPI5[ParkingLotStatusRepository]
+
+    PAPI4 --> PAPI6[ParkingLot List]
+    PAPI5 --> PAPI7[Latest Status]
+
+    PAPI6 --> PAPI8[ParkingLotMapper]
+    PAPI7 --> PAPI8
+
+    PAPI8 --> PAPI9[DTO Response]
+
 
 
 ## 테스트
