@@ -204,28 +204,19 @@ export default function KakaoMap<T extends BaseMapItem>({
     })
   }, [selectedItem, data, getMarkerImage, markerSize, activeMarkerSize])
 
-  // 7. 중심 이동 및 레벨 변경
+  // 7. 중심 이동
   useEffect(() => {
-    if (!mapInstance || !center) return
-
-    const currentLevel = mapInstance.getLevel()
-    if (level && currentLevel !== level) {
-      mapInstance.setLevel(level, { animate: { duration: 300 } })
-    }
-
-    const currentCenter = mapInstance.getCenter()
-    const latDiff = Math.abs(currentCenter.getLat() - center.lat)
-    const lngDiff = Math.abs(currentCenter.getLng() - center.lng)
-
-    if (latDiff > 0.00001 || lngDiff > 0.00001) {
+    if (mapInstance && center) {
       const moveLatLon = new window.kakao.maps.LatLng(center.lat, center.lng)
+
       mapInstance.panTo(moveLatLon)
+      mapInstance.setLevel(level, { animate: { duration: 300 } })
     }
   }, [center, level, mapInstance])
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-background">
-      <div ref={mapContainer} className="w-full h-full" style={{ willChange: 'transform' }} />
+      <div ref={mapContainer} className="w-full h-full" />
 
       {selectedItem && (
         <>
