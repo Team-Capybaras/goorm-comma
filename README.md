@@ -418,7 +418,57 @@ groom.backend
 ## 모니터링 및 로깅
 
 
----
+### 로그 중앙화 구조
+
+로그 중앙화(Alloy → Loki → Grafana)로 실시간 모니터링 및 장애 분석을 지원합니다.
+
+```
+Backend 애플리케이션
+    │
+    │ 로그 기록
+    ▼
+/app/logs/application.log (공유 볼륨: app_logs)
+    │
+    │ 파일 tail (실시간)
+    ▼
+Alloy (로그 수집 에이전트)
+    │
+    │ HTTP POST
+    ▼
+Loki (로그 저장소)
+    │
+    │ LogQL Query
+    ▼
+Grafana (로그 시각화)
+    │
+    └─ 대시보드 표시
+```
+
+### 모니터링 스택
+
+- **Alloy**: Backend 로그 파일을 실시간으로 tail하여 수집
+- **Loki**: 로그 저장 및 인덱싱, LogQL 쿼리 지원
+- **Grafana**: 로그 시각화 및 대시보드 제공
+
+### 접속 정보
+
+- **Grafana**: http://localhost:3001 (admin/admin)
+- **Loki API**: http://localhost:3100
+- **Alloy UI**: http://localhost:12345
+
+### 로그 확인 방법
+
+```bash
+# Backend 로그 확인
+docker logs backend -f
+
+# Grafana에서 로그 확인
+# 1. http://localhost:3001 접속
+# 2. Explore 메뉴 선택
+# 3. 데이터소스: Loki 선택
+# 4. 쿼리: {job="backend"}
+# 5. Live 모드 활성화
+```
 
 
 ## 개발 환경 가이드
