@@ -31,12 +31,12 @@
 ---
 ## Team Capybara
 
-| Role | Contact / GitHub |
-|------|------------------|
-| PM | alsgml2846@gmail.com |
-| PD | rlajh6571@gmail.com<br>tosalgoo@gmail.com |
-| FE | https://github.com/chdaud78<br>https://github.com/asdfdk123<br>https://github.com/Ikmyeongs |
-| BE | https://github.com/jung0522<br>https://github.com/kmgyu |
+## 👥 Team Capybara
+
+| PM | PD | FE | BE |
+|----|----|----|----|
+| alsgml2846@gmail.com | rlajh6571@gmail.com<br>tosalgoo@gmail.com | https://github.com/chdaud78<br>https://github.com/asdfdk123<br>https://github.com/Ikmyeongs | https://github.com/jung0522<br>https://github.com/kmgyu |
+
 
 ## 개요
 
