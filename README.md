@@ -273,6 +273,7 @@ groom.backend
 
 ## 데이터 흐름 및 예상 시나리오
 
+```mermaid
 flowchart TD
     %% ===============================
     %% Application Startup Data Flow
@@ -355,7 +356,7 @@ flowchart TD
     PAPI7 --> PAPI8
 
     PAPI8 --> PAPI9[DTO Response]
-
+```
 
 
 ## 테스트
