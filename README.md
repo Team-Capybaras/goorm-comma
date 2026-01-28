@@ -273,90 +273,91 @@ groom.backend
 
 ## 데이터 흐름 및 예상 시나리오
 
-```mermaid
-flowchart TD
-    %% ===============================
-    %% Application Startup Data Flow
-    %% ===============================
-    A[Application Start] --> B[ApplicationReadyEvent]
-    B --> C[PublicDataScheduler.onApplicationReady()]
+본 시스템은 애플리케이션 시작 시 공공 데이터를 수집하고, 
+스케줄러를 통해 30분 마다 주기적으로 갱신하며,
+API 요청에 따라 필요한 정보를 제공한다.
 
-    C --> C1[updateParkCoordinates]
-    C --> C2[updatePublicData]
+---
 
-    C2 --> D[Seoul Public API]
-    D --> E[XML Response]
-    E --> F[DTO Mapping]
-    F --> G[PublicDataService.saveCityData]
+## 1. 데이터 수집 및 갱신 흐름
 
-    G --> P1[Park]
-    G --> P2[LivePopStatus]
-    G --> P3[PredPopStatus]
-    G --> P4[WeatherStatus]
-    G --> P5[ParkingLot]
-    G --> P6[ParkingLotStatus]
-    G --> P7[ChargerStation]
-    G --> P8[SubwayStation]
-    G --> P9[BusStation]
-    G --> P10[Sbike]
+### ▶ 애플리케이션 시작 시
 
-    %% ===============================
-    %% Scheduler Data Flow
-    %% ===============================
-    S1[@Scheduled (Every 30 min)]
-        --> S2[PublicDataScheduler.scheduledUpdate]
-        --> S3[Iterate 34 Parks]
-        --> D
+| Step | 컴포넌트 | 처리 내용 |
+|------|------------|-------------|
+| 1 | Application | ApplicationReadyEvent 발생 |
+| 2 | PublicDataScheduler | onApplicationReady() 실행 |
+| 3 | PublicDataScheduler | 공원 좌표 정보 저장 (updateParkCoordinates) |
+| 4 | PublicDataScheduler | 공공 데이터 초기 수집 (updatePublicData) |
+| 5 | SeoulApiClient | 서울시 공공 API 호출 |
+| 6 | Data Parser | XML 응답 → DTO 변환 |
+| 7 | PublicDataService | 도메인 데이터 저장 |
+| 8 | Database | Park, LivePopStatus, PredPopStatus, WeatherStatus, ParkingLot, ParkingLotStatus, ChargerStation, SubwayStation, BusStation, Sbike 저장 |
 
-    S4[@Scheduled (Daily 00:00)]
-        --> S5[ParkStatisticsScheduler.aggregate]
-        --> S6[ParkStatisticsService.aggregateAll]
-        --> S7[Congestion Aggregation]
-        --> S8[ParkStatistics]
-    S7 --> S9[ParkStatisticsLog]
+---
 
-    %% ===============================
-    %% Park Recommendation API Flow
-    %% ===============================
-    R1[Client Request<br/>GET /api/v1/parks/recommend]
-        --> R2[ParkRecommendController]
-        --> R3[ParkRecommendService]
+### ▶ 스케줄러 기반 자동 업데이트
 
-    R3 --> R4[Validate Base Park]
-    R3 --> R5[Get Base Congestion]
+#### ⏱ 공공 데이터 업데이트 (30분 주기)
 
-    R3 --> R6[Load All Parks]
-    R6 --> R7[Build ParkInfo]
+| Step | 컴포넌트 | 처리 내용 |
+|------|------------|-------------|
+| 1 | Scheduler | @Scheduled(30min) 트리거 |
+| 2 | PublicDataScheduler | scheduledUpdate() 실행 |
+| 3 | PublicDataScheduler | 34개 공원 순회 |
+| 4 | SeoulApiClient | 공공 API 재호출 |
+| 5 | PublicDataService | 최신 데이터 업데이트 |
+| 6 | Logger | 성공 / 실패 통계 로깅 |
 
-    R7 --> R8[WeatherStatusRepository]
-    R7 --> R9[LivePopStatusRepository]
-    R7 --> R10[ParkTagRepository]
-    R7 --> R11[Distance Calculator]
-    R7 --> R12[Tag Similarity Calculator]
+---
 
-    R7 --> R13[Filter: Low / Normal Congestion]
-    R13 --> R14[Sort<br/>(Congestion → Tag → Distance)]
-    R14 --> R15[Exclude Base Park]
-    R15 --> R16[Top 5 Response]
+#### 📊 혼잡도 통계 집계 (매일 00시)
 
-    %% ===============================
-    %% Parking Status API Flow
-    %% ===============================
-    PAPI1[Client Request<br/>GET /api/v1/parking]
-        --> PAPI2[ParkingStatusController]
-        --> PAPI3[ParkingStatusService]
+| Step | 컴포넌트 | 처리 내용 |
+|------|------------|-------------|
+| 1 | Scheduler | @Scheduled(00:00) 트리거 |
+| 2 | ParkStatisticsScheduler | aggregate() 실행 |
+| 3 | ParkStatisticsService | aggregateAll() 수행 |
+| 4 | Statistics Engine | 공원별 · 요일별 · 시간대별 혼잡도 계산 |
+| 5 | Database | ParkStatistics, ParkStatisticsLog 저장 |
 
-    PAPI3 --> PAPI4[ParkingLotRepository]
-    PAPI3 --> PAPI5[ParkingLotStatusRepository]
+---
 
-    PAPI4 --> PAPI6[ParkingLot List]
-    PAPI5 --> PAPI7[Latest Status]
+## 2. API 요청 처리 흐름
 
-    PAPI6 --> PAPI8[ParkingLotMapper]
-    PAPI7 --> PAPI8
+### ▶ 공원 추천 API
 
-    PAPI8 --> PAPI9[DTO Response]
-```
+| Step | 컴포넌트 | 처리 내용 |
+|------|------------|-------------|
+| 1 | Client | GET /api/v1/parks/recommend 요청 |
+| 2 | Controller | ParkRecommendController 호출 |
+| 3 | Service | recommendTop5Parks() 실행 |
+| 4 | Validator | 기준 공원 존재 여부 검증 |
+| 5 | Repository | 기준 공원 혼잡도 조회 |
+| 6 | Repository | 전체 공원 목록 조회 |
+| 7 | Mapper | ParkInfo 변환 (날씨, 인구, 태그 결합) |
+| 8 | Calculator | 거리 계산 및 태그 유사도 계산 |
+| 9 | Filter | 혼잡도 여유 / 보통 공원만 필터링 |
+| 10 | Sorter | 혼잡도 → 태그 → 거리 순 정렬 |
+| 11 | Filter | 기준 공원 제외 |
+| 12 | Controller | Top 5 결과 응답 |
+
+---
+
+### ▶ 주차장 정보 조회 API
+
+| Step | 컴포넌트 | 처리 내용 |
+|------|------------|-------------|
+| 1 | Client | GET /api/v1/parking 요청 |
+| 2 | Controller | ParkingStatusController 호출 |
+| 3 | Service | getParkingStatus() 실행 |
+| 4 | Repository | 주차장 목록 조회 |
+| 5 | Repository | 최신 주차 현황 조회 |
+| 6 | Mapper | 실시간 제공 여부에 따른 DTO 매핑 |
+| 7 | Controller | 응답 반환 |
+
+---
+
 
 
 ## 테스트
