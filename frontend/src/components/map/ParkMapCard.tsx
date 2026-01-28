@@ -16,6 +16,7 @@ const airQualityTextMap: Record<string, string> = {
   나쁨: '대기질이 나빠요',
   보통: '대기질이 보통이에요',
   좋음: '대기질이 좋아요',
+  점검중: '아직 정보가 없어요',
 }
 
 export default function ParkMapCard({ item, onClose }: Props) {
@@ -54,9 +55,9 @@ export default function ParkMapCard({ item, onClose }: Props) {
             </div>
           </div>
 
-          {/* 대기질 정보 */}
-          {item.airQuality && (
-            <div className="flex items-center gap-1 text-body-2-r text-sub">
+          {/* 대기질 정보는 나쁨일 때만 표시 */}
+          {item.airQuality === '나쁨' && (
+            <div className="my-[-2] flex items-center gap-1 text-body-2-r text-sub">
               {/* 구름 아이콘 재사용 또는 대기질 전용 아이콘 사용 */}
               <img src="/images/icons/weather/air.svg" alt="대기질" width={14} height={14} />
               <span>{airQualityTextMap[item.airQuality]}</span>
