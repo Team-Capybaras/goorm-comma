@@ -358,7 +358,61 @@ groom.backend
 
 ## 테스트
 
----
+### 1. 테스트 실행 방법
+
+#### 전체 테스트 실행
+```bash
+./gradlew test
+```
+
+#### 특정 테스트 클래스 실행
+```bash
+./gradlew test --tests "groom.backend.unit.park.recommend.F202ContractTest"
+```
+
+#### 통합 테스트만 실행
+```bash
+./gradlew test --tests "groom.backend.intergration.*"
+```
+
+#### 단위 테스트만 실행
+```bash
+./gradlew test --tests "groom.backend.unit.*"
+```
+
+### 2. 테스트 전략
+
+#### 단위 테스트 (Unit Test)
+- **목적**: 개별 메서드/클래스의 동작 검증
+- **범위**: Service, Mapper, Utils 등 비즈니스 로직
+- **예시**: 
+  - `DistanceCalculatorTest`: 거리 계산 로직 검증
+  - `F103PolicyTest`: 주차장 정책 로직 검증
+  - `F105PolicyTest`: 대중교통 정책 로직 검증
+
+#### 통합 테스트 (Integration Test)
+- **목적**: 여러 컴포넌트 간 상호작용 검증
+- **범위**: Controller → Service → Repository 전체 흐름
+- **예시**:
+  - `ConsistencyIntergrationTest`: 데이터 일관성 검증
+  - `ExternalApiFailureIntergrationTest`: 외부 API 실패 시나리오 검증
+  - `RefreshIntergrationTest`: 데이터 갱신 검증
+
+#### 계약 테스트 (Contract Test)
+- **목적**: API 계약(요청/응답 형식) 검증
+- **범위**: Controller 엔드포인트의 입력/출력 검증
+- **예시**:
+  - `F100ContractTest`: 공원 목록 조회 API 계약 검증
+  - `F101ContractTest`: 공원 상세 조회 API 계약 검증
+  - `F202ContractTest`: 공원 추천 API 계약 검증
+
+### 3. 테스트 커버리지
+
+테스트 실행 후 커버리지 리포트 확인:
+```bash
+./gradlew test jacocoTestReport
+# 리포트 위치: build/reports/jacoco/test/html/index.html
+```
 
 
 ## 모니터링 및 로깅
