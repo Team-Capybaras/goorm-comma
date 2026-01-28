@@ -241,9 +241,11 @@ groom.backend
 ### 기술 스택
 
 | 구분 | 사용 기술 및 도구 |
-|----|------------|
-| FE |            |
-| BE |            |
+|------|------------------|
+| FE |  |
+| BE | **언어**: Java 21<br>**Framework**: Spring Boot 3.5.x, Spring Data JPA, Apache HttpClient5, Springdoc (Swagger)<br>**Database / Cache**: PostgreSQL, Redis |
+| 기타 | **협업 도구**: Jira, Confluence, Git, GitHub<br>**인프라 / 배포**: Nginx, Docker, Docker Compose, GitHub Actions, AWS (EC2, S3, IAM) |
+
 
 ---
 
